@@ -41,6 +41,9 @@ site (ADR 006).
 ## Header
 - The home hero is now light, so the header always uses the dark-on-light
   treatment (the white "over hero" variant was removed)
+- First-band spacing uses `.page-top` (same token as contact / Why uPVC). Content
+  is `items-start`, not vertically centered. No `min-h-svh` — the hero hugs the
+  chips so the door sequence starts immediately, same studio wash.
 
 ## Review Checklist
 - [x] Matches DESIGN-SYSTEM tokens (surface, charcoal, navy, gold)

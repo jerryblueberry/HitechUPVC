@@ -6,7 +6,14 @@
  * on a straight elevation.
  */
 
-import { motion, useMotionValueEvent, useScroll, useTransform } from "framer-motion";
+import {
+  cubicBezier,
+  motion,
+  useMotionValueEvent,
+  useScroll,
+  useTransform,
+  type MotionValue,
+} from "framer-motion";
 import { useRef, useSyncExternalStore } from "react";
 import {
   LazyUpvcScrollScene,
@@ -66,6 +73,51 @@ const CAPTIONS = [
   },
 ];
 
+const EASE = cubicBezier(0.22, 1, 0.36, 1);
+
+/**
+ * Copy swaps only while the column is faded out. Two captions must never
+ * paint on top of each other — that reads as corrupted text.
+ */
+function useCaptionSwap(progress: MotionValue<number>) {
+  const veil = useTransform(
+    progress,
+    [0, 0.28, 0.32, 0.35, 0.58, 0.62, 0.65, 1],
+    [1, 1, 0, 1, 1, 0, 1, 1],
+    { ease: [EASE, EASE, EASE, EASE, EASE, EASE, EASE] }
+  );
+  const y = useTransform(
+    progress,
+    [0, 0.28, 0.32, 0.35, 0.58, 0.62, 0.65, 1],
+    [0, 0, 8, 0, 0, 8, 0, 0],
+    { ease: [EASE, EASE, EASE, EASE, EASE, EASE, EASE] }
+  );
+
+  const slot0 = useTransform(progress, [0, 0.329, 0.331, 1], [1, 1, 0, 0]);
+  const slot1 = useTransform(
+    progress,
+    [0, 0.329, 0.331, 0.629, 0.631, 1],
+    [0, 0, 1, 1, 0, 0]
+  );
+  const slot2 = useTransform(progress, [0, 0.629, 0.631, 1], [0, 0, 1, 1]);
+  const hidden0 = useTransform(slot0, (current) =>
+    current > 0.5 ? "visible" : "hidden"
+  );
+  const hidden1 = useTransform(slot1, (current) =>
+    current > 0.5 ? "visible" : "hidden"
+  );
+  const hidden2 = useTransform(slot2, (current) =>
+    current > 0.5 ? "visible" : "hidden"
+  );
+
+  return {
+    veil,
+    y,
+    slot: [slot0, slot1, slot2],
+    hidden: [hidden0, hidden1, hidden2],
+  };
+}
+
 export function ScrollDoorSequence() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const progressRef = useRef(0);
@@ -84,26 +136,22 @@ export function ScrollDoorSequence() {
     progressRef.current = value;
   });
 
-  // Captions crossfade in their own windows so only one is ever legible.
-  const captionOpacity = [
-    useTransform(scrollYProgress, [0, 0.06, 0.24, 0.3], [0, 1, 1, 0]),
-    useTransform(scrollYProgress, [0.36, 0.44, 0.58, 0.64], [0, 1, 1, 0]),
-    useTransform(scrollYProgress, [0.72, 0.8, 0.96, 1], [0, 1, 1, 1]),
-  ];
-  const captionY = [
-    useTransform(scrollYProgress, [0, 0.06, 0.24, 0.3], [24, 0, 0, -24]),
-    useTransform(scrollYProgress, [0.36, 0.44, 0.58, 0.64], [24, 0, 0, -24]),
-    useTransform(scrollYProgress, [0.72, 0.8, 0.96, 1], [24, 0, 0, 0]),
-  ];
+  const captions = useCaptionSwap(scrollYProgress);
 
   return (
     <>
       {/* Reduced-motion fallback: the same story, told statically. */}
       <section className="hidden motion-reduce:block section-padding bg-surface-muted">
         <div className="container-content space-y-12">
-          {CAPTIONS.map((caption) => (
+          {CAPTIONS.map((caption, i) => (
             <article key={caption.title} className="prose-narrow">
-              <p className="eyebrow mb-3 text-gold">{caption.eyebrow}</p>
+              <div className="mb-3 flex items-center gap-3">
+                <span className="font-medium tabular-nums text-[0.6875rem] tracking-[0.16em] text-gold">
+                  0{i + 1}
+                </span>
+                <span className="h-px w-7 bg-gold/45" aria-hidden />
+                <p className="eyebrow mb-0 text-gold">{caption.eyebrow}</p>
+              </div>
               <h2 className="font-display text-h3 text-charcoal mb-3">
                 {caption.title}
               </h2>
@@ -115,7 +163,7 @@ export function ScrollDoorSequence() {
 
       <section
         ref={sectionRef}
-        className="relative h-[360vh] bg-surface-muted motion-reduce:hidden lg:h-[420vh]"
+        className="relative h-[360vh] bg-surface motion-reduce:hidden lg:h-[420vh]"
         aria-label="Scroll-driven door sequence"
       >
         <div className="sticky top-0 h-[100svh] overflow-hidden">
@@ -124,8 +172,8 @@ export function ScrollDoorSequence() {
             className="absolute inset-0"
             style={{
               background: isDesktop
-                ? "radial-gradient(120% 90% at 62% 38%, #ffffff 0%, #f2efe9 45%, #ddd8cf 100%)"
-                : "radial-gradient(130% 75% at 50% 32%, #ffffff 0%, #f2efe9 45%, #ddd8cf 100%)",
+                ? "radial-gradient(90% 90% at 72% 50%, #ffffff 0%, #f7f6f3 45%, #ebe7e0 100%)"
+                : "radial-gradient(90% 90% at 50% 40%, #ffffff 0%, #f7f6f3 45%, #ebe7e0 100%)",
             }}
             aria-hidden
           />
@@ -159,23 +207,37 @@ export function ScrollDoorSequence() {
             />
 
             <div className="container-content flex h-full items-end pb-[max(3.5rem,env(safe-area-inset-bottom))] lg:items-center lg:pb-0">
-              <div className="relative w-full max-w-md lg:max-w-sm">
-                {CAPTIONS.map((caption, i) => (
-                  <motion.div
-                    key={caption.title}
-                    style={{ opacity: captionOpacity[i], y: captionY[i] }}
-                    className="absolute bottom-0 lg:bottom-auto lg:top-0 lg:-translate-y-1/2"
-                  >
-                    <p className="eyebrow mb-3 text-gold">{caption.eyebrow}</p>
-                    <h2 className="mb-3 font-display text-[clamp(1.9rem,3.6vw,3.25rem)] leading-[1.05] tracking-tight text-charcoal text-balance lg:mb-4">
-                      {caption.title}
-                    </h2>
-                    <p className="text-base leading-relaxed text-charcoal/65">
-                      {caption.body}
-                    </p>
-                  </motion.div>
-                ))}
-              </div>
+              <motion.div
+                style={{ opacity: captions.veil, y: captions.y }}
+                className="w-full max-w-md will-change-[opacity,transform] lg:max-w-[28rem]"
+              >
+                <div className="grid">
+                  {CAPTIONS.map((caption, i) => (
+                    <motion.article
+                      key={caption.title}
+                      style={{
+                        opacity: captions.slot[i],
+                        visibility: captions.hidden[i],
+                      }}
+                      className="col-start-1 row-start-1"
+                    >
+                      <div className="mb-4 flex items-center gap-3">
+                        <span className="font-medium tabular-nums text-[0.6875rem] tracking-[0.16em] text-gold">
+                          0{i + 1}
+                        </span>
+                        <span className="h-px w-7 bg-gold/45" aria-hidden />
+                        <p className="eyebrow mb-0 text-gold">{caption.eyebrow}</p>
+                      </div>
+                      <h2 className="mb-4 font-display text-[clamp(1.7rem,2.8vw,2.75rem)] leading-[1.12] tracking-tight text-charcoal text-balance">
+                        {caption.title}
+                      </h2>
+                      <p className="max-w-sm text-base leading-relaxed text-charcoal/65">
+                        {caption.body}
+                      </p>
+                    </motion.article>
+                  ))}
+                </div>
+              </motion.div>
             </div>
           </div>
         </div>

@@ -1,29 +1,30 @@
 # Contact & Get Quote Pages
-Status: planned
+Status: review
 Owner: agent
-Last reviewed: —
+Last reviewed: 2026-09-27
 
 ## Purpose
-Lead capture via multi-step quote form and direct contact. UPVC buyers often prefer WhatsApp/call.
+Lead capture via a contact form, WhatsApp/call, plus a single map of all Hi-Tech sites.
 
 ## Routes
-- `app/(marketing)/contact/page.tsx`
-- `app/(marketing)/get-quote/page.tsx`
+- `app/(marketing)/contact/page.tsx` — live
+- `app/(marketing)/get-quote/page.tsx` — coming-soon placeholder (multi-step form still backlog)
 
 ## Design Decisions
-- Multi-step form: product type → dimensions → color → contact info
-- Animated step transitions between steps
-- Map embed for showroom/branches
-- Floating WhatsApp button with pulse animation
-- Contact page: simpler form + phone/email/WhatsApp links
+- Header matches home sections (gold eyebrow, display h1, muted body)
+- First section uses `section-padding page-top` so it sits under the nav, not a full section below it
+- Desktop: form (7) + reach-us / sites (5); map full width below
+- Mobile: Reach us + stacked sites first (tap to call), then form, then map. No horizontal overflow.
+- Form is client-only: inline validation on blur + submit, dummy 700ms success (no backend)
+- Each site has its own Google Maps embed iframe (no API key). Tapping a site swaps the iframe.
+- WhatsApp uses `company.contact.whatsapp`
+- Call numbers from `company.contact.phones` (`+977 985-1033536`, `+977 981-0058285`)
 
-## Data Sources
-- `company.json` — addresses, phone, WhatsApp, email
-
-## Animation Spec
-Step transitions: `AnimatePresence` + slide/fade between steps
+## Form fields
+Name, email, optional phone, interest, message. Errors sit under the field (`aria-invalid` + `aria-describedby`).
 
 ## Review Checklist
-- [ ] Form accessible (labels, focus states)
-- [ ] WhatsApp link uses company data
-- [ ] No form submission backend yet — UI only or mailto placeholder
+- [x] WhatsApp link uses company data
+- [x] Three markers on one map
+- [x] Form labels, focus rings, inline errors, success state
+- [x] Get Quote coming-soon page live (multi-step form still outstanding)

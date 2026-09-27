@@ -22,6 +22,26 @@ export const CATEGORY_PATHS: Record<ProductCategory, string> = {
   panels: "/products/panels",
 };
 
+export const CATEGORY_BLURBS: Record<ProductCategory, string> = {
+  windows: "Sliding, casement, tilt & turn — made to measure.",
+  doors: "French, sliding, and folding for indoor-outdoor living.",
+  panels: "Fluted woodgrain wall panels — the feature wall, no paint.",
+};
+
+/** `wa.me` requires digits only, no plus or spaces. */
+export function whatsappHref(number: string, message?: string): string {
+  const digits = number.replace(/\D/g, "");
+  const url = `https://wa.me/${digits}`;
+  return message ? `${url}?text=${encodeURIComponent(message)}` : url;
+}
+
+/** `tel:` link for Nepal numbers — keeps +977 even if the display form omits it. */
+export function telHref(number: string): string {
+  const digits = number.replace(/\D/g, "");
+  const withCountry = digits.startsWith("977") ? digits : `977${digits}`;
+  return `tel:+${withCountry}`;
+}
+
 export const PROCESS_STEPS = [
   { step: 1, title: "Consultation", description: "Discuss your needs and preferences" },
   { step: 2, title: "Measurement", description: "Precise on-site measurements" },

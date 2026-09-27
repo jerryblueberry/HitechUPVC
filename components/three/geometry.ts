@@ -174,6 +174,70 @@ export function getGrainTexture(): THREE.Texture | null {
   return texture;
 }
 
+/**
+ * Fluted / reeded uPVC wall panel — one sheet with many tight vertical slats.
+ * This is the interior feature-wall product (woodgrain foil), not weatherboard
+ * and not a handful of wide ceiling planks.
+ *
+ * Cross-section is extruded along Y. UVs run grain along the slat length.
+ */
+export function flutedPanelGeometry(
+  width: number,
+  height: number,
+  depth: number,
+  slats = 32
+): THREE.BufferGeometry {
+  const key = `flute:${width}:${height}:${depth}:${slats}`;
+
+  return cached(key, () => {
+    const x0 = -width / 2;
+    const x1 = width / 2;
+    const pitch = width / slats;
+    const fluteW = pitch * 0.94;
+    const valley = depth * 0.18;
+    const face = depth;
+    const corner = fluteW * 0.22;
+
+    const shape = new THREE.Shape();
+    shape.moveTo(x0, 0);
+    shape.lineTo(x1, 0);
+    shape.lineTo(x1, valley);
+
+    for (let i = slats - 1; i >= 0; i--) {
+      const cx = x0 + (i + 0.5) * pitch;
+      const right = cx + fluteW / 2;
+      const left = cx - fluteW / 2;
+      shape.lineTo(right, valley);
+      shape.quadraticCurveTo(right, face, right - corner, face);
+      shape.lineTo(left + corner, face);
+      shape.quadraticCurveTo(left, face, left, valley);
+    }
+
+    shape.lineTo(x0, valley);
+    shape.closePath();
+
+    const geo = new THREE.ExtrudeGeometry(shape, {
+      depth: height,
+      bevelEnabled: false,
+      curveSegments: 5,
+    });
+    geo.translate(0, 0, -height / 2);
+    geo.rotateX(Math.PI / 2);
+    geo.translate(0, 0, -depth / 2);
+
+    const pos = geo.attributes.position;
+    const uvs = new Float32Array(pos.count * 2);
+    for (let i = 0; i < pos.count; i++) {
+      // Canvas grain fibres run along +X; map that axis to slat height.
+      uvs[i * 2] = (pos.getY(i) / height + 0.5) * 5.2;
+      uvs[i * 2 + 1] = (pos.getX(i) / width + 0.5) * 2.6;
+    }
+    geo.setAttribute("uv", new THREE.BufferAttribute(uvs, 2));
+    geo.computeVertexNormals();
+    return geo;
+  });
+}
+
 export function disposeUpvcGeometryCache() {
   cache.forEach((geo) => geo.dispose());
   cache.clear();

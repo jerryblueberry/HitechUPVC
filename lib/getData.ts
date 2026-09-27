@@ -76,8 +76,10 @@ export function getTestimonials(): Testimonial[] {
   return testimonialsData as Testimonial[];
 }
 
-export function getFAQs(): FAQ[] {
-  return faqsData as FAQ[];
+export function getFAQs(category?: string): FAQ[] {
+  const all = faqsData as FAQ[];
+  if (!category) return all;
+  return all.filter((faq) => faq.category === category);
 }
 
 export function getProjects(): Project[] {

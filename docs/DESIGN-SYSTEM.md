@@ -40,7 +40,8 @@ Headlines: negative tracking (`-0.02em`). Body: generous line-height (1.6–1.7)
 
 | Utility class | Effect |
 |---------------|--------|
-| `.section-padding` | `py-24 md:py-32` |
+| `.section-padding` | `py-24 md:py-32` — mid-page rhythm |
+| `.page-top` | First band under the header: `pt` from `--spacing-page-top` / `-lg` (hero + inner pages) |
 | `.container-content` | `mx-auto max-w-[90rem] px-6 lg:px-8` |
 | `.prose-narrow` | `max-w-3xl` for text-heavy blocks |
 | `.eyebrow` | Caption uppercase tracking for section labels |
@@ -48,7 +49,7 @@ Headlines: negative tracking (`-0.02em`). Body: generous line-height (1.6–1.7)
 - 8pt spacing scale
 - Max content width ~1440px (`90rem`)
 - 12-col desktop grid, 4-col mobile
-- Generous whitespace — premium brands under-fill space
+- Generous whitespace between sections; the first band under the header is tighter (`page-top`) so pages do not sit a full section below the nav
 
 ## Section Rhythm
 

@@ -26,6 +26,7 @@ frontend/
   components/
     layout/                         → Header, Footer, MegaMenu, MobileNav
     home/                           → Home page sections
+    why/                            → Why uPVC page sections
     products/                       → Product listing & detail
     ui/                             → Reusable wrappers (AnimatedText, etc.)
     animations/                     → OpeningTypeDemo, shared motion

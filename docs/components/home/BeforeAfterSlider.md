@@ -1,22 +1,27 @@
 # BeforeAfterSlider
-Status: planned
+Status: review
 Owner: agent
-Last reviewed: —
+Last reviewed: 2026-09-27
 
 ## Purpose
 Draggable before/after comparison slider for renovation showcase.
 
 ## Design Decisions
-- Full-width or contained in section
-- Drag handle centered, touch-enabled
+- Full `container-content` width so the image lines up with the section title
+- Handle and reveal share one `useMotionValue` — no Framer `drag="x"` (that stacked a transform on `left` and desynced the split)
+- Pointer capture on the whole frame; keyboard arrows / Home / End
+- `touch-none` so the page does not scroll while dragging
 
 ## Animation Spec
-useMotionValue + drag="x" with constraints; see ANIMATION-SPEC.md
+Pointer 1:1 with the finger. Reduced motion: still interactive, no extra easing.
 
 ## Implementation Notes
 - File: `components/home/BeforeAfterSlider.tsx`
 - Client component
+- Used on home and `/why-upvc`
 
 ## Review Checklist
-- [ ] Touch drag works on mobile
-- [ ] Reduced motion: show side-by-side static
+- [x] Handle and clipped image stay aligned while dragging
+- [x] Image width matches title / container margins
+- [x] Touch drag works on mobile
+- [x] Keyboard operable

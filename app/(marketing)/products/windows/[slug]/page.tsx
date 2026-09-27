@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { ProductDetailView } from "@/components/products/ProductDetailView";
 import { getProductBySlug, getProductsByCategory } from "@/lib/getData";
+import { pageMetadata } from "@/lib/seo";
 
 type Params = { params: Promise<{ slug: string }> };
+
+export const dynamicParams = true;
 
 export function generateStaticParams() {
   return getProductsByCategory("windows").map((product) => ({
@@ -16,14 +19,17 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const product = getProductBySlug("windows", slug);
   if (!product) return {};
 
-  return {
-    title: product.name,
-    description: product.shortDescription,
-  };
+  return pageMetadata(
+    product.name,
+    product.shortDescription,
+    `/products/windows/${slug}`,
+    product.heroImage
+  );
 }
 
 export default async function WindowDetailPage({ params }: Params) {
   const { slug } = await params;
+  if (!slug) redirect("/products/windows");
   const product = getProductBySlug("windows", slug);
   if (!product) notFound();
 

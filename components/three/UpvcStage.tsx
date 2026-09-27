@@ -12,6 +12,7 @@
  * supported, and the scene fades in once its first frame is ready.
  */
 
+import "./patchClock";
 import { ContactShadows, Environment } from "@react-three/drei";
 import { Canvas, useThree } from "@react-three/fiber";
 import { Suspense, useCallback, useEffect, useRef, useState, type ReactNode } from "react";

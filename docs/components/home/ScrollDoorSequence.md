@@ -23,6 +23,8 @@ but is no longer mounted.
   at every point in the sequence rather than hoping the product stays out of the way.
 - **Ref, not state.** `useMotionValueEvent` writes scroll progress into a ref that
   `useFrame` reads. Scrolling causes zero React renders.
+- **Seam with the hero.** Same surface + radial wash as the home hero so the
+  pin starts with no empty band and no colour jump.
 - **All screen sizes.** Phones get the same 3D sequence with a portrait
   composition (`MOBILE_SHOTS`): subject in the upper part of the frame, captions
   anchored bottom over a bottom-edge scrim. Shot set is picked with a
@@ -43,8 +45,9 @@ None. Copy and camera shots are local constants; the model comes from
 | 1.00 | Straight elevation |
 
 Door opens over scroll 0.18 → 0.68. Camera positions lerp with smoothstep between
-shots, then damp (λ = 6) to absorb trackpad jitter. Captions crossfade in
-non-overlapping windows.
+shots, then damp (λ = 6) to absorb trackpad jitter. The caption column fades out,
+swaps to the next beat (visibility, never two texts at once), then fades in.
+Each beat is marked `01 — The detail`. Grid-stacked so height never jumps.
 
 ## Responsive Behavior
 
@@ -70,7 +73,8 @@ without the canvas. Reduced motion falls through to the static poster
 ## Review Checklist
 
 - [x] Captions legible at every scroll position
-- [x] Only one caption visible at a time
+- [x] Captions dissolve through each other — no empty gap between beats
+- [x] Only one caption fully legible at a time
 - [x] No React re-render while scrolling
 - [x] Mobile 3D sequence verified at 390×844 (start, mid, end shots)
 - [x] Reduced-motion fallback renders the same information

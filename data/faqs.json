@@ -16,5 +16,41 @@
     "question": "How long does installation take?",
     "answer": "A standard home window replacement takes 1–2 days. Larger projects are scheduled in phases with minimal disruption.",
     "category": "installation"
+  },
+  {
+    "id": "why-climate",
+    "question": "Is uPVC suitable for Kathmandu’s climate?",
+    "answer": "Yes. uPVC is designed to handle wide temperature ranges, strong sun, monsoon rain, and dust, making it ideal for Kathmandu and other parts of Nepal.",
+    "category": "why-upvc"
+  },
+  {
+    "id": "why-noise",
+    "question": "Do uPVC windows really reduce noise?",
+    "answer": "With double-glazed glass and proper sealing, uPVC windows can significantly reduce traffic and neighbourhood noise compared to single-glazed wood or aluminium.",
+    "category": "why-upvc"
+  },
+  {
+    "id": "why-lifespan",
+    "question": "How long do uPVC doors and windows last?",
+    "answer": "High-quality uPVC systems can last 25–30 years or more with minimal maintenance, far outlasting typical wooden frames that need frequent repair.",
+    "category": "why-upvc"
+  },
+  {
+    "id": "why-service",
+    "question": "Do you provide installation and after-sales service?",
+    "answer": "Yes. Hi-Tech uPVC Profile Industries handles measurement, fabrication, installation, and after-sales support for uPVC products in Kathmandu and surrounding areas.",
+    "category": "why-upvc"
+  },
+  {
+    "id": "why-custom",
+    "question": "Can uPVC frames be customised in colour and design?",
+    "answer": "Absolutely. We offer different colours, wood-finish textures, and custom sizes to match your building’s design — including casement, tilt & turn, sliding, and fixed openings.",
+    "category": "why-upvc"
+  },
+  {
+    "id": "why-wood",
+    "question": "Why choose uPVC over wood in Kathmandu?",
+    "answer": "Wood in Kathmandu often suffers from termites, moisture damage, and constant painting. uPVC is immune to rot and termites, never needs polishing, and keeps a consistent factory finish for decades.",
+    "category": "why-upvc"
   }
 ]

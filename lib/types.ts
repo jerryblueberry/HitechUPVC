@@ -116,8 +116,19 @@ export interface CompanyStats {
   satisfactionRate?: number;
 }
 
+export interface CompanyAddress {
+  label: string;
+  address: string;
+  lat: number;
+  lng: number;
+  mapsUrl: string;
+  /** Google Maps embed URL — no API key (`maps/embed?pb=` or `output=embed`). */
+  embedUrl: string;
+}
+
 export interface Company {
   companyName: string;
+  logo: string;
   tagline: string;
   hero: {
     headline: string;
@@ -129,10 +140,10 @@ export interface Company {
   usps: CompanyUSP[];
   stats: CompanyStats;
   contact: {
-    phone: string;
-    email: string;
+    phones: string[];
+    emails: string[];
     whatsapp: string;
-    addresses: { label: string; address: string }[];
+    addresses: CompanyAddress[];
   };
   certifications: string[];
   social: { platform: string; url: string }[];

@@ -54,11 +54,23 @@ export function MagneticButton({
       };
 
   if (href) {
+    const external = href.startsWith("http");
     return (
       <motion.div {...motionProps} className="inline-block">
-        <Link href={href} className={classes}>
-          {children}
-        </Link>
+        {external ? (
+          <a
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={classes}
+          >
+            {children}
+          </a>
+        ) : (
+          <Link href={href} className={classes}>
+            {children}
+          </Link>
+        )}
       </motion.div>
     );
   }

@@ -35,6 +35,7 @@ export const productSchema = z.object({
 
 export const companySchema = z.object({
   companyName: z.string(),
+  logo: z.string(),
   tagline: z.string(),
   hero: z.object({
     headline: z.string(),
@@ -58,10 +59,19 @@ export const companySchema = z.object({
     satisfactionRate: z.number().optional(),
   }),
   contact: z.object({
-    phone: z.string(),
-    email: z.string(),
+    phones: z.array(z.string()),
+    emails: z.array(z.string()),
     whatsapp: z.string(),
-    addresses: z.array(z.object({ label: z.string(), address: z.string() })),
+    addresses: z.array(
+      z.object({
+        label: z.string(),
+        address: z.string(),
+        lat: z.number(),
+        lng: z.number(),
+        mapsUrl: z.string(),
+        embedUrl: z.string(),
+      })
+    ),
   }),
   certifications: z.array(z.string()),
   social: z.array(z.object({ platform: z.string(), url: z.string() })),

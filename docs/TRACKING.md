@@ -10,25 +10,21 @@ Single source for backlog, in-progress, review, and done. Update on every task.
 - [ ] Add build-time Zod validation in getData.ts
 
 ### Products
-- [ ] Products overview page + ProductGrid + filters
-- [ ] Category listing pages (windows, doors, panels) — detail routes exist, listings 404
 - [ ] SpecTable, ColorSwatchPicker, OpeningTypeTabs (detail page currently uses an inline spec list)
 - [ ] Sticky quote CTA bar
 - [ ] Carry configurator selections into the quote form
 
 ### Other Pages
-- [ ] Why UPVC (scrollytelling)
-- [ ] Gallery page
-- [ ] About page
-- [ ] Contact page
-- [ ] Get Quote multi-step form
+- [ ] Gallery page (coming-soon placeholder live)
+- [ ] About page (coming-soon placeholder live)
+- [ ] Get Quote multi-step form (coming-soon placeholder live)
 
 ### Polish
 - [x] Scroll progress bar
 - [ ] Floating WhatsApp button
 - [ ] Accessibility pass (focus states audit)
 - [ ] Performance pass (next/image sizes, Lighthouse)
-- [ ] SEO metadata per page
+- [x] SEO metadata — Open Graph, Twitter, sitemap, robots, Organization JSON-LD + Instagram sameAs
 
 ### Content (see CONTENT-CHECKLIST.md)
 - [x] Placeholder web images (Unsplash) wired via lib/images.ts
@@ -56,10 +52,15 @@ Real-time 3D (ADR 006) — awaiting sign-off:
 - [x] Product detail routes for windows, doors, panels
 - [x] DoorwayIntro — 3D French-door page-load intro (replaces HeroCurtainIntro, which is deleted)
 - [x] USPStrip — Apple-style spec cards matching the hero (white cards, line icons, display figures)
-- [x] ProductCategoryShowcase — live 3D cards (casement, french, new panel stack), hover to open / autoplay on touch, mobile snap scroller
+- [x] ProductCategoryShowcase — live 3D tiles (casement, french, fluted woodgrain slat wall); header CTA “Explore our products”
 - [x] 3D performance pass — on-demand rendering, lazy canvas creation, async shader compile + fade-in, context-loss fallback, touch-device glass downgrade (see `docs/components/three/README.md`)
-- [ ] Known gap: `/products/windows`, `/products/doors`, `/products/panels` overview pages 404 (linked from the category cards and nav). Build per `docs/pages/products-overview.md`.
+- [x] Category listings — `/products/windows`, `/products/doors`, `/products/panels` (hero 3D + locked grid); home showcase and mega menu now resolve
 - [x] Hero — Apple-style 3D product carousel: copy left, live 3D unit right, 5 slides (replaces HeroCarousel on home); header always dark-on-light
+- [x] Header WhatsApp — icon in desktop nav and next to the mobile menu; opens +977 981-0058285 via `wa.me`
+- [x] Contact page — form with inline validation + dummy success; three pins on one map; layout matches home sections
+- [x] Why uPVC page — Kathmandu SEO landing (hero 3D, comparison, FAQ JSON-LD, sitemap); reuses home casement/showcase/before-after
+- [x] Products overview — `/products` hero 3D + family jumps + filterable grid (PNG/fluted posters); sitemap + CollectionPage JSON-LD
+- [x] Coming-soon placeholders — `/get-quote`, `/gallery`, `/about` (noindex until the real pages ship)
 
 ---
 

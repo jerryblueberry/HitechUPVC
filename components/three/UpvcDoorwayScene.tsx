@@ -6,6 +6,7 @@
  * underneath (the canvas is transparent) is revealed through the doorway.
  */
 
+import "./patchClock";
 import { Environment } from "@react-three/drei";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Suspense, useEffect, useMemo, useRef } from "react";

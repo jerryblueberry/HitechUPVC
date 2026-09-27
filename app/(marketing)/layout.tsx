@@ -14,7 +14,13 @@ export default function MarketingLayout({
   return (
     <>
       <ScrollProgress />
-      <Header navigation={navigation} companyName={company.companyName} />
+      <Header
+        navigation={navigation}
+        companyName={company.companyName}
+        logo={company.logo}
+        whatsapp={company.contact.whatsapp}
+        tagline={company.tagline}
+      />
       <main className="flex-1">{children}</main>
       <Footer navigation={navigation} company={company} />
     </>

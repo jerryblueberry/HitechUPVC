@@ -21,6 +21,7 @@
   --color-sage: #8a9a7b;
   --color-slate: #4a5568;
   --color-bronze: #8c6e4e;
+  --color-danger: #9b3d2f;
 
   /* Typography */
   --font-display: var(--font-fraunces), Georgia, serif;
@@ -36,6 +37,9 @@
   /* Spacing */
   --spacing-section: 6rem;
   --spacing-section-lg: 8rem;
+  /* First band under the sticky header — tighter than mid-page sections */
+  --spacing-page-top: 2.75rem;
+  --spacing-page-top-lg: 3.5rem;
 
   /* Motion */
   --ease-premium: cubic-bezier(0.22, 1, 0.36, 1);
@@ -59,6 +63,17 @@ body {
   .section-padding {
     padding-top: var(--spacing-section-lg);
     padding-bottom: var(--spacing-section-lg);
+  }
+}
+
+/* First band under the sticky header — home hero and inner pages share this */
+.page-top {
+  padding-top: var(--spacing-page-top);
+}
+
+@media (min-width: 768px) {
+  .page-top {
+    padding-top: var(--spacing-page-top-lg);
   }
 }
 
@@ -144,3 +159,5 @@ body {
     animation: none;
   }
 }
+
+

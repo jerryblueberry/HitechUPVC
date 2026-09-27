@@ -1,7 +1,7 @@
 # Gallery Page
-Status: planned
+Status: review
 Owner: agent
-Last reviewed: —
+Last reviewed: 2026-09-27
 
 ## Purpose
 Showcase completed projects with masonry grid, lightbox, and filters by product type and location.
@@ -9,15 +9,18 @@ Showcase completed projects with masonry grid, lightbox, and filters by product 
 ## Route
 `app/(marketing)/gallery/page.tsx`
 
+## Current state
+Coming-soon placeholder (`ComingSoon`) so `/gallery` does not 404. Full masonry + lightbox still backlog.
+
 ## Data Sources
-- `projects.json`
+- `projects.json` (for the finished page)
 
 ## Design Decisions
-- Masonry grid with filter chips
-- Lightbox on click
-- Each project links to mini case study (modal or sub-route later)
+- Placeholder: `page-top`, gold eyebrow, studio card, products + contact CTAs
+- Finished page: masonry grid, filter chips, lightbox
 
 ## Review Checklist
+- [x] `/gallery` renders a clean coming-soon page
 - [ ] Images use next/image with sizes
 - [ ] Filter animates grid reflow
 - [ ] Alt text from project data

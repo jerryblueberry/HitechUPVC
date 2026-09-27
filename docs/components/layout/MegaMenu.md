@@ -1,31 +1,30 @@
 # MegaMenu
-Status: done
+Status: review
 Owner: agent
-Last reviewed: —
+Last reviewed: 2026-09-27
 
 ## Purpose
-Products dropdown with columns for Windows, Doors, Panels, and featured promo image.
+Products menu: Windows, Doors, Panels, plus a featured promo.
 
 ## Design Decisions
-- Grid: 4 columns on desktop
-- Slide/fade down on open (`AnimatePresence`)
-- Featured promo in column 4
+- **Dropdown** (`variant="dropdown"`): full-width panel under the header on `lg+`
+- **Inline** (`variant="inline"`): accordion inside MobileNav so phones get the same categories
+- Products has a chevron on desktop (toggle) and mobile (expand)
+- Featured card stacks under the three columns on small screens
 
 ## Props / Data
 - `navigation.json` products section
-- Opening type sub-links per category
-
-## Animation Spec
-`initial={{ opacity: 0, y: -10 }}` → animate in; see ANIMATION-SPEC.md
+- `variant?: "dropdown" | "inline"`
 
 ## Responsive Behavior
-- Desktop only — mobile uses MobileNav
+- Desktop: hover / chevron opens the header panel
+- Mobile: chevron on Products opens the stacked mega list
 
 ## Implementation Notes
 - File: `components/layout/MegaMenu.tsx`
 - Client component
 
 ## Review Checklist
-- [ ] Matches DESIGN-SYSTEM tokens
-- [ ] Uses getData() not inline JSON
-- [ ] Animations respect prefers-reduced-motion
+- [x] Chevron on Products, large and small
+- [x] Mobile can open the same product groups
+- [x] Columns do not crush on small widths

@@ -41,7 +41,7 @@ export function ProductDetailView({ product }: { product: Product }) {
 
   return (
     <>
-      <section className="section-padding bg-surface">
+      <section className="section-padding page-top bg-surface">
         <div className="container-content">
           <nav aria-label="Breadcrumb" className="mb-8">
             <ol className="flex flex-wrap items-center gap-2 text-caption text-charcoal/50">

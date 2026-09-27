@@ -104,10 +104,14 @@ export function Hero({ company }: HeroProps) {
 
   return (
     <MotionConfig reducedMotion="user">
-      <DoorwayIntro brand={company.companyName} onReveal={handleReveal} />
+      <DoorwayIntro
+        brand={company.companyName}
+        logo={company.logo}
+        onReveal={handleReveal}
+      />
 
       <section
-        className="relative flex min-h-[calc(100svh-4rem)] items-center overflow-hidden lg:min-h-[calc(100svh-5rem)]"
+        className="page-top relative flex items-start overflow-hidden"
         style={{
           background:
             "radial-gradient(90% 90% at 72% 50%, #ffffff 0%, #f7f6f3 45%, #ebe7e0 100%)",
@@ -119,7 +123,7 @@ export function Hero({ company }: HeroProps) {
       >
         <h1 className="sr-only">{hero.headline}</h1>
 
-        <div className="container-content grid w-full grid-cols-1 items-center gap-x-12 gap-y-6 py-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] lg:grid-rows-[auto_auto] lg:py-12">
+        <div className="container-content grid w-full grid-cols-1 items-start gap-x-12 gap-y-6 pb-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] lg:grid-rows-[auto_auto] lg:pb-10">
           {/* Copy */}
           <motion.div
             className="lg:col-start-1 lg:row-start-1 lg:self-end"

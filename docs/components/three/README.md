@@ -12,12 +12,12 @@ are no downloaded models.
 
 | File | Role |
 |------|------|
-| `geometry.ts` | Extruded profile rings, chamfered slabs, procedural woodgrain. Cached by parameter signature. |
+| `geometry.ts` | Extruded profile rings, chamfered slabs, fluted wall panel, procedural woodgrain. Cached by parameter signature. |
 | `materials.ts` | uPVC / hardware / glass / gasket / threshold materials as disposable hooks |
 | `UpvcHardware.tsx` | Lever handles, hinges, letterplate. Lever exposed as a ref for per-frame rotation. |
 | `UpvcUnit.tsx` | Full unit assembly + the six opening rigs |
 | `UpvcStage.tsx` | Canvas, HDRI lighting, contact shadow, WebGL/reduced-motion fallbacks |
-| `UpvcPanelViewer.tsx` | Wall-panel board stack (woodgrain boards on rails) that fans out when opened; CSS fallback |
+| `UpvcPanelViewer.tsx` | Fluted woodgrain slat wall (tight vertical ribs, cropped like an installed feature wall) |
 | `PointerFollow.tsx` | Turns its children toward the cursor (window-wide, no drag); off under reduced motion |
 | `FitCamera.tsx` | Frames a unit of known size, solving both vertical and horizontal FOV |
 | `UpvcViewer.tsx` | Self-framing viewer (explainer + configurator) |
@@ -26,6 +26,7 @@ are no downloaded models.
 | `Lazy*.tsx` | `next/dynamic` `ssr: false` entry points |
 | `hooks.ts` | Reduced motion, WebGL support, hover capability, viewport pausing, lazy canvas creation (safe to import anywhere) |
 | `demand.ts` | On-demand rendering helpers: `SETTLE_EPSILON`, `useInvalidateOn`, `useAutoPlayWake` (canvas-only) |
+| `patchClock.ts` | Suppresses R3F 9’s deprecated `THREE.Clock` constructor warning (Clock is a read-only export) |
 
 Model specs, finishes, hardware and glazing live in `lib/upvc3d.ts` — pure data with
 no three.js import, so it stays safe to read from server components.

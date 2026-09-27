@@ -1,28 +1,32 @@
 # Products Overview Page
-Status: planned
+Status: review
 Owner: agent
-Last reviewed: —
+Last reviewed: 2026-09-27
 
 ## Purpose
-Filterable product grid across windows, doors, and panels. Helps users browse by category, opening type, and color.
+Browse Hi-Tech uPVC windows, doors, and panels. Filter by category, opening type, and finish. Uses existing 3D/PNG assets — product `heroImage` JPGs are not in `/public` yet.
 
 ## Route
 `app/(marketing)/products/page.tsx`
 
 ## Components
+- `components/products/ProductsView.tsx`
 - [ProductGrid.md](../components/products/ProductGrid.md)
 - [ProductCard.md](../components/products/ProductCard.md)
 
 ## Data Sources
-- `products.json` — aggregated index for filters
-- `colors.json` — filter by finish
+- `getProducts()`, `getColors()`, `getCompany()`
+- PNG / 3D via `lib/upvcAssets.ts`, `lib/productMedia.ts`, and `WhyStudioViewer`
 
 ## Design Decisions
-- Filter bar sticky on scroll (desktop)
-- Layout transitions on filter change (`layoutId`)
-- ProductCard: image zoom hover, opening-type badge
+- First band: `page-top`, company hero copy + live casement 3D
+- Three family jumps go to `/products/windows`, `/products/doors`, `/products/panels`
+- Sticky filter chips; grid 1 / 2 / 3 columns
+- Window/door cards use opening-type PNGs; panel cards use a fluted-slat poster (no hero JPGs)
+- Quote CTAs go to `/contact` until the Get Quote form ships
 
 ## Review Checklist
-- [ ] Filters animate with layout transitions
-- [ ] Uses getProducts() from getData
-- [ ] Responsive grid: 1 col mobile, 2 tablet, 3–4 desktop
+- [x] Uses getProducts() from getData
+- [x] Responsive grid
+- [x] Filters without 404 category routes
+- [x] `/products` in sitemap + CollectionPage JSON-LD

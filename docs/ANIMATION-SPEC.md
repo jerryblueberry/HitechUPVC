@@ -34,7 +34,7 @@ Framer Motion patterns for Premium UPVC. All motion supports content — never d
 | Filter grid reflow | Cards reposition on filter | `layout` prop on `motion.div` |
 | Stats counters | Count up on scroll | `useInView` + `animate()` |
 | Scrollytelling | Sticky media + scroll progress | `useScroll` + `useTransform` |
-| Before/after slider | Draggable handle | `useMotionValue` + `drag="x"` |
+| Before/after slider | Pointer-tracked handle | Shared `useMotionValue` for clip + handle (no extra drag transform) |
 | Testimonials marquee | Infinite scroll | CSS keyframe or `animate(x, repeat: Infinity)` |
 | Opening-type demo | Cross-fade between states | `AnimatePresence` + SVG |
 | Page transitions | Soft fade/slide | `template.tsx` motion wrapper |
@@ -71,7 +71,8 @@ Static rendered frame — no auto-play. Without WebGL, the static product image 
 
 `components/home/ScrollDoorSequence.tsx`. Scroll progress is written into a **ref**
 by `useMotionValueEvent` and read inside `useFrame` — scrolling must never trigger a
-React render. Camera keyframes lerp with smoothstep, then damp (λ = 6).
+React render. Camera keyframes lerp with smoothstep, then damp (λ = 6). Captions
+fade the column out, swap copy, then fade in — two beats never paint together.
 
 ## Shared Utilities
 

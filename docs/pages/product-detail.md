@@ -22,6 +22,7 @@ Deep product page with gallery, opening animation, specs, color picker, and quot
 - `colors.json`
 
 ## Design Decisions
+- First section uses `section-padding page-top` (tighter top under the header)
 - Sticky "Get a Quote" bar after hero scrolls past
 - Hero gallery with thumbnail strip
 - Opening type animation is key differentiator

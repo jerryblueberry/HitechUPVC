@@ -1,5 +1,6 @@
 {
   "companyName": "Hi-Tech uPVC Profile Industries",
+  "logo": "/images/brand/htd-mark.png",
   "tagline": "Engineered for comfort. Built to last.",
   "hero": {
     "headline": "Premium windows, doors & panels",
@@ -39,20 +40,45 @@
     "satisfactionRate": 98
   },
   "contact": {
-    "phone": "+1 234 567 8900",
-    "email": "hello@premiumupvc.com",
-    "whatsapp": "+12345678900",
+    "phones": [
+      "+977 985-1033536",
+      "+977 981-0058285"
+    ],
+    "emails": [
+      "hitechu.p.v.cprofile@gmail.com",
+      "hitechglass06@gmail.com"
+    ],
+    "whatsapp": "+977 981-0058285",
     "addresses": [
       {
-        "label": "Head Office & Showroom",
-        "address": "123 Industrial Park, City, Country"
+        "label": "Head Office & Factory",
+        "address": "Bihani Chowk, Tarakeshwar 44600",
+        "lat": 27.78651,
+        "lng": 85.31927,
+        "mapsUrl": "https://maps.app.goo.gl/Eg7pMxSeAb1fW6SM9",
+        "embedUrl": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d304434.1731426539!2d85.55668928974703!3d27.895642264639974!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39eb1fa1275b66cb%3A0x6b7d305215fa90e9!2sHI%20tech%20uPVC%20profile%20Industry!5e0!3m2!1sne!2snp!4v1790497696755!5m2!1sne!2snp"
+      },
+      {
+        "label": "Hitech Glass",
+        "address": "Lambagar, Kathmandu 44600",
+        "lat": 27.74653,
+        "lng": 85.30042,
+        "mapsUrl": "https://maps.app.goo.gl/D4LQy3BtKHXXQJKH9",
+        "embedUrl": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3532!2d85.30042!3d27.74653!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39eb196e509c3d73%3A0xa2a49c687682cd72!2sHitech%20Glass%20Pvt.Ltd!5e0!3m2!1sen!2snp"
+      },
+      {
+        "label": "Hi-Tech UPVC Windows",
+        "address": "Tokha, Bagmati Province 44600",
+        "lat": 27.73909,
+        "lng": 85.31123,
+        "mapsUrl": "https://maps.app.goo.gl/F5NRojEVDchYWkMK8",
+        "embedUrl": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3532!2d85.31123!3d27.73909!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39eb18d8346fff97%3A0xb294c3733e3cb9e!2sHi-Tech%20UPVC%20Windows!5e0!3m2!1sen!2snp"
       }
     ]
   },
   "certifications": ["ISO 9001", "CE Marking", "Energy Star Partner"],
   "social": [
-    { "platform": "facebook", "url": "https://facebook.com/premiumupvc" },
-    { "platform": "instagram", "url": "https://instagram.com/premiumupvc" }
+    { "platform": "instagram", "url": "https://www.instagram.com/hitechgroupnepal/" }
   ],
   "process": [
     { "step": 1, "title": "Consultation", "description": "Discuss your needs and preferences" },

@@ -1,21 +1,24 @@
 # ProductGrid
-Status: planned
+Status: review
 Owner: agent
-Last reviewed: —
+Last reviewed: 2026-09-27
 
 ## Purpose
-Filterable grid of ProductCards with category, opening type, and color filters.
+Filterable grid of ProductCards: category, opening type, and finish. State lives in the URL (`?category=&type=&color=`).
 
 ## Props / Data
-- `Product[]` from getProducts()
+- `products: ProductIndexEntry[]` from `getProducts()`
+- `colors: ColorSwatch[]` from `getColors()`
+- `lockedCategory?: ProductCategory` — hides category chips (used on listing pages)
 
 ## Animation Spec
-layout transitions on filter change
+Framer `layout` + fade on filter change; skipped when reduced motion.
 
 ## Implementation Notes
 - File: `components/products/ProductGrid.tsx`
-- Client component (filters)
+- Client component (`useSearchParams`) — wrap in `<Suspense>`
+- Sticky chip bar under the header (`top-16` / `md:top-20`)
 
 ## Review Checklist
-- [ ] Filter state accessible
-- [ ] Layout animations on reflow
+- [x] Filter state accessible (`aria-pressed`, `aria-live` count)
+- [x] Layout animations on reflow

@@ -6,7 +6,7 @@ Static JSON shapes designed to match future CMS API responses. Components consum
 
 | File | Type | Getter |
 |------|------|--------|
-| `company.json` | `Company` | `getCompany()` |
+| `company.json` | `Company` | `getCompany()` — includes `logo`, `phones`, `emails` |
 | `navigation.json` | `Navigation` | `getNavigation()` |
 | `windows.json` | `Product[]` | `getWindows()` |
 | `doors.json` | `Product[]` | `getDoors()` |
@@ -14,7 +14,7 @@ Static JSON shapes designed to match future CMS API responses. Components consum
 | `products.json` | `ProductIndexEntry[]` | `getProducts()` |
 | `colors.json` | `ColorSwatch[]` | `getColors()` |
 | `testimonials.json` | `Testimonial[]` | `getTestimonials()` |
-| `faqs.json` | `FAQ[]` | `getFAQs()` |
+| `faqs.json` | `FAQ[]` | `getFAQs(category?)` |
 | `projects.json` | `Project[]` | `getProjects()` |
 | `team.json` | `TeamMember[]` | `getTeam()` |
 

@@ -22,6 +22,7 @@ function shouldPlaySnapshot(): boolean {
 
 interface DoorwayIntroProps {
   brand: string;
+  logo: string;
   /** Fires as the doors open onto the page, or immediately if the intro is skipped */
   onReveal?: () => void;
 }
@@ -31,7 +32,7 @@ interface DoorwayIntroProps {
  * the page. Plays once per session; skipped for reduced motion / no WebGL.
  * The server renders the cover so there is no flash of the page beneath.
  */
-export function DoorwayIntro({ brand, onReveal }: DoorwayIntroProps) {
+export function DoorwayIntro({ brand, logo, onReveal }: DoorwayIntroProps) {
   const shouldPlay = useSyncExternalStore(noopSubscribe, shouldPlaySnapshot, () => true);
   const [ready, setReady] = useState(false);
   const [finished, setFinished] = useState(false);
@@ -88,7 +89,12 @@ export function DoorwayIntro({ brand, onReveal }: DoorwayIntroProps) {
             animate={ready ? { opacity: 0, y: -6 } : { opacity: 1, y: 0 }}
             transition={{ duration: ready ? 0.2 : 0.6, ease: [0.22, 1, 0.36, 1] }}
           >
-            <BrandLogo name={brand} className="items-center" subClassName="text-charcoal/60" />
+            <BrandLogo
+              name={brand}
+              src={logo}
+              className="text-3xl"
+              subClassName="text-charcoal/60"
+            />
           </motion.p>
 
           <LazyUpvcDoorwayScene

@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Fraunces, Inter } from "next/font/google";
+import { OrganizationJsonLd } from "@/components/ui/OrganizationJsonLd";
+import { defaultMetadata } from "@/lib/seo";
 import "./globals.css";
 
 const fraunces = Fraunces({
@@ -15,14 +17,7 @@ const inter = Inter({
   weight: ["400", "500", "600"],
 });
 
-export const metadata: Metadata = {
-  title: {
-    default: "Hi-Tech uPVC Profile Industries | Windows, Doors & Panels",
-    template: "%s | Hi-Tech uPVC",
-  },
-  description:
-    "Hi-Tech uPVC Profile Industries: premium uPVC windows, doors, and panels. Energy efficient, secure, low maintenance. Get a free quote today.",
-};
+export const metadata: Metadata = defaultMetadata();
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
@@ -31,6 +26,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${fraunces.variable} ${inter.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-surface text-charcoal font-body">
+        <OrganizationJsonLd />
         {children}
       </body>
     </html>
