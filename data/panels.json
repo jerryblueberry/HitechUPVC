@@ -1,0 +1,29 @@
+[
+  {
+    "slug": "cladding-smooth",
+    "category": "panels",
+    "name": "Smooth Cladding",
+    "shortDescription": "Clean, contemporary facade panels with smooth matte finish.",
+    "heroImage": "/images/panels/smooth-hero.jpg",
+    "galleryImages": ["/images/panels/smooth-1.jpg"],
+    "profileSystem": "40mm insulated",
+    "colors": ["white", "anthracite-grey"],
+    "features": ["UV resistant", "Low maintenance", "Concealed fixings"],
+    "warranty": "15 years",
+    "specs": { "frameDepth": "40mm", "glazingThickness": "N/A" }
+  },
+  {
+    "slug": "cladding-woodgrain",
+    "category": "panels",
+    "name": "Woodgrain Cladding",
+    "shortDescription": "Authentic woodgrain foil finish without the maintenance of timber.",
+    "heroImage": "/images/panels/woodgrain-hero.jpg",
+    "galleryImages": ["/images/panels/woodgrain-1.jpg"],
+    "profileSystem": "40mm insulated",
+    "colors": ["golden-oak"],
+    "features": ["Realistic wood texture", "Fade resistant foil", "Easy installation"],
+    "warranty": "15 years",
+    "specs": { "frameDepth": "40mm" },
+    "badges": ["Eco-Friendly"]
+  }
+]

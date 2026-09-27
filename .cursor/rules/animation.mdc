@@ -1,0 +1,16 @@
+---
+description: Framer Motion and animation patterns
+globs: "**/components/**"
+alwaysApply: false
+---
+
+# Animation
+
+See `docs/ANIMATION-SPEC.md`.
+
+- Easing: `[0.22, 1, 0.36, 1]`
+- Entrance: 0.4–0.7s; hover: 0.15–0.25s
+- Max 2–3 animated properties per element
+- Always provide `prefers-reduced-motion` fallback
+- Use shared ui: AnimatedText, RevealOnScroll, MagneticButton, Marquee
+- Opening demos: `components/animations/OpeningTypeDemo.tsx`

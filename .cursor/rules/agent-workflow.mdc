@@ -1,0 +1,18 @@
+---
+description: Mandatory agent workflow loop
+alwaysApply: true
+---
+
+# Agent Workflow
+
+Follow `docs/AGENT-WORKFLOW.md`.
+
+1. Read TRACKING.md → pick one item
+2. Read matching doc in docs/pages/ or docs/components/
+3. Set doc Status to `in-progress`
+4. Implement with minimal diff
+5. Run Review Checklist in doc
+6. Update TRACKING (Review) and doc Status (`review`)
+7. After approval: Status `done`, move to Done in TRACKING
+
+Never mark done without updating both TRACKING and the component doc.

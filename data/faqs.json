@@ -1,0 +1,20 @@
+[
+  {
+    "id": "1",
+    "question": "How long do UPVC windows last?",
+    "answer": "Quality UPVC windows typically last 25–35 years with minimal maintenance. Our profiles are engineered for durability in all weather conditions.",
+    "category": "general"
+  },
+  {
+    "id": "2",
+    "question": "How does UPVC compare to aluminum?",
+    "answer": "UPVC offers superior thermal insulation at a lower cost than aluminum. Modern UPVC profiles match aluminum on aesthetics while outperforming on energy efficiency.",
+    "category": "comparison"
+  },
+  {
+    "id": "3",
+    "question": "How long does installation take?",
+    "answer": "A standard home window replacement takes 1–2 days. Larger projects are scheduled in phases with minimal disruption.",
+    "category": "installation"
+  }
+]

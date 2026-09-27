@@ -1,0 +1,16 @@
+---
+description: Enforce canonical folder paths
+alwaysApply: true
+---
+
+# Folder Structure
+
+Follow `docs/FOLDER-STRUCTURE.md` exactly.
+
+- Pages: `app/(marketing)/`
+- Components: `components/{layout,home,products,ui,animations}/`
+- Data: `data/*.json` — never import in components
+- Lib: `lib/getData.ts`, `lib/types.ts`
+- Docs: update matching file in `docs/components/` or `docs/pages/`
+
+Do not create alternate paths (e.g. `src/components`, `utils/`).

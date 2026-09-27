@@ -1,0 +1,16 @@
+[
+  {
+    "id": "1",
+    "name": "David Thompson",
+    "role": "Founder & CEO",
+    "bio": "25 years crafting premium UPVC systems for homes and businesses.",
+    "image": "/images/team/david.jpg"
+  },
+  {
+    "id": "2",
+    "name": "Lisa Park",
+    "role": "Head of Design",
+    "bio": "Architectural background driving product innovation and finish development.",
+    "image": "/images/team/lisa.jpg"
+  }
+]

@@ -1,0 +1,75 @@
+[
+  {
+    "slug": "tilt-turn-classic",
+    "category": "windows",
+    "name": "Tilt & Turn Classic",
+    "shortDescription": "Dual-function opening for ventilation and easy cleaning.",
+    "openingType": "tilt-turn",
+    "heroImage": "/images/windows/tilt-turn-hero.jpg",
+    "colors": ["white", "anthracite-grey", "golden-oak"],
+    "badges": ["Best Seller"]
+  },
+  {
+    "slug": "sliding-premium",
+    "category": "windows",
+    "name": "Sliding Premium",
+    "shortDescription": "Smooth horizontal sliding for wide openings and panoramic views.",
+    "openingType": "sliding",
+    "heroImage": "/images/windows/sliding-hero.jpg",
+    "colors": ["white", "anthracite-grey"]
+  },
+  {
+    "slug": "casement-elegance",
+    "category": "windows",
+    "name": "Casement Elegance",
+    "shortDescription": "Side-hung opening for maximum ventilation and classic appeal.",
+    "openingType": "casement",
+    "heroImage": "/images/windows/casement-hero.jpg",
+    "colors": ["white", "golden-oak"]
+  },
+  {
+    "slug": "french-classic",
+    "category": "doors",
+    "name": "French Classic",
+    "shortDescription": "Elegant dual-swing doors opening outward for seamless indoor-outdoor flow.",
+    "openingType": "french",
+    "heroImage": "/images/doors/french-hero.jpg",
+    "colors": ["white", "anthracite-grey", "golden-oak"]
+  },
+  {
+    "slug": "sliding-patio",
+    "category": "doors",
+    "name": "Sliding Patio",
+    "shortDescription": "Large-format sliding door for patios and terraces.",
+    "openingType": "sliding",
+    "heroImage": "/images/doors/sliding-hero.jpg",
+    "colors": ["white", "anthracite-grey"],
+    "badges": ["New Finish"]
+  },
+  {
+    "slug": "folding-living",
+    "category": "doors",
+    "name": "Folding Living",
+    "shortDescription": "Bi-fold doors that stack to one side for full-width openings.",
+    "openingType": "folding",
+    "heroImage": "/images/doors/folding-hero.jpg",
+    "colors": ["white", "anthracite-grey"]
+  },
+  {
+    "slug": "cladding-smooth",
+    "category": "panels",
+    "name": "Smooth Cladding",
+    "shortDescription": "Clean, contemporary facade panels with smooth matte finish.",
+    "heroImage": "/images/panels/smooth-hero.jpg",
+    "colors": ["white", "anthracite-grey"]
+  },
+  {
+    "slug": "cladding-woodgrain",
+    "category": "panels",
+    "name": "Woodgrain Cladding",
+    "shortDescription": "Authentic woodgrain foil finish without the maintenance of timber.",
+    "heroImage": "/images/panels/woodgrain-hero.jpg",
+    "colors": ["golden-oak"],
+    "badges": ["Eco-Friendly"]
+  }
+]

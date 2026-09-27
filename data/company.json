@@ -1,0 +1,64 @@
+{
+  "companyName": "Hi-Tech uPVC Profile Industries",
+  "tagline": "Engineered for comfort. Built to last.",
+  "hero": {
+    "headline": "Premium windows, doors & panels",
+    "subheadline": "Energy-efficient UPVC systems crafted for modern homes and commercial projects.",
+    "primaryCta": { "label": "Get a Free Quote", "href": "/get-quote" },
+    "secondaryCta": { "label": "Explore Products", "href": "/products" },
+    "image": "/images/hero-home.jpg"
+  },
+  "usps": [
+    {
+      "title": "Energy Efficiency",
+      "description": "Superior thermal insulation with industry-leading U-values.",
+      "icon": "energy",
+      "value": "1.1"
+    },
+    {
+      "title": "Security",
+      "description": "Multi-point locking and reinforced profiles.",
+      "icon": "security"
+    },
+    {
+      "title": "Low Maintenance",
+      "description": "No painting or sealing — wipe clean and forget.",
+      "icon": "maintenance"
+    },
+    {
+      "title": "Warranty",
+      "description": "Comprehensive coverage on profiles and hardware.",
+      "icon": "warranty",
+      "value": "10"
+    }
+  ],
+  "stats": {
+    "yearsInBusiness": 25,
+    "installations": 15000,
+    "citiesServed": 48,
+    "satisfactionRate": 98
+  },
+  "contact": {
+    "phone": "+1 234 567 8900",
+    "email": "hello@premiumupvc.com",
+    "whatsapp": "+12345678900",
+    "addresses": [
+      {
+        "label": "Head Office & Showroom",
+        "address": "123 Industrial Park, City, Country"
+      }
+    ]
+  },
+  "certifications": ["ISO 9001", "CE Marking", "Energy Star Partner"],
+  "social": [
+    { "platform": "facebook", "url": "https://facebook.com/premiumupvc" },
+    { "platform": "instagram", "url": "https://instagram.com/premiumupvc" }
+  ],
+  "process": [
+    { "step": 1, "title": "Consultation", "description": "Discuss your needs and preferences" },
+    { "step": 2, "title": "Measurement", "description": "Precise on-site measurements" },
+    { "step": 3, "title": "Manufacturing", "description": "Custom-built to your specifications" },
+    { "step": 4, "title": "Installation", "description": "Expert fitting by certified installers" },
+    { "step": 5, "title": "Aftercare", "description": "Ongoing support and warranty service" }
+  ]
+}

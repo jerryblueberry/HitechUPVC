@@ -7,3 +7,13 @@ This version has breaking changes — APIs, conventions, and file structure may 
 This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
 
 <!-- END:nextjs-agent-rules -->
+
+## Premium UPVC Project Rules
+
+Before any task: read `docs/README.md`, `docs/TRACKING.md`, and the relevant page/component doc.
+
+After implementation: update doc Status + `docs/TRACKING.md`; request review before marking done.
+
+Design tokens: `app/globals.css` @theme — see `docs/DESIGN-SYSTEM.md`.
+
+Data: static JSON in `/data` — never fetch inline in components; use `lib/getData.ts`.

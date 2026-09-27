@@ -1,0 +1,41 @@
+{
+  "main": [
+    { "label": "Products", "href": "/products" },
+    { "label": "Why UPVC", "href": "/why-upvc" },
+    { "label": "Gallery", "href": "/gallery" },
+    { "label": "About", "href": "/about" },
+    { "label": "Contact", "href": "/contact" }
+  ],
+  "products": {
+    "windows": [
+      { "label": "Sliding Windows", "href": "/products/windows?type=sliding" },
+      { "label": "Casement Windows", "href": "/products/windows?type=casement" },
+      { "label": "Tilt & Turn", "href": "/products/windows?type=tilt-turn" },
+      { "label": "All Windows", "href": "/products/windows" }
+    ],
+    "doors": [
+      { "label": "Sliding Doors", "href": "/products/doors?type=sliding" },
+      { "label": "French Doors", "href": "/products/doors?type=french" },
+      { "label": "Folding Doors", "href": "/products/doors?type=folding" },
+      { "label": "All Doors", "href": "/products/doors" }
+    ],
+    "panels": [
+      { "label": "Cladding Panels", "href": "/products/panels" },
+      { "label": "All Panels", "href": "/products/panels" }
+    ],
+    "featured": {
+      "title": "New: Anthracite Grey Finish",
+      "description": "Modern matte finish for contemporary architecture.",
+      "image": "/images/promo-anthracite.jpg",
+      "href": "/products/windows/tilt-turn-classic"
+    }
+  },
+  "footer": [
+    { "label": "Products", "href": "/products" },
+    { "label": "Get a Quote", "href": "/get-quote" },
+    { "label": "Why UPVC", "href": "/why-upvc" },
+    { "label": "Gallery", "href": "/gallery" },
+    { "label": "About", "href": "/about" },
+    { "label": "Contact", "href": "/contact" }
+  ]
+}

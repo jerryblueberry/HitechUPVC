@@ -1,0 +1,15 @@
+---
+description: Design token usage for UI and CSS
+globs: "**/*.{tsx,css}"
+alwaysApply: false
+---
+
+# Design System
+
+Tokens live in `app/globals.css` via `@theme inline`. See `docs/DESIGN-SYSTEM.md`.
+
+- Use `bg-surface`, `text-charcoal`, `text-navy`, `text-gold` — never hardcode hex
+- Use utility classes: `section-padding`, `container-content`, `prose-narrow`, `eyebrow`
+- Headlines: `font-display`; body: `font-body`
+- Section rhythm: alternate `bg-surface`, `bg-surface-muted`, `bg-navy`
+- Focus: `ring-2 ring-gold ring-offset-2 ring-offset-surface`

@@ -1,0 +1,50 @@
+[
+  {
+    "slug": "white",
+    "name": "Brilliant White",
+    "hex": "#F5F5F0",
+    "type": "solid"
+  },
+  {
+    "slug": "cream",
+    "name": "Warm Cream",
+    "hex": "#EDE8DF",
+    "type": "solid"
+  },
+  {
+    "slug": "anthracite-grey",
+    "name": "Anthracite Grey",
+    "hex": "#383E42",
+    "type": "solid"
+  },
+  {
+    "slug": "slate",
+    "name": "Slate Blue",
+    "hex": "#4A5568",
+    "type": "solid"
+  },
+  {
+    "slug": "golden-oak",
+    "name": "Golden Oak",
+    "hex": "#C4A574",
+    "type": "woodgrain"
+  },
+  {
+    "slug": "rosewood",
+    "name": "Rosewood",
+    "hex": "#6B4C3B",
+    "type": "woodgrain"
+  },
+  {
+    "slug": "sage",
+    "name": "Heritage Sage",
+    "hex": "#8A9A7B",
+    "type": "solid"
+  },
+  {
+    "slug": "champagne",
+    "name": "Champagne",
+    "hex": "#D4C4A8",
+    "type": "solid"
+  }
+]

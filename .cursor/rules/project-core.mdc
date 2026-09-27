@@ -1,0 +1,13 @@
+---
+description: Core project standards for Hi-Tech uPVC Profile Industries
+alwaysApply: true
+---
+
+# Hi-Tech uPVC Profile Industries — Core Rules
+
+- Brand: **Hi-Tech uPVC Profile Industries** (from `data/company.json` → `companyName`; short form "Hi-Tech uPVC"). Render the logo with `components/ui/BrandLogo.tsx`
+- Read `docs/README.md`, `docs/TRACKING.md`, and the relevant page/component doc before coding
+- Minimal diffs — only change what the task requires
+- No dark mode — light/warm-neutral palette only (ADR 005)
+- Server components by default; `"use client"` only for motion/interactivity
+- Use `@/` import alias for components and lib

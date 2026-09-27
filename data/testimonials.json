@@ -1,0 +1,26 @@
+[
+  {
+    "id": "1",
+    "name": "Sarah Mitchell",
+    "role": "Homeowner",
+    "projectType": "Full window replacement",
+    "quote": "The tilt & turn windows transformed our home. Quieter, warmer, and the installation team was impeccable.",
+    "rating": 5
+  },
+  {
+    "id": "2",
+    "name": "James Chen",
+    "role": "Architect",
+    "projectType": "Commercial facade",
+    "quote": "Hi-Tech uPVC delivered on spec and on time. The anthracite finish looks stunning on our project.",
+    "rating": 5
+  },
+  {
+    "id": "3",
+    "name": "Emma Rodriguez",
+    "role": "Homeowner",
+    "projectType": "Patio doors",
+    "quote": "Our sliding patio doors open effortlessly. Best decision we made during the renovation.",
+    "rating": 5
+  }
+]

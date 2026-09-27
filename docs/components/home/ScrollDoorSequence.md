@@ -1,0 +1,77 @@
+# ScrollDoorSequence
+
+Status: review
+Owner: agent
+Last reviewed: 2026-09-27
+
+## Purpose
+
+Pinned, scroll-driven 3D door sequence on the home page. The camera starts tight on
+the hardware, pulls back as the leaf swings, crosses to the hinge side, then settles
+on a clean elevation — the product-page choreography Apple uses.
+
+Replaces `CurtainWindowReveal` in the home composition. That component still exists
+but is no longer mounted.
+
+## Design Decisions
+
+- **Hardware first.** The opening shot is a close-up of the lever, not the whole
+  door. You earn the wide shot.
+- **Subject right, caption left.** Camera targets sit left of the unit so the product
+  composes into the right of the frame, clear of the caption column.
+- **Scrim, not guesswork.** A soft left-edge gradient guarantees caption legibility
+  at every point in the sequence rather than hoping the product stays out of the way.
+- **Ref, not state.** `useMotionValueEvent` writes scroll progress into a ref that
+  `useFrame` reads. Scrolling causes zero React renders.
+- **All screen sizes.** Phones get the same 3D sequence with a portrait
+  composition (`MOBILE_SHOTS`): subject in the upper part of the frame, captions
+  anchored bottom over a bottom-edge scrim. Shot set is picked with a
+  `(min-width: 1024px)` `useSyncExternalStore` media query.
+
+## Props / Data
+
+None. Copy and camera shots are local constants; the model comes from
+`getUpvcModel("hinged", "doors")`.
+
+## Animation Spec
+
+| Scroll | Shot |
+|--------|------|
+| 0.00 | Handle detail, ~0.8 m out |
+| 0.34 | Three-quarter, leaf beginning to swing |
+| 0.66 | Hinge side, door wide open |
+| 1.00 | Straight elevation |
+
+Door opens over scroll 0.18 → 0.68. Camera positions lerp with smoothstep between
+shots, then damp (λ = 6) to absorb trackpad jitter. Captions crossfade in
+non-overlapping windows.
+
+## Responsive Behavior
+
+- Pinned section: `h-[360vh]` on mobile, `h-[420vh]` at `lg`; sticky stage is
+  `100svh` so mobile URL-bar resizing doesn't jump the pin
+- Desktop: caption column left, left-edge scrim, subject right
+- Mobile: captions bottom (respecting the safe-area inset), bottom scrim, subject top
+- Canvas is `pointer-events-none` so touch scrolling is never captured
+- `motion-reduce:` swaps the pinned section for the static prose version
+
+## Accessibility
+
+Section carries `aria-label="Scroll-driven door sequence"`. The scrim is
+`aria-hidden`. Captions are real headings and paragraphs, so the content is readable
+without the canvas. Reduced motion falls through to the static poster
+(`renderWhenReduced={false}` on the stage).
+
+## Dependencies
+
+`framer-motion` (`useScroll`, `useMotionValueEvent`, `useTransform`),
+`components/three/LazyUpvcScrollScene`
+
+## Review Checklist
+
+- [x] Captions legible at every scroll position
+- [x] Only one caption visible at a time
+- [x] No React re-render while scrolling
+- [x] Mobile 3D sequence verified at 390×844 (start, mid, end shots)
+- [x] Reduced-motion fallback renders the same information
+- [ ] Verify pin behaviour against a real trackpad at 1440px and 1920px

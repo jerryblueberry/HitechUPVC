@@ -1,26 +1,146 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f7f6f3;
+  --foreground: #1b1b1d;
 }
 
 @theme inline {
+  /* Colors */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --color-surface: #f7f6f3;
+  --color-surface-muted: #e7e4df;
+  --color-charcoal: #1b1b1d;
+  --color-navy: #0e2a3e;
+  --color-gold: #b69a6b;
+  --color-gold-muted: #c9b896;
+  --color-success: #2f7d5e;
+  --color-cream: #ede8df;
+  --color-taupe: #d4cec3;
+  --color-sage: #8a9a7b;
+  --color-slate: #4a5568;
+  --color-bronze: #8c6e4e;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  /* Typography */
+  --font-display: var(--font-fraunces), Georgia, serif;
+  --font-body: var(--font-inter), system-ui, sans-serif;
+  --font-sans: var(--font-body);
+
+  --text-hero: clamp(2.75rem, 6vw, 5.5rem);
+  --text-h2: clamp(2rem, 4vw, 3.25rem);
+  --text-h3: clamp(1.5rem, 2.5vw, 2rem);
+  --text-body: 1.0625rem;
+  --text-caption: 0.875rem;
+
+  /* Spacing */
+  --spacing-section: 6rem;
+  --spacing-section-lg: 8rem;
+
+  /* Motion */
+  --ease-premium: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  line-height: 1.65;
+}
+
+/* Layout utilities */
+.section-padding {
+  padding-top: var(--spacing-section);
+  padding-bottom: var(--spacing-section);
+}
+
+@media (min-width: 768px) {
+  .section-padding {
+    padding-top: var(--spacing-section-lg);
+    padding-bottom: var(--spacing-section-lg);
+  }
+}
+
+.container-content {
+  margin-inline: auto;
+  max-width: 90rem;
+  padding-inline: 1.5rem;
+}
+
+@media (min-width: 1024px) {
+  .container-content {
+    padding-inline: 2rem;
+  }
+}
+
+.prose-narrow {
+  max-width: 48rem;
+}
+
+.eyebrow {
+  font-size: var(--text-caption);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-gold);
+}
+
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+}
+
+.font-body {
+  font-family: var(--font-body);
+}
+
+.text-hero {
+  font-size: var(--text-hero);
+  line-height: 1.1;
+}
+
+.text-h2 {
+  font-size: var(--text-h2);
+  line-height: 1.15;
+}
+
+.text-h3 {
+  font-size: var(--text-h3);
+  line-height: 1.2;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 30s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee {
+    animation: none;
+  }
 }

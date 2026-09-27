@@ -1,0 +1,21 @@
+---
+description: Static JSON data layer conventions
+globs: "**/{data,lib}/**"
+alwaysApply: false
+---
+
+# Data Layer
+
+- JSON shapes defined in `lib/types.ts` and documented in `docs/DATA-MODEL.md`
+- Read data only via `lib/getData.ts` — components never `import x from "@/data/..."`
+- Field names must match future CMS API shape (ADR 002)
+- Placeholder brand: `"Premium UPVC"`
+- Validate with Zod in `lib/schemas.ts` when schemas exist
+
+```typescript
+// ✅ GOOD
+const windows = getWindows();
+
+// ❌ BAD
+import windows from "@/data/windows.json";
+```

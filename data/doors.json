@@ -1,0 +1,51 @@
+[
+  {
+    "slug": "french-classic",
+    "category": "doors",
+    "name": "French Classic",
+    "shortDescription": "Elegant dual-swing doors opening outward for seamless indoor-outdoor flow.",
+    "openingType": "french",
+    "heroImage": "/images/doors/french-hero.jpg",
+    "galleryImages": ["/images/doors/french-1.jpg"],
+    "profileSystem": "80mm 6-chamber",
+    "glazingOptions": ["Double", "Triple", "Laminated Security"],
+    "colors": ["white", "anthracite-grey", "golden-oak"],
+    "features": ["Multi-point locking", "Low threshold", "Wide opening span"],
+    "uValue": "1.4 W/m²K",
+    "warranty": "10 years",
+    "specs": { "frameDepth": "80mm", "chambers": 6, "glazingThickness": "28-44mm" }
+  },
+  {
+    "slug": "sliding-patio",
+    "category": "doors",
+    "name": "Sliding Patio",
+    "shortDescription": "Large-format sliding door for patios and terraces.",
+    "openingType": "sliding",
+    "heroImage": "/images/doors/sliding-hero.jpg",
+    "galleryImages": ["/images/doors/sliding-1.jpg"],
+    "profileSystem": "85mm 6-chamber",
+    "glazingOptions": ["Double", "Triple"],
+    "colors": ["white", "anthracite-grey"],
+    "features": ["Lift-and-slide hardware", "Minimal frame sightlines", "Integrated blinds option"],
+    "uValue": "1.5 W/m²K",
+    "warranty": "10 years",
+    "specs": { "frameDepth": "85mm", "chambers": 6, "glazingThickness": "32-52mm" },
+    "badges": ["New Finish"]
+  },
+  {
+    "slug": "folding-living",
+    "category": "doors",
+    "name": "Folding Living",
+    "shortDescription": "Bi-fold doors that stack to one side for full-width openings.",
+    "openingType": "folding",
+    "heroImage": "/images/doors/folding-hero.jpg",
+    "galleryImages": ["/images/doors/folding-1.jpg"],
+    "profileSystem": "80mm 5-chamber",
+    "glazingOptions": ["Double", "Triple"],
+    "colors": ["white", "anthracite-grey"],
+    "features": ["Smooth folding action", "Traffic door option", "Flush floor track"],
+    "uValue": "1.6 W/m²K",
+    "warranty": "10 years",
+    "specs": { "frameDepth": "80mm", "chambers": 5, "glazingThickness": "28-44mm" }
+  }
+]
