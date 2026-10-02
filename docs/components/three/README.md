@@ -25,6 +25,7 @@ are no downloaded models.
 | `UpvcDoorwayScene.tsx` | Page-load intro: French doors in a surface-coloured wall, camera walks through (transparent canvas). Lights only — no HDRI. Clock starts after `compileAsync`. |
 | `Lazy*.tsx` | `next/dynamic` `ssr: false` entry points |
 | `hooks.ts` | Reduced motion, WebGL support, hover capability, viewport pausing, lazy canvas creation (safe to import anywhere) |
+| `quality.ts` | Device tier + the DPR / MSAA / shadow / glass / HDRI budget every surface reads |
 | `ApproachedMount.tsx` | Unmounts 3D until near the viewport and the doorway intro has unlocked |
 | `demand.ts` | On-demand rendering helpers: `SETTLE_EPSILON`, `useInvalidateOn`, `useAutoPlayWake` (canvas-only) |
 | `patchClock.ts` | Suppresses R3F 9’s deprecated `THREE.Clock` constructor warning (Clock is a read-only export) |
@@ -72,12 +73,21 @@ assume it.
   fades in (700ms) once ready, so a model never pops in half-built
 - `powerPreference: "default"`: "high-performance" wakes the discrete GPU on
   dual-GPU laptops, stalling the page
-- DPR is clamped to `[1, maxDpr]` (2 by default; scroll scene 1.5 desktop / 1.15
-  touch). `PerformanceMonitor` was removed because it misreads demand rendering as low FPS.
-- Scroll scene: smooth progress (λ = 14) then camera locks; wake on scroll/wheel/touch;
-  no contact shadow / antialias on coarse pointers; shot-set swaps snap.
-- `quality="high"` (refractive glass, an extra pass per frame) drops to `balanced` on
-  touch devices. The doorway intro uses `draft` (MeshStandard, no clearcoat)
+- `quality.ts` holds the single render policy: a device tier (`high` hover /
+  `mid` touch / `low`) picks DPR, MSAA, contact shadow, glass and HDRI. A touch
+  screen alone no longer costs quality — only Save-Data, `deviceMemory < 4` or a
+  2g connection demote to `low`. Phones therefore run the same pipeline as a
+  laptop with 4× MSAA, the contact shadow and the 1k HDRI.
+- Viewers: DPR 1.9–2 with refractive glass while the unit holds a pose, 1.4–1.75
+  with the blended pane while it loops open and shut. Orbiting keeps the sharp
+  buffer; it only draws while the finger moves.
+- Scroll scene: smooth progress (λ = 18, same for touch and pointer) then the
+  camera locks; wake on `scroll`; shot-set swaps snap. It opens at DPR 1.9–2 and
+  steps down to `reducedDpr` **once per visit** if `useFrame` measures sustained
+  frames over 24ms, since resizing the buffer costs a frame of its own.
+  `PerformanceMonitor` is not used — it misreads demand rendering as low FPS.
+- `quality="high"` is a ceiling, not a request: `capQuality` takes the lower of it
+  and the device budget. The doorway intro uses `draft` (MeshStandard, no clearcoat)
 - A lost WebGL context swaps the canvas for the fallback poster instead of a blank box
 - Scroll-linked values pass through a **ref**, never React state
 

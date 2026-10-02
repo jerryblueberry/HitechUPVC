@@ -20,9 +20,10 @@ import {
 import { getUpvcPngForOpening } from "@/lib/upvcAssets";
 import { useAutoPlayWake } from "./demand";
 import { FitCamera } from "./FitCamera";
-import { useCanHover, usePrefersReducedMotion } from "./hooks";
+import { usePrefersReducedMotion } from "./hooks";
 import { PointerFollow } from "./PointerFollow";
 import type { RenderQuality } from "./materials";
+import { capQuality, useDeviceTier, viewerQuality } from "./quality";
 import { UpvcStage } from "./UpvcStage";
 import { UpvcUnit } from "./UpvcUnit";
 
@@ -94,13 +95,16 @@ export function UpvcViewer({
   const isDoor = category === "doors" || openingType === "hinged";
   const reducedMotion = usePrefersReducedMotion();
 
-  // Refraction is an extra render pass per frame; phones get the blended pane.
-  const canHover = useCanHover();
-  const coarse = !canHover;
-  const effectiveQuality: RenderQuality = canHover ? quality : "balanced";
-  const effectiveDpr = maxDpr ?? (coarse ? 1.25 : 1.75);
-  const effectiveAntialias = antialias ?? !coarse;
-  const effectiveShadow = contactShadow && !coarse;
+  // Refraction is an extra render pass per frame, so a unit looping open and
+  // shut takes the blended pane. A unit that holds a pose gets the full
+  // treatment on any device — orbiting it only draws while the finger moves,
+  // which the sharper buffer can carry.
+  const tier = useDeviceTier();
+  const budget = viewerQuality(tier, autoPlay);
+  const effectiveQuality = capQuality(quality, budget.material);
+  const effectiveDpr = maxDpr ?? budget.dpr;
+  const effectiveAntialias = antialias ?? budget.antialias;
+  const effectiveShadow = contactShadow && budget.contactShadow;
 
   // A square-wave target read every frame; the unit's damping turns it into
   // an eased swing, which is closer to a real closer than a linear tween.

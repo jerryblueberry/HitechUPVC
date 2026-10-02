@@ -7,7 +7,7 @@ Last reviewed: 2026-09-29
 First-visit page-load: French doors open and the camera walks through onto the home page.
 
 ## Performance
-- No HDRI on this canvas (1.5 MB `studio_small_09_1k.hdr` is for later viewers; touch devices get the 410 KB `studio_small_09_512.hdr`)
+- No HDRI on this canvas (1.5 MB `studio_small_09_1k.hdr` is for later viewers; the 410 KB `studio_small_09_512.hdr` is reserved for Save-Data, low-memory and 2g devices)
 - Skipped on touch (`pointer: coarse`), Save-Data, and `deviceMemory < 4`; the SSR cover is hidden with `pointer-coarse:hidden` so phones never see it
 - `quality="draft"` materials (MeshStandard, no clearcoat/refraction) so shaders compile fast
 - Antialias off, DPR capped (1.05 touch / 1.35 desktop), `frameloop` idle until `compileAsync` then always

@@ -153,7 +153,7 @@ export function ScrollDoorSequence() {
           observer.disconnect();
         }
       },
-      { rootMargin: window.matchMedia("(pointer: coarse)").matches ? "0px" : "40% 0px" }
+      { rootMargin: window.matchMedia("(pointer: coarse)").matches ? "20% 0px" : "40% 0px" }
     );
     observer.observe(el);
     return () => observer.disconnect();
@@ -184,9 +184,15 @@ export function ScrollDoorSequence() {
         </div>
       </section>
 
+      {/*
+        Height minus the pin is the scroll the three beats play over: 1.6
+        screens on a phone against 2.2 on a desktop. Keeping those close is
+        what makes the camera travel at a comparable speed on both, rather
+        than racing through the sequence in a single flick.
+      */}
       <section
         ref={sectionRef}
-        className="relative h-[200vh] bg-surface motion-reduce:hidden sm:h-[240vh] lg:h-[300vh]"
+        className="relative h-[260vh] bg-surface motion-reduce:hidden sm:h-[280vh] lg:h-[320vh]"
         aria-label="Scroll-driven door sequence"
       >
         <div className="sticky top-0 h-[100svh] touch-pan-y overflow-hidden">
@@ -203,7 +209,7 @@ export function ScrollDoorSequence() {
 
           <ApproachedMount
             className="pointer-events-none absolute inset-0"
-            rootMargin={coarse ? "0px" : "30% 0px"}
+            rootMargin={coarse ? "15% 0px" : "30% 0px"}
           >
             <LazyUpvcScrollScene
               progressRef={progressRef}

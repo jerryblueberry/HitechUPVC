@@ -15,13 +15,20 @@
 import "./patchClock";
 import { ContactShadows, Environment } from "@react-three/drei";
 import { Canvas, useThree } from "@react-three/fiber";
-import { Suspense, useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import {
+  Suspense,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
 import * as THREE from "three";
 import { useInvalidateOn } from "./demand";
 import {
   holdEagerStage,
   releaseEagerStage,
-  useCanHover,
   useEagerStageIdle,
   useHasApproached,
   useInViewport,
@@ -29,14 +36,9 @@ import {
   usePrefersReducedMotion,
   useWebGLSupported,
 } from "./hooks";
+import { hdriFor, useDeviceTier } from "./quality";
 
-export const HDRI_PATH = "/hdri/studio_small_09_1k.hdr";
-/** Half-resolution copy for touch devices: 410 KB instead of 1.6 MB, same look at phone sizes */
-export const HDRI_PATH_SMALL = "/hdri/studio_small_09_512.hdr";
-
-export function hdriPathFor(canHover: boolean) {
-  return canHover ? HDRI_PATH : HDRI_PATH_SMALL;
-}
+export { HDRI_PATH, HDRI_PATH_SMALL } from "./quality";
 
 export interface UpvcStageProps {
   children: ReactNode;
@@ -125,7 +127,7 @@ export function UpvcStage({
   }, [onReady]);
 
   const settled = usePageSettled();
-  const canHover = useCanHover();
+  const tier = useDeviceTier();
   const othersIdle = useEagerStageIdle();
   const holding = useRef(false);
   const useFallback =
@@ -155,6 +157,10 @@ export function UpvcStage({
     releaseEagerStage();
   }, [eager, ready]);
 
+  // Stable identity, so a scene that raises its own pixel ratio at runtime
+  // (see UpvcScrollScene) is not reset to the ceiling on the next render.
+  const dprRange = useMemo<[number, number]>(() => [1, maxDpr], [maxDpr]);
+
   return (
     <div ref={hostRef} className={className}>
       {useFallback ? (
@@ -168,7 +174,7 @@ export function UpvcStage({
           }}
         >
           <Canvas
-            dpr={[1, maxDpr]}
+            dpr={dprRange}
             frameloop={inView || eager ? "demand" : "never"}
             gl={{
               antialias,
@@ -201,7 +207,7 @@ export function UpvcStage({
 
             <Suspense fallback={null}>
               <Environment
-                files={hdriPathFor(canHover)}
+                files={hdriFor(tier)}
                 environmentIntensity={environmentIntensity}
                 background={backdrop === "studio"}
                 backgroundBlurriness={0.85}

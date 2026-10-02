@@ -63,7 +63,10 @@ its rig contract (frame / leaf / handle nodes driven by a 0–1 `open` value) st
 
 - three.js is behind `next/dynamic` with `ssr: false` — never in the initial bundle.
 - Canvases pause (`frameloop="never"`) when scrolled out of viewport.
-- `PerformanceMonitor` drops DPR on decline.
+- `components/three/quality.ts` holds one DPR / MSAA / shadow / glass / HDRI budget
+  per device tier. The scroll scene steps its pixel ratio down once per visit if
+  `useFrame` measures sustained slow frames; `PerformanceMonitor` is not used
+  because it reads demand rendering as low FPS.
 - Geometry is cached by parameter signature and shared across instances.
 - Refracting glass (`transmission`) is `quality="high"` only; `"balanced"` uses an
   alpha-blended pane with a strong clearcoat.

@@ -10,17 +10,13 @@
  * Raw scroll is exponentially smoothed first (trackpad / finger jitter), then
  * the camera and open angle read that smoothed value. One damp stage — not
  * two — keeps the motion locked to the finger the way Apple product pages do.
+ * Touch and pointer use the same constant, so the sequence answers a flick and
+ * a wheel the same way.
  */
 
 import { useFrame, useThree } from "@react-three/fiber";
 import Image from "next/image";
-import {
-  useEffect,
-  useMemo,
-  useRef,
-  useSyncExternalStore,
-  type RefObject,
-} from "react";
+import { useEffect, useMemo, useRef, type RefObject } from "react";
 import * as THREE from "three";
 import type { OpeningType, ProductCategory } from "@/lib/types";
 import {
@@ -33,6 +29,7 @@ import {
 } from "@/lib/upvc3d";
 import { getUpvcPngForOpening } from "@/lib/upvcAssets";
 import { SETTLE_EPSILON } from "./demand";
+import { sceneQuality, useDeviceTier } from "./quality";
 import { UpvcStage } from "./UpvcStage";
 import { UpvcUnit } from "./UpvcUnit";
 
@@ -40,26 +37,15 @@ const clamp01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
 const smooth = (t: number) => t * t * (3 - 2 * t);
 
 /** How quickly smoothed progress catches the finger (higher = snappier). */
-const PROGRESS_LAMBDA = 14;
-const PROGRESS_LAMBDA_TOUCH = 20;
+const PROGRESS_LAMBDA = 18;
 /** Door leaf catch-up — slightly softer than the camera for a physical feel. */
 const OPEN_DAMPING = 9;
-
-const COARSE_QUERY = "(pointer: coarse)";
-
-function subscribeCoarse(onChange: () => void) {
-  const query = window.matchMedia(COARSE_QUERY);
-  query.addEventListener("change", onChange);
-  return () => query.removeEventListener("change", onChange);
-}
-
-function useCoarsePointer() {
-  return useSyncExternalStore(
-    subscribeCoarse,
-    () => window.matchMedia(COARSE_QUERY).matches,
-    () => false
-  );
-}
+/** A frame this long is under 42fps — visible as a stutter in a moving camera. */
+const SLOW_FRAME_S = 0.024;
+/** Compile and texture decode land in the first frames; they are not stutter. */
+const WARMUP_FRAMES = 20;
+/** How far slow frames have to outrun smooth ones before the buffer steps down. */
+const SLOW_FRAME_BUDGET = 8;
 
 export interface CameraShot {
   /** Scroll position this shot is fully composed at, 0–1 */
@@ -72,16 +58,17 @@ function CameraRig({
   progressRef,
   smoothProgressRef,
   shots,
-  lambda,
+  reducedDpr,
 }: {
   progressRef: RefObject<number>;
   smoothProgressRef: RefObject<number>;
   shots: CameraShot[];
-  lambda: number;
+  reducedDpr: number;
 }) {
   const camera = useThree((state) => state.camera);
   const gl = useThree((state) => state.gl);
   const invalidate = useThree((state) => state.invalidate);
+  const setDpr = useThree((state) => state.setDpr);
 
   // Wake only while this canvas is on screen. A page-wide touch listener
   // kept the scene redrawing while the visitor scrolled the rest of the page.
@@ -123,6 +110,14 @@ function CameraRig({
   const initialised = useRef(false);
   const shotsId = useRef(shots);
 
+  // The scene opens at full resolution and keeps it unless this device proves
+  // it cannot hold a smooth frame there. One step down per visit: a buffer
+  // resize costs a frame, so sizing it back and forth would cause the very
+  // stutter it is meant to avoid.
+  const warmup = useRef(0);
+  const slowScore = useRef(0);
+  const stepped = useRef(false);
+
   // Crossing the desktop/mobile breakpoint swaps the shot set — snap, don't damp.
   useEffect(() => {
     if (shotsId.current === shots) return;
@@ -142,7 +137,7 @@ function CameraRig({
       smoothProgressRef.current = THREE.MathUtils.damp(
         smoothProgressRef.current,
         raw,
-        lambda,
+        PROGRESS_LAMBDA,
         step
       );
     }
@@ -165,8 +160,27 @@ function CameraRig({
     const catchingUp =
       Math.abs(smoothProgressRef.current - raw) > SETTLE_EPSILON;
     const recentlyInput = performance.now() - lastInputAt.current < 320;
+    const moving = catchingUp || recentlyInput;
 
-    if (catchingUp || recentlyInput) {
+    if (warmup.current < WARMUP_FRAMES) {
+      warmup.current += 1;
+    } else if (
+      !stepped.current &&
+      moving &&
+      delta < 0.2 &&
+      reducedDpr < state.viewport.dpr
+    ) {
+      slowScore.current = Math.max(
+        0,
+        slowScore.current + (delta > SLOW_FRAME_S ? 1 : -1)
+      );
+      if (slowScore.current >= SLOW_FRAME_BUDGET) {
+        stepped.current = true;
+        setDpr(reducedDpr);
+      }
+    }
+
+    if (moving) {
       state.invalidate();
     }
   });
@@ -202,7 +216,7 @@ export function UpvcScrollScene({
   fov = 34,
   className,
 }: UpvcScrollSceneProps) {
-  const coarse = useCoarsePointer();
+  const quality = sceneQuality(useDeviceTier());
   const smoothProgressRef = useRef(0);
 
   const spec = useMemo(
@@ -238,9 +252,9 @@ export function UpvcScrollScene({
       fov={fov}
       groundY={-spec.height / 2 - 0.03}
       cameraPosition={shots[0].position}
-      maxDpr={coarse ? 1.15 : 1.5}
-      antialias={!coarse}
-      contactShadow={!coarse}
+      maxDpr={quality.dpr}
+      antialias={quality.antialias}
+      contactShadow={quality.contactShadow}
       fadeMs={450}
       renderWhenReduced={false}
       environmentIntensity={1.05}
@@ -249,7 +263,7 @@ export function UpvcScrollScene({
         progressRef={progressRef}
         smoothProgressRef={smoothProgressRef}
         shots={shots}
-        lambda={coarse ? PROGRESS_LAMBDA_TOUCH : PROGRESS_LAMBDA}
+        reducedDpr={quality.reducedDpr}
       />
       <UpvcUnit
         spec={spec}

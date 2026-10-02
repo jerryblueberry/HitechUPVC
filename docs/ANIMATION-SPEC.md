@@ -72,10 +72,11 @@ Static rendered frame — no auto-play. Without WebGL, the static product image 
 
 `components/home/ScrollDoorSequence.tsx`. Scroll progress is written into a **ref**
 by `useMotionValueEvent` and read inside `useFrame` — scrolling must never trigger a
-React render. Raw progress is exponentially smoothed (λ = 14); the camera locks to
-that value (one damp stage). Captions fade the column out, swap copy, then fade in —
-two beats never paint together. Touch devices drop DPR / shadow; the chunk prefetches
-before the pin.
+React render. Raw progress is exponentially smoothed (λ = 18, the same on touch and
+pointer); the camera locks to that value (one damp stage). Captions fade the column
+out, swap copy, then fade in — two beats never paint together. Touch and desktop run
+the same quality (`components/three/quality.ts`), with one measured step down in
+pixel ratio if the device drops frames; the chunk prefetches before the pin.
 
 ## Shared Utilities
 

@@ -63,8 +63,9 @@ Real-time 3D (ADR 006) — awaiting sign-off:
 - [x] Coming-soon placeholders — `/get-quote`, `/about` (noindex until the real pages ship); `/gallery` is live
 - [x] Doorway intro first-load — no HDRI, `compileAsync` gate, hero canvas deferred until overlay completes, intro lock on other canvases, 2.8s fail-open
 - [x] First-load polish — once-only exit drops intro WebGL before hero mounts; shorter mobile door timeline; snappier hero + section reveals
-- [x] Hero load — eager stage, prefetch viewer during intro, open after compile, touch DPR / no contact shadow
-- [x] Testimonials — phone snap / tablet 2-col / desktop bento (readable on every width)
+- [x] Hero load — eager stage, prefetch viewer during intro, open after compile, shared device budget
+- [x] Render quality policy — `components/three/quality.ts`: one tier table for DPR, MSAA, contact shadow, glass and HDRI, so phones render the model at the same fidelity as desktops and only metered or low-memory devices step down
+- [x] Testimonials — phone snap row / three equal cards from `md` up, Kathmandu valley reviews with neighbourhood lines
 - [x] Stats band — 10 years, 1,000+ installations; cream display figures with hairline columns
 - [x] CTA section — solid navy, split headline/actions, no pulsing gold blob
 - [x] Product catalogue filters — sticky chips aligned with hero pills; finish swatches + snap scroll

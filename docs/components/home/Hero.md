@@ -27,7 +27,7 @@ site (ADR 006).
 - Hero copy rises as the camera starts walking through (`onReveal`) — 0.55s ease, tight stagger
 - `prefetchUpvcViewer()` warms the hero chunk during the walk
 - Hero 3D stage mounts when the overlay completes (`onComplete`), after the intro canvas has dropped
-- Stage uses `eager` (no approach wait), device DPR (1.25 touch / 1.75 desktop), no contact shadow on touch
+- Stage uses `eager` (no approach wait) and takes its DPR, MSAA and contact shadow from `components/three/quality.ts` — 1.9 on a phone, 2 on a desktop
 - Open / shut timers start only after `onReady` (shaders compiled)
 - First paint uses stage fade only; slide changes use a short crossfade
 - Plays once per session (`sessionStorage`); click anywhere to skip
@@ -59,6 +59,6 @@ site (ADR 006).
 - [x] Verified at 390px, 1024px and 1280px widths
 - [x] three.js lazy-loaded, never server-rendered
 - [x] Intro canvas has no HDRI; hero `LazyUpvcViewer` mounts only after `onComplete`
-- [x] Eager hero stage; open animation waits for compile; touch DPR / no shadow
+- [x] Eager hero stage; open animation waits for compile; shared device budget
 - [x] All carousel features preserved (swipe, chips, autoplay, open/shut)
 - [x] `tsc`, `eslint` and `next build` pass

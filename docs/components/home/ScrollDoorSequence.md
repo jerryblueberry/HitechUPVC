@@ -55,12 +55,18 @@ Each beat is marked `01 — The detail`. Grid-stacked so height never jumps.
 
 ## Responsive Behavior
 
-- Pinned section: `h-[240vh]` phone → `sm:h-[300vh]` → `lg:h-[400vh]`; sticky
-  stage is `100svh` + `touch-pan-y` so scroll never fights the canvas
+- Pinned section: `h-[260vh]` phone → `sm:h-[280vh]` → `lg:h-[320vh]`; sticky
+  stage is `100svh` + `touch-pan-y` so scroll never fights the canvas. Height
+  minus the pin is the scroll the three beats play over — 1.6 screens on a phone
+  against 2.2 on a desktop — so the camera travels at a comparable speed on both
+  instead of racing through the sequence in one flick
 - Desktop: caption column left, left-edge scrim, subject right, full body copy
 - Mobile: captions bottom (safe-area), shorter bottom scrim, compact type,
   `bodyMobile` lines; product framed higher
-- Touch: DPR 1.15, no contact shadow, no antialias; desktop DPR 1.5 + shadow
+- Same pipeline on both: 4× MSAA, contact shadow, DPR 1.9 phone / 2 desktop,
+  stepping down once to 1.35 / 1.5 only if the device drops frames
+- Touch mounts the scene 15% of a viewport early (40%/30% on pointer devices) so
+  shaders are compiled before the pin is reached
 - Canvas is `pointer-events-none` so touch scrolling is never captured
 - `motion-reduce:` swaps the pinned section for the static prose version
 
@@ -84,7 +90,7 @@ through to the static poster (`renderWhenReduced={false}`).
 - [x] No progress indicator chrome
 - [x] Smooth progress tracking (single damp stage)
 - [x] Mobile copy + framing leave the product clear
-- [x] Touch DPR / no shadow; desktop full quality
+- [x] Same quality on touch and pointer; one measured step down if frames drop
 - [x] Prefetch + early approach mount
 - [x] Reduced-motion fallback renders the same information
 - [ ] Verify pin behaviour against a real trackpad at 1440px and 1920px
