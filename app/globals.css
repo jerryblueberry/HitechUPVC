@@ -45,6 +45,12 @@
   --ease-premium: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
+html {
+  /* Stops a wide child from rubber-banding the whole page sideways.
+     clip does not turn the page into a scroll container, so sticky sections keep working. */
+  overflow-x: clip;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
@@ -137,6 +143,27 @@ body {
   }
 }
 
+/* Above-the-fold entrance that runs from the server HTML, before hydration.
+   Starts at 0.01, not 0: Chrome skips fully transparent text as an LCP
+   candidate until some later main-thread paint. */
+@keyframes reveal-rise {
+  from {
+    opacity: 0.01;
+    transform: translateY(14px);
+  }
+}
+
+.reveal-load {
+  animation: reveal-rise 0.55s var(--ease-premium) both;
+  animation-delay: var(--reveal-delay, 0s);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-load {
+    animation: none;
+  }
+}
+
 @keyframes marquee {
   from {
     transform: translateX(0);
@@ -157,6 +184,27 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .animate-marquee {
     animation: none;
+  }
+}
+
+/* Quote builder: print only the summary card */
+@media print {
+  body:has(#quote-summary) * {
+    visibility: hidden;
+  }
+  body:has(#quote-summary) header,
+  body:has(#quote-summary) footer,
+  body:has(#quote-summary) [data-print-hide] {
+    display: none !important;
+  }
+  #quote-summary,
+  #quote-summary * {
+    visibility: visible;
+  }
+  #quote-summary {
+    position: absolute;
+    inset: 0 0 auto 0;
+    padding: 1.5rem;
   }
 }
 

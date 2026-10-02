@@ -1,26 +1,45 @@
 # Gallery Page
 Status: review
 Owner: agent
-Last reviewed: 2026-09-27
+Last reviewed: 2026-09-29
 
 ## Purpose
-Showcase completed projects with masonry grid, lightbox, and filters by product type and location.
+Apple-style project gallery: installations, factory floor, and product
+photography — filterable, switchable between uniform grid and masonry, ready for
+Cloudinary URLs in `projects.json`.
 
 ## Route
 `app/(marketing)/gallery/page.tsx`
 
-## Current state
-Coming-soon placeholder (`ComingSoon`) so `/gallery` does not 404. Full masonry + lightbox still backlog.
+## Composition
+1. Hero row — copy left (`max-w-2xl`), grid ↔ masonry toggle on the right (utilises open space)
+2. Image-only premium grid / masonry with a short fade transition between layouts
+3. Lightbox with selectable thumbs; CTA below
 
 ## Data Sources
-- `projects.json` (for the finished page)
+- `projects.json` via `getProjects()`
+- Shape supports string URLs **or** `{ src, alt, width, height, orientation, publicId }`
+  for Cloudinary; helpers in `lib/gallery.ts`
 
 ## Design Decisions
-- Placeholder: `page-top`, gold eyebrow, studio card, products + contact CTAs
-- Finished page: masonry grid, filter chips, lightbox
+- Matches home section language (surface, charcoal, gold, navy chips)
+- Cards: image only (title / description live in the lightbox); soft ring + hover zoom
+- Uniform `4/3` grid or masonry columns (portrait / landscape / square); toggle in the hero
+- Smooth crossfade when switching layouts (`AnimatePresence`, reduced-motion safe)
+- Lightbox: capped image height so thumbs + copy stay on screen; thumbs select
+  the main image; arrow keys / prev-next; Escape / backdrop to close; body scroll locked
+- Indexed for SEO (no longer `noindex`)
+
+## Components
+- `components/gallery/GalleryView.tsx` (client)
+- `components/gallery/GalleryCard.tsx`
+- `components/gallery/GalleryLightbox.tsx`
 
 ## Review Checklist
-- [x] `/gallery` renders a clean coming-soon page
-- [ ] Images use next/image with sizes
-- [ ] Filter animates grid reflow
-- [ ] Alt text from project data
+- [x] `/gallery` is a real gallery (not ComingSoon)
+- [x] Images use `next/image` with sizes
+- [x] Image-only grid; story opens in lightbox
+- [x] No collection / layout filter chrome
+- [x] Responsive phone → desktop
+- [x] Cloudinary-ready image objects documented
+- [x] `tsc` clean

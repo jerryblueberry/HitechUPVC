@@ -7,7 +7,7 @@ import { FaqList } from "@/components/ui/FaqList";
 import { RevealOnScroll } from "@/components/ui/RevealOnScroll";
 import { WhyHero } from "@/components/why/WhyHero";
 import { WhyStudioViewer } from "@/components/why/WhyStudioViewer";
-import { whatsappHref } from "@/lib/constants";
+import { quoteHref, whatsappHref } from "@/lib/constants";
 import { IMAGES } from "@/lib/images";
 import type { Company, FAQ, ProductCategory, Project } from "@/lib/types";
 
@@ -316,13 +316,14 @@ export function WhyUpvcView({
       <CTASection
         title="Ready to upgrade your home or project with uPVC?"
         body="Get a free consultation and site measurement from our Kathmandu team — Tarakeshwar, Lambagar, or Tokha."
-        primaryHref="/contact"
+        primaryHref={quoteHref()}
         primaryLabel="Request a Free Quote"
         secondaryHref={whatsappHref(
           whatsapp,
           "Hi Hi-Tech — I’d like a free consultation for uPVC doors or windows."
         )}
         secondaryLabel="Call / WhatsApp Us"
+        secondaryIcon="whatsapp"
       />
     </article>
   );

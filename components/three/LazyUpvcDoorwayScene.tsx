@@ -3,6 +3,9 @@
 import dynamic from "next/dynamic";
 
 export const LazyUpvcDoorwayScene = dynamic(
-  () => import("./UpvcDoorwayScene").then((mod) => mod.UpvcDoorwayScene),
+  () =>
+    import(/* webpackPreload: true */ "./UpvcDoorwayScene").then(
+      (mod) => mod.UpvcDoorwayScene
+    ),
   { ssr: false }
 );

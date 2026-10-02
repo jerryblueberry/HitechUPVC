@@ -3,7 +3,7 @@
 /**
  * Pinned, scroll-driven 3D door sequence. The camera starts on the handle,
  * pulls back as the door swings open, crosses to the other side, then settles
- * on a straight elevation.
+ * on a straight elevation — Apple-style product storytelling.
  */
 
 import {
@@ -14,9 +14,12 @@ import {
   useTransform,
   type MotionValue,
 } from "framer-motion";
-import { useRef, useSyncExternalStore } from "react";
+import { useEffect, useRef, useSyncExternalStore } from "react";
+import { ApproachedMount } from "@/components/three/ApproachedMount";
+import { useCoarsePointer } from "@/components/three/hooks";
 import {
   LazyUpvcScrollScene,
+  prefetchUpvcScrollScene,
 } from "@/components/three/LazyUpvcScrollScene";
 import type { CameraShot } from "@/components/three/UpvcScrollScene";
 
@@ -25,26 +28,21 @@ import type { CameraShot } from "@/components/three/UpvcScrollScene";
  * right of the frame, clear of the caption column.
  */
 const DESKTOP_SHOTS: CameraShot[] = [
-  // Hardware detail — start inside the product, the way Apple does.
   { at: 0, position: [0.78, -0.02, 0.82], target: [0.3, -0.07, 0.04] },
-  // Pull back to a three-quarter as the leaf begins to swing.
   { at: 0.34, position: [2.5, 0.3, 3.7], target: [-0.35, -0.05, 0] },
-  // Cross to the hinge side with the door wide open.
   { at: 0.66, position: [-2.4, 0.62, 3.8], target: [-0.55, -0.05, 0.1] },
-  // Settle on a clean elevation.
   { at: 1, position: [0.3, 0.05, 5.3], target: [-0.5, -0.02, 0] },
 ];
 
 /**
- * Portrait: targets sit below the unit so it composes into the upper part of
- * the frame, clear of the captions at the bottom. Further back because the
- * horizontal field of view is narrow.
+ * Portrait: product sits high; captions sit low. Pulled further back so the
+ * leaf clears the copy on a narrow FOV.
  */
 const MOBILE_SHOTS: CameraShot[] = [
-  { at: 0, position: [0.62, 0.02, 1.05], target: [0.36, -0.3, 0.02] },
-  { at: 0.34, position: [2.4, 0.5, 6.1], target: [0, -0.45, 0] },
-  { at: 0.66, position: [-2.4, 0.8, 6.3], target: [-0.1, -0.45, 0.1] },
-  { at: 1, position: [0.2, 0.15, 7.7], target: [0, -0.48, 0] },
+  { at: 0, position: [0.58, 0.08, 1.15], target: [0.34, -0.38, 0.02] },
+  { at: 0.34, position: [2.2, 0.55, 6.4], target: [0, -0.55, 0] },
+  { at: 0.66, position: [-2.2, 0.85, 6.6], target: [-0.1, -0.55, 0.1] },
+  { at: 1, position: [0.15, 0.2, 8.0], target: [0, -0.58, 0] },
 ];
 
 const DESKTOP_QUERY = "(min-width: 1024px)";
@@ -60,16 +58,23 @@ const CAPTIONS = [
     eyebrow: "The detail",
     title: "Hardware you feel before you see",
     body: "Brushed multi-point furniture on a reinforced leaf. Every lever throws into a steel keep before the door moves an inch.",
+    /** Shorter line for phones — same meaning, less stack height over the product. */
+    bodyMobile:
+      "Brushed multi-point furniture on a reinforced leaf — every lever throws before the door moves.",
   },
   {
     eyebrow: "The movement",
     title: "Eighty degrees of clear opening",
     body: "Three hinges carry the weight. The swing stays true after tens of thousands of cycles, in heat and in frost.",
+    bodyMobile:
+      "Three hinges carry the weight. The swing stays true after tens of thousands of cycles.",
   },
   {
     eyebrow: "The result",
     title: "A doorway, not a door",
     body: "Slim sightlines, a thermally broken threshold, and a sealed unit that keeps the weather where it belongs.",
+    bodyMobile:
+      "Slim sightlines, a thermally broken threshold — weather stays where it belongs.",
   },
 ];
 
@@ -89,7 +94,7 @@ function useCaptionSwap(progress: MotionValue<number>) {
   const y = useTransform(
     progress,
     [0, 0.28, 0.32, 0.35, 0.58, 0.62, 0.65, 1],
-    [0, 0, 8, 0, 0, 8, 0, 0],
+    [0, 0, 6, 0, 0, 6, 0, 0],
     { ease: [EASE, EASE, EASE, EASE, EASE, EASE, EASE] }
   );
 
@@ -120,6 +125,7 @@ function useCaptionSwap(progress: MotionValue<number>) {
 
 export function ScrollDoorSequence() {
   const sectionRef = useRef<HTMLDivElement>(null);
+  const coarse = useCoarsePointer();
   const progressRef = useRef(0);
   const isDesktop = useSyncExternalStore(
     subscribeToDesktop,
@@ -135,6 +141,23 @@ export function ScrollDoorSequence() {
   useMotionValueEvent(scrollYProgress, "change", (value) => {
     progressRef.current = value;
   });
+
+  // Warm the three.js chunk before the pin is reached.
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          prefetchUpvcScrollScene();
+          observer.disconnect();
+        }
+      },
+      { rootMargin: window.matchMedia("(pointer: coarse)").matches ? "0px" : "40% 0px" }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   const captions = useCaptionSwap(scrollYProgress);
 
@@ -152,7 +175,7 @@ export function ScrollDoorSequence() {
                 <span className="h-px w-7 bg-gold/45" aria-hidden />
                 <p className="eyebrow mb-0 text-gold">{caption.eyebrow}</p>
               </div>
-              <h2 className="font-display text-h3 text-charcoal mb-3">
+              <h2 className="mb-3 font-display text-h3 text-charcoal">
                 {caption.title}
               </h2>
               <p className="text-charcoal/70">{caption.body}</p>
@@ -163,32 +186,37 @@ export function ScrollDoorSequence() {
 
       <section
         ref={sectionRef}
-        className="relative h-[360vh] bg-surface motion-reduce:hidden lg:h-[420vh]"
+        className="relative h-[200vh] bg-surface motion-reduce:hidden sm:h-[240vh] lg:h-[300vh]"
         aria-label="Scroll-driven door sequence"
       >
-        <div className="sticky top-0 h-[100svh] overflow-hidden">
+        <div className="sticky top-0 h-[100svh] touch-pan-y overflow-hidden">
           {/* Warm studio falloff behind the unit */}
           <div
             className="absolute inset-0"
             style={{
               background: isDesktop
                 ? "radial-gradient(90% 90% at 72% 50%, #ffffff 0%, #f7f6f3 45%, #ebe7e0 100%)"
-                : "radial-gradient(90% 90% at 50% 40%, #ffffff 0%, #f7f6f3 45%, #ebe7e0 100%)",
+                : "radial-gradient(90% 90% at 50% 36%, #ffffff 0%, #f7f6f3 45%, #ebe7e0 100%)",
             }}
             aria-hidden
           />
 
-          <LazyUpvcScrollScene
-            progressRef={progressRef}
-            shots={isDesktop ? DESKTOP_SHOTS : MOBILE_SHOTS}
-            openingType="hinged"
-            category="doors"
-            hardwareSlug="brushed"
+          <ApproachedMount
             className="pointer-events-none absolute inset-0"
-          />
+            rootMargin={coarse ? "0px" : "30% 0px"}
+          >
+            <LazyUpvcScrollScene
+              progressRef={progressRef}
+              shots={isDesktop ? DESKTOP_SHOTS : MOBILE_SHOTS}
+              openingType="hinged"
+              category="doors"
+              hardwareSlug="brushed"
+              className="h-full w-full"
+            />
+          </ApproachedMount>
 
           <div className="pointer-events-none absolute inset-0">
-            {/* Keeps the caption legible when the camera is tight on the product */}
+            {/* Desktop: left scrim. Mobile: shorter bottom scrim — product stays clear. */}
             <div
               className="absolute inset-y-0 left-0 hidden w-[46%] lg:block"
               style={{
@@ -198,15 +226,15 @@ export function ScrollDoorSequence() {
               aria-hidden
             />
             <div
-              className="absolute inset-x-0 bottom-0 h-[52%] lg:hidden"
+              className="absolute inset-x-0 bottom-0 h-[42%] sm:h-[46%] lg:hidden"
               style={{
                 background:
-                  "linear-gradient(to top, rgba(247,246,243,0.98) 0%, rgba(247,246,243,0.9) 45%, rgba(247,246,243,0) 100%)",
+                  "linear-gradient(to top, rgba(247,246,243,0.98) 0%, rgba(247,246,243,0.88) 50%, rgba(247,246,243,0) 100%)",
               }}
               aria-hidden
             />
 
-            <div className="container-content flex h-full items-end pb-[max(3.5rem,env(safe-area-inset-bottom))] lg:items-center lg:pb-0">
+            <div className="container-content flex h-full items-end pb-[max(2.5rem,env(safe-area-inset-bottom))] lg:items-center lg:pb-0">
               <motion.div
                 style={{ opacity: captions.veil, y: captions.y }}
                 className="w-full max-w-md will-change-[opacity,transform] lg:max-w-[28rem]"
@@ -221,17 +249,20 @@ export function ScrollDoorSequence() {
                       }}
                       className="col-start-1 row-start-1"
                     >
-                      <div className="mb-4 flex items-center gap-3">
-                        <span className="font-medium tabular-nums text-[0.6875rem] tracking-[0.16em] text-gold">
+                      <div className="mb-2.5 flex items-center gap-2.5 sm:mb-4 sm:gap-3">
+                        <span className="font-medium tabular-nums text-[0.625rem] tracking-[0.16em] text-gold sm:text-[0.6875rem]">
                           0{i + 1}
                         </span>
-                        <span className="h-px w-7 bg-gold/45" aria-hidden />
+                        <span className="h-px w-5 bg-gold/45 sm:w-7" aria-hidden />
                         <p className="eyebrow mb-0 text-gold">{caption.eyebrow}</p>
                       </div>
-                      <h2 className="mb-4 font-display text-[clamp(1.7rem,2.8vw,2.75rem)] leading-[1.12] tracking-tight text-charcoal text-balance">
+                      <h2 className="mb-2.5 font-display text-[clamp(1.45rem,5.5vw,2.75rem)] leading-[1.12] tracking-tight text-balance text-charcoal sm:mb-4">
                         {caption.title}
                       </h2>
-                      <p className="max-w-sm text-base leading-relaxed text-charcoal/65">
+                      <p className="max-w-sm text-[0.9375rem] leading-relaxed text-charcoal/65 sm:text-base lg:hidden">
+                        {caption.bodyMobile}
+                      </p>
+                      <p className="hidden max-w-sm text-base leading-relaxed text-charcoal/65 lg:block">
                         {caption.body}
                       </p>
                     </motion.article>

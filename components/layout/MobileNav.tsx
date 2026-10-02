@@ -33,12 +33,10 @@ export function MobileNav({
   const pathname = usePathname();
   const reducedMotion = useReducedMotion();
   const [productsOpen, setProductsOpen] = useState(false);
+  if (!isOpen && productsOpen) setProductsOpen(false);
 
   useEffect(() => {
-    if (!isOpen) {
-      setProductsOpen(false);
-      return;
-    }
+    if (!isOpen) return;
     const previous = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     return () => {
@@ -174,7 +172,7 @@ export function MobileNav({
                 </a>
                 <Link
                   href="/get-quote"
-                  className="inline-flex min-h-11 items-center justify-center rounded-full bg-charcoal px-4 py-2.5 text-sm font-medium text-surface"
+                  className="inline-flex min-h-11 items-center justify-center rounded-full bg-navy px-4 py-2.5 text-sm font-medium text-surface"
                   onClick={onClose}
                 >
                   Get a Quote

@@ -29,6 +29,14 @@ export const CATEGORY_BLURBS: Record<ProductCategory, string> = {
 };
 
 /** `wa.me` requires digits only, no plus or spaces. */
+/** Quote builder link, optionally opening step one on a product (and opening type). */
+export function quoteHref(product?: ProductCategory, type?: OpeningType): string {
+  if (!product) return "/get-quote";
+  const params = new URLSearchParams({ product });
+  if (type) params.set("type", type);
+  return `/get-quote?${params}`;
+}
+
 export function whatsappHref(number: string, message?: string): string {
   const digits = number.replace(/\D/g, "");
   const url = `https://wa.me/${digits}`;

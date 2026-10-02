@@ -15,7 +15,7 @@ Static JSON shapes designed to match future CMS API responses. Components consum
 | `colors.json` | `ColorSwatch[]` | `getColors()` |
 | `testimonials.json` | `Testimonial[]` | `getTestimonials()` |
 | `faqs.json` | `FAQ[]` | `getFAQs(category?)` |
-| `projects.json` | `Project[]` | `getProjects()` |
+| `projects.json` | `Project[]` | `getProjects()` — `collection` (`installations` \| `factory` \| `products`); `images` as URL strings **or** Cloudinary-ready `{ src, alt, width, height, orientation, publicId }` |
 | `team.json` | `TeamMember[]` | `getTeam()` |
 
 ## Product Shape

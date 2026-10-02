@@ -60,7 +60,7 @@ interface USPStripProps {
 
 export function USPStrip({ usps }: USPStripProps) {
   return (
-    <section className="section-padding bg-surface">
+    <section className="bg-surface pt-10 pb-[var(--spacing-section)] sm:pt-12 lg:pt-16 lg:pb-[var(--spacing-section-lg)]">
       <div className="container-content">
         <RevealOnScroll className="mb-10 max-w-2xl lg:mb-14">
           <p className="eyebrow mb-4 text-gold">Why Hi-Tech uPVC</p>

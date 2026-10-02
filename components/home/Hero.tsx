@@ -12,26 +12,32 @@ import {
   useTransform,
   type PanInfo,
 } from "framer-motion";
-import { useCallback, useEffect, useLayoutEffect, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, type PointerEvent } from "react";
 import type { Company } from "@/lib/types";
 import { HERO_3D_SLIDES } from "@/lib/heroSlides";
 import { DoorwayIntro } from "@/components/animations/DoorwayIntro";
-import { LazyUpvcViewer } from "@/components/three/LazyUpvcViewer";
+import { useCanHover } from "@/components/three/hooks";
+import {
+  LazyUpvcViewer,
+  prefetchUpvcViewer,
+} from "@/components/three/LazyUpvcViewer";
 import { MagneticButton } from "@/components/ui/MagneticButton";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 const SLIDE_MS = 7000;
-/** When the unit opens and shuts within each slide */
-const OPEN_AT_MS = 900;
-const CLOSE_AT_MS = 4800;
+/** When the unit opens and shuts within each slide — after the canvas is ready */
+const OPEN_AT_MS = 700;
+const CLOSE_AT_MS = 4600;
 const SWIPE_PX = 60;
+/** Touch devices skip the intro, so the copy must paint from the server HTML, not after hydration. */
+const VISIBLE_ON_TOUCH = "pointer-coarse:opacity-100! pointer-coarse:transform-none!";
 
 const rise = {
-  hidden: { opacity: 0, y: 24 },
+  hidden: { opacity: 0, y: 18 },
   show: (i: number) => ({
     opacity: 1,
     y: 0,
-    transition: { duration: 0.9, delay: 0.08 + i * 0.12, ease },
+    transition: { duration: 0.55, delay: 0.04 + i * 0.07, ease },
   }),
 };
 
@@ -43,20 +49,36 @@ interface HeroProps {
 export function Hero({ company }: HeroProps) {
   const { hero } = company;
   const reducedMotion = useReducedMotion();
-  const [introDone, setIntroDone] = useState(false);
+  const canHover = useCanHover();
+  const swipe = useRef<{ x: number; y: number } | null>(null);
+  const [pageRevealed, setPageRevealed] = useState(false);
+  const [stageReady, setStageReady] = useState(false);
+  const [viewerReady, setViewerReady] = useState(false);
   const [index, setIndex] = useState(0);
   const [opened, setOpened] = useState(false);
   const [paused, setPaused] = useState(false);
   const progress = useMotionValue(0);
   const progressWidth = useTransform(progress, [0, 1], ["0%", "100%"]);
   const stageControls = useAnimationControls();
+  const firstStagePaint = useRef(true);
 
   const total = HERO_3D_SLIDES.length;
   const slide = HERO_3D_SLIDES[index];
-  const state = introDone ? "show" : "hidden";
-  const autoAdvance = introDone && !paused && !reducedMotion;
+  const state = pageRevealed ? "show" : "hidden";
+  const autoAdvance = stageReady && viewerReady && !paused && !reducedMotion;
 
-  const handleReveal = useCallback(() => setIntroDone(true), []);
+  const handleReveal = useCallback(() => {
+    setPageRevealed(true);
+    prefetchUpvcViewer();
+  }, []);
+
+  const handleComplete = useCallback(() => {
+    setPageRevealed(true);
+    setStageReady(true);
+    prefetchUpvcViewer();
+  }, []);
+
+  const handleViewerReady = useCallback(() => setViewerReady(true), []);
 
   const goTo = useCallback(
     (next: number) => {
@@ -78,28 +100,51 @@ export function Hero({ company }: HeroProps) {
     return () => controls.stop();
   }, [autoAdvance, index, goTo, progress]);
 
+  // Open / shut only after shaders have painted — avoids hitching mid-fade.
   useEffect(() => {
-    if (!introDone || reducedMotion) return;
-    const open = setTimeout(() => setOpened(true), OPEN_AT_MS);
-    const close = setTimeout(() => setOpened(false), CLOSE_AT_MS);
+    if (!stageReady || !viewerReady || reducedMotion) return;
+    const open = window.setTimeout(() => setOpened(true), OPEN_AT_MS);
+    const close = window.setTimeout(() => setOpened(false), CLOSE_AT_MS);
     return () => {
-      clearTimeout(open);
-      clearTimeout(close);
+      window.clearTimeout(open);
+      window.clearTimeout(close);
     };
-  }, [index, introDone, reducedMotion]);
+  }, [index, stageReady, viewerReady, reducedMotion]);
 
-  // Layout effect so the new model never paints at full opacity before the fade.
+  // Fade on slide change only — first paint uses UpvcStage's own fade.
   useLayoutEffect(() => {
+    if (!stageReady) return;
+    if (firstStagePaint.current) {
+      firstStagePaint.current = false;
+      stageControls.set({ opacity: 1, scale: 1 });
+      return;
+    }
+    stageControls.set({ opacity: 0, scale: 0.98 });
     stageControls.start({
-      opacity: [0, 1],
-      scale: [0.96, 1],
-      transition: { duration: 0.8, ease },
+      opacity: 1,
+      scale: 1,
+      transition: { duration: 0.4, ease },
     });
-  }, [index, stageControls]);
+  }, [index, stageReady, stageControls]);
 
   function onDragEnd(_: unknown, info: PanInfo) {
     if (info.offset.x < -SWIPE_PX) goTo(index + 1);
     else if (info.offset.x > SWIPE_PX) goTo(index - 1);
+  }
+
+  function onSwipeStart(event: PointerEvent) {
+    if (canHover) return;
+    swipe.current = { x: event.clientX, y: event.clientY };
+  }
+
+  function onSwipeEnd(event: PointerEvent) {
+    if (!swipe.current) return;
+    const dx = event.clientX - swipe.current.x;
+    const dy = event.clientY - swipe.current.y;
+    swipe.current = null;
+    if (Math.abs(dx) < SWIPE_PX || Math.abs(dx) < Math.abs(dy)) return;
+    if (dx < 0) goTo(index + 1);
+    else goTo(index - 1);
   }
 
   return (
@@ -108,6 +153,7 @@ export function Hero({ company }: HeroProps) {
         brand={company.companyName}
         logo={company.logo}
         onReveal={handleReveal}
+        onComplete={handleComplete}
       />
 
       <section
@@ -120,25 +166,27 @@ export function Hero({ company }: HeroProps) {
         aria-label="Featured uPVC products"
         onMouseEnter={() => setPaused(true)}
         onMouseLeave={() => setPaused(false)}
+        onTouchStart={() => setPaused(true)}
+        onTouchEnd={() => setPaused(false)}
       >
         <h1 className="sr-only">{hero.headline}</h1>
 
         <div className="container-content grid w-full grid-cols-1 items-start gap-x-12 gap-y-6 pb-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] lg:grid-rows-[auto_auto] lg:pb-10">
           {/* Copy */}
           <motion.div
-            className="lg:col-start-1 lg:row-start-1 lg:self-end"
+            className={`lg:col-start-1 lg:row-start-1 lg:self-end ${VISIBLE_ON_TOUCH}`}
             variants={rise}
             custom={0}
             initial="hidden"
             animate={state}
           >
-            <AnimatePresence mode="wait">
+            <AnimatePresence mode="wait" initial={false}>
               <motion.div
                 key={slide.id}
-                initial={{ opacity: 0, y: 16 }}
+                initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -12 }}
-                transition={{ duration: 0.5, ease }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.35, ease }}
               >
                 <p className="eyebrow mb-4 text-gold">{slide.eyebrow}</p>
                 <h2 className="font-display text-[clamp(2.4rem,4.6vw,4.25rem)] leading-[1.03] tracking-tight text-charcoal text-balance">
@@ -153,7 +201,7 @@ export function Hero({ company }: HeroProps) {
 
           {/* 3D stage */}
           <motion.div
-            className="relative lg:col-start-2 lg:row-span-2 lg:row-start-1"
+            className={`relative lg:col-start-2 lg:row-span-2 lg:row-start-1 ${VISIBLE_ON_TOUCH}`}
             variants={rise}
             custom={1}
             initial="hidden"
@@ -161,20 +209,34 @@ export function Hero({ company }: HeroProps) {
           >
             <motion.div
               className="relative mx-auto aspect-[4/3] max-h-[46svh] w-full cursor-grab touch-pan-y active:cursor-grabbing sm:aspect-[5/4] lg:aspect-auto lg:h-[min(72svh,660px)] lg:max-h-none"
-              drag={reducedMotion ? false : "x"}
+              drag={canHover && !reducedMotion ? "x" : false}
+              dragDirectionLock
               dragConstraints={{ left: 0, right: 0 }}
               dragElastic={0.14}
+              dragSnapToOrigin
               onDragEnd={onDragEnd}
+              onPointerDown={onSwipeStart}
+              onPointerUp={onSwipeEnd}
+              onPointerCancel={() => {
+                swipe.current = null;
+              }}
             >
               <motion.div className="absolute inset-0" animate={stageControls}>
-                <LazyUpvcViewer
-                  openingType={slide.openingType}
-                  category={slide.category}
-                  open={opened ? 1 : 0}
-                  quality="high"
-                  className="h-full w-full"
-                  posterAlt={`${slide.eyebrow} in white uPVC`}
-                />
+                {stageReady ? (
+                  <LazyUpvcViewer
+                    openingType={slide.openingType}
+                    category={slide.category}
+                    open={opened ? 1 : 0}
+                    quality="balanced"
+                    eager
+                    fadeMs={400}
+                    className="h-full w-full"
+                    posterAlt={`${slide.eyebrow} in white uPVC`}
+                    onReady={handleViewerReady}
+                  />
+                ) : (
+                  <div className="h-full w-full" aria-hidden />
+                )}
               </motion.div>
             </motion.div>
 
@@ -187,7 +249,7 @@ export function Hero({ company }: HeroProps) {
               <button
                 type="button"
                 onClick={() => goTo(index - 1)}
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-charcoal/15 bg-surface/70 text-charcoal/60 backdrop-blur transition-colors hover:border-charcoal/40 hover:text-charcoal"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-charcoal/15 bg-surface/70 text-charcoal/60 backdrop-blur transition-colors duration-300 hover:border-charcoal/40 hover:text-charcoal"
                 aria-label="Previous product"
               >
                 ←
@@ -195,7 +257,7 @@ export function Hero({ company }: HeroProps) {
               <button
                 type="button"
                 onClick={() => goTo(index + 1)}
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-charcoal/15 bg-surface/70 text-charcoal/60 backdrop-blur transition-colors hover:border-charcoal/40 hover:text-charcoal"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-charcoal/15 bg-surface/70 text-charcoal/60 backdrop-blur transition-colors duration-300 hover:border-charcoal/40 hover:text-charcoal"
                 aria-label="Next product"
               >
                 →
@@ -205,7 +267,7 @@ export function Hero({ company }: HeroProps) {
 
           {/* Actions + carousel controls */}
           <motion.div
-            className="lg:col-start-1 lg:row-start-2 lg:self-start"
+            className={`lg:col-start-1 lg:row-start-2 lg:self-start ${VISIBLE_ON_TOUCH}`}
             variants={rise}
             custom={2}
             initial="hidden"
@@ -214,7 +276,7 @@ export function Hero({ company }: HeroProps) {
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-7">
               <MagneticButton
                 href={hero.primaryCta.href}
-                className="!bg-charcoal !px-7 !text-surface hover:!bg-navy"
+                className="!px-7"
               >
                 {hero.primaryCta.label}
               </MagneticButton>
@@ -236,7 +298,7 @@ export function Hero({ company }: HeroProps) {
               <div
                 role="tablist"
                 aria-label="Product"
-                className="-mx-6 flex gap-2 overflow-x-auto px-6 pb-1 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0"
+                className="-mx-6 flex touch-manipulation gap-2 overflow-x-auto px-6 pb-1 [scrollbar-width:none] snap-x snap-mandatory sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 sm:snap-none [&::-webkit-scrollbar]:hidden"
               >
                 {HERO_3D_SLIDES.map((s, i) => {
                   const active = i === index;
@@ -247,7 +309,7 @@ export function Hero({ company }: HeroProps) {
                       role="tab"
                       aria-selected={active}
                       onClick={() => goTo(i)}
-                      className={`relative shrink-0 overflow-hidden rounded-full px-4 py-2 text-sm font-medium transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-surface ${
+                      className={`relative flex min-h-11 shrink-0 snap-start items-center overflow-hidden rounded-full px-4 text-sm font-medium transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-surface ${
                         active
                           ? "bg-charcoal text-surface"
                           : "bg-charcoal/[0.05] text-charcoal/70 hover:bg-charcoal/10 hover:text-charcoal"

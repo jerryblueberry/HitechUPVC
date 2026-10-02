@@ -1,7 +1,7 @@
 # Footer
-Status: done
+Status: review
 Owner: agent
-Last reviewed: —
+Last reviewed: 2026-09-29
 
 ## Purpose
 Site footer with nav links, contact info, socials, and certification badges.
@@ -11,6 +11,7 @@ Site footer with nav links, contact info, socials, and certification badges.
 - Multi-column layout on desktop, stacked on mobile
 - Gold accent on link hovers
 - Bottom bar: copyright, “Made with love in Nepal”, socials
+- Social links show a platform icon beside the label (Instagram glyph)
 
 ## Props / Data
 - `navigation.json`, `company.json`
@@ -20,6 +21,7 @@ Site footer with nav links, contact info, socials, and certification badges.
 - Server component
 
 ## Review Checklist
-- [ ] Matches DESIGN-SYSTEM tokens
-- [ ] Uses getData() not inline JSON
-- [ ] Semantic `<footer>` structure
+- [x] Matches DESIGN-SYSTEM tokens
+- [x] Uses getData() not inline JSON
+- [x] Semantic `<footer>` structure
+- [x] Instagram social link includes icon

@@ -23,7 +23,14 @@ const empty: Values = {
 };
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const PHONE = /^[\d\s+().-]{7,20}$/;
+const NEPAL_MOBILE = /^9[678]\d{8}$/;
+
+function phoneError(phone: string): string | undefined {
+  if (!phone) return undefined;
+  if (!/^\d{10}$/.test(phone)) return "Enter a 10-digit mobile number, like 9841234567.";
+  if (!NEPAL_MOBILE.test(phone)) return "Nepal mobile numbers start with 96, 97, or 98.";
+  return undefined;
+}
 
 function validate(values: Values): Partial<Record<Field, string>> {
   const errors: Partial<Record<Field, string>> = {};
@@ -38,9 +45,8 @@ function validate(values: Values): Partial<Record<Field, string>> {
   if (!email) errors.email = "Enter your email.";
   else if (!EMAIL.test(email)) errors.email = "Use a valid email, like name@company.com.";
 
-  if (phone && !PHONE.test(phone)) {
-    errors.phone = "Use a valid phone number, or leave this blank.";
-  }
+  const phoneMessage = phoneError(phone);
+  if (phoneMessage) errors.phone = phoneMessage;
 
   if (!values.interest) errors.interest = "Choose what this is about.";
 
@@ -199,18 +205,25 @@ export function ContactForm() {
             name="phone"
             type="tel"
             autoComplete="tel"
-            inputMode="tel"
+            inputMode="numeric"
+            pattern="[0-9]{10}"
+            minLength={10}
+            maxLength={10}
             value={values.phone}
-            onChange={(event) => set("phone", event.target.value)}
+            onChange={(event) => set("phone", event.target.value.replace(/\D/g, "").slice(0, 10))}
             onBlur={() => setTouched((t) => ({ ...t, phone: true }))}
             aria-invalid={show("phone")}
-            aria-describedby={show("phone") ? `${formId}-phone-error` : undefined}
+            aria-describedby={show("phone") ? `${formId}-phone-error` : `${formId}-phone-hint`}
             className={fieldClass(show("phone"))}
-            placeholder="+977 98…"
+            placeholder="98XXXXXXXX"
           />
-          {show("phone") && (
+          {show("phone") ? (
             <span id={`${formId}-phone-error`} className="mt-1.5 block text-sm text-danger">
               {errors.phone}
+            </span>
+          ) : (
+            <span id={`${formId}-phone-hint`} className="mt-1.5 block text-xs font-normal text-charcoal/45">
+              10-digit Nepal mobile number
             </span>
           )}
         </label>

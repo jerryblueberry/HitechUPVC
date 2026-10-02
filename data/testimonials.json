@@ -1,26 +1,29 @@
 [
   {
     "id": "1",
-    "name": "Sarah Mitchell",
+    "name": "Aasha Shrestha",
     "role": "Homeowner",
     "projectType": "Full window replacement",
-    "quote": "The tilt & turn windows transformed our home. Quieter, warmer, and the installation team was impeccable.",
+    "location": "Baneshwor, Kathmandu",
+    "quote": "The tilt-and-turn windows cut the Ring Road noise. Rooms stay warmer through winter, and the team finished the whole house in a week.",
     "rating": 5
   },
   {
     "id": "2",
-    "name": "James Chen",
+    "name": "Rajan Adhikari",
     "role": "Architect",
-    "projectType": "Commercial facade",
-    "quote": "Hi-Tech uPVC delivered on spec and on time. The anthracite finish looks stunning on our project.",
+    "projectType": "Shopfront",
+    "location": "Patan, Lalitpur",
+    "quote": "We specified anthracite for a shopfront in Patan. Hi-Tech matched the sample, and the frames went in on the date we agreed.",
     "rating": 5
   },
   {
     "id": "3",
-    "name": "Emma Rodriguez",
+    "name": "Srijana Gurung",
     "role": "Homeowner",
     "projectType": "Patio doors",
-    "quote": "Our sliding patio doors open effortlessly. Best decision we made during the renovation.",
+    "location": "Lazimpat, Kathmandu",
+    "quote": "The sliding doors open onto the garden without a fight. Through a full monsoon they have not swollen or stuck once.",
     "rating": 5
   }
 ]

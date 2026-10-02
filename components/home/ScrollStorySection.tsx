@@ -116,7 +116,7 @@ export function ScrollStorySection() {
               <p className="eyebrow text-gold mb-3">{story.eyebrow}</p>
               <h2 className="font-display text-h2 mb-4">{story.title}</h2>
               <p className="text-surface/70 mb-6">{story.body}</p>
-              <div className="relative aspect-[4/3] rounded-lg overflow-hidden">
+              <div className="relative aspect-[4/3] rounded-2xl overflow-hidden">
                 <Image src={story.image} alt={story.title} fill className="object-cover" sizes="100vw" />
               </div>
             </article>

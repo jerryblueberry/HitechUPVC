@@ -293,7 +293,7 @@ export function UpvcUnit({
   openSource,
   damping = 3.4,
 }: UpvcUnitProps) {
-  const upvcMat = useUpvcMaterial(finish);
+  const upvcMat = useUpvcMaterial(finish, quality);
   const hardwareMat = useHardwareMaterial(hardware);
   const glassMat = useGlassMaterial(glazing, quality);
   const gasketMat = useGasketMaterial();

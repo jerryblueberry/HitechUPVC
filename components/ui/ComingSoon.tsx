@@ -1,5 +1,6 @@
 import { MagneticButton } from "@/components/ui/MagneticButton";
 import { RevealOnScroll } from "@/components/ui/RevealOnScroll";
+import { WhatsAppIcon } from "@/components/ui/WhatsAppLink";
 
 interface ComingSoonProps {
   eyebrow: string;
@@ -9,6 +10,7 @@ interface ComingSoonProps {
   primaryLabel?: string;
   secondaryHref?: string;
   secondaryLabel?: string;
+  secondaryIcon?: "whatsapp";
 }
 
 export function ComingSoon({
@@ -19,12 +21,13 @@ export function ComingSoon({
   primaryLabel = "Contact us",
   secondaryHref = "/products",
   secondaryLabel = "Browse products",
+  secondaryIcon,
 }: ComingSoonProps) {
   return (
     <article className="bg-surface">
       <section className="section-padding page-top">
         <div className="container-content grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
-          <RevealOnScroll className="max-w-xl">
+          <RevealOnScroll priority className="max-w-xl">
             <p className="eyebrow mb-4 text-gold">{eyebrow}</p>
             <h1 className="font-display text-[clamp(2.15rem,4vw,3.6rem)] leading-[1.05] tracking-tight text-charcoal text-balance">
               {title}
@@ -34,13 +37,24 @@ export function ComingSoon({
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
               <MagneticButton href={primaryHref}>{primaryLabel}</MagneticButton>
-              <MagneticButton href={secondaryHref} variant="secondary">
+              <MagneticButton
+                href={secondaryHref}
+                variant="secondary"
+                className={
+                  secondaryIcon === "whatsapp"
+                    ? "hover:!border-[#25D366] hover:!text-[#25D366]"
+                    : ""
+                }
+              >
+                {secondaryIcon === "whatsapp" && (
+                  <WhatsAppIcon size={16} className="shrink-0" />
+                )}
                 {secondaryLabel}
               </MagneticButton>
             </div>
           </RevealOnScroll>
 
-          <RevealOnScroll delay={0.12}>
+          <RevealOnScroll priority delay={0.12}>
             <div className="relative overflow-hidden rounded-[2rem] bg-white ring-1 ring-charcoal/5 shadow-[0_1px_2px_rgba(27,27,29,0.04),0_24px_48px_-20px_rgba(27,27,29,0.18)]">
               <div className="flex aspect-[4/5] flex-col justify-end bg-[linear-gradient(180deg,var(--color-cream)_0%,white_46%,var(--color-surface)_100%)] p-8 sm:aspect-[5/4] lg:aspect-[4/5]">
                 <p className="text-[0.75rem] font-medium uppercase tracking-[0.14em] text-gold">

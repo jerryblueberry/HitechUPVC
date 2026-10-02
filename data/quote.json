@@ -1,0 +1,90 @@
+{
+  "seo": {
+    "title": "Get a Free Quote — uPVC Windows & Doors in Kathmandu",
+    "description": "Build your uPVC window, door, or panel quote in minutes. List your openings, sizes, glass, and colour, then send it to Hi-Tech on WhatsApp for a free, itemised quote in the Kathmandu valley.",
+    "keywords": [
+      "uPVC quote Kathmandu",
+      "uPVC windows price Nepal",
+      "uPVC doors quote",
+      "free site measurement Kathmandu",
+      "window quote Lalitpur Bhaktapur"
+    ]
+  },
+  "hero": {
+    "eyebrow": "Get a free quote",
+    "title": "Build your quote in three short steps.",
+    "body": "List the windows, doors, or panels you need — rough sizes are fine. Send it on WhatsApp and we reply with a clear, itemised quote, usually the same day."
+  },
+  "steps": ["Your openings", "Project details", "Review & send"],
+  "products": [
+    {
+      "id": "windows",
+      "label": "Windows",
+      "styles": ["Sliding", "Casement", "Tilt & Turn", "Fixed"],
+      "previews": {
+        "Sliding": "sliding",
+        "Casement": "casement",
+        "Tilt & Turn": "tilt-turn",
+        "Fixed": "fixed"
+      }
+    },
+    {
+      "id": "doors",
+      "label": "Doors",
+      "styles": ["Sliding patio", "French", "Folding", "Hinged entrance"],
+      "previews": {
+        "Sliding patio": "sliding",
+        "French": "french",
+        "Folding": "folding",
+        "Hinged entrance": "hinged"
+      }
+    },
+    {
+      "id": "panels",
+      "label": "Panels",
+      "styles": ["Wall cladding", "Partition", "Ceiling"]
+    }
+  ],
+  "glass": [
+    "Help me choose",
+    "Double glazed",
+    "Single toughened",
+    "Laminated (safety)",
+    "Frosted / privacy"
+  ],
+  "glassPreviews": {
+    "Double glazed": "low-e",
+    "Frosted / privacy": "obscure"
+  },
+  "units": ["ft", "in", "mm"],
+  "projectTypes": ["New build", "Renovation / replacement", "Commercial project"],
+  "timelines": ["As soon as possible", "Within 1 month", "1–3 months", "Just exploring"],
+  "locations": [
+    "Kathmandu",
+    "Lalitpur",
+    "Bhaktapur",
+    "Tarakeshwar",
+    "Tokha",
+    "Budhanilkantha",
+    "Kirtipur",
+    "Outside the valley"
+  ],
+  "whatsappIntro": "Hi Hi-Tech — I'd like a free quote.",
+  "aside": {
+    "title": "What happens next",
+    "points": [
+      {
+        "title": "We review your list",
+        "body": "Our team checks openings, sizes, and glass, and replies on WhatsApp — usually the same day."
+      },
+      {
+        "title": "Free site measurement",
+        "body": "In the Kathmandu valley we measure every opening on site, so rough sizes are completely fine."
+      },
+      {
+        "title": "Clear, itemised quote",
+        "body": "You get a line-by-line price before any work begins. No obligation, no pressure."
+      }
+    ]
+  }
+}

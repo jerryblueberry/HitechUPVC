@@ -5,7 +5,7 @@ import { ProductGrid } from "@/components/products/ProductGrid";
 import { MagneticButton } from "@/components/ui/MagneticButton";
 import { RevealOnScroll } from "@/components/ui/RevealOnScroll";
 import { WhyStudioViewer } from "@/components/why/WhyStudioViewer";
-import { CATEGORY_BLURBS, CATEGORY_LABELS, CATEGORY_PATHS, whatsappHref } from "@/lib/constants";
+import { CATEGORY_BLURBS, CATEGORY_LABELS, CATEGORY_PATHS, quoteHref, whatsappHref } from "@/lib/constants";
 import { CATEGORY_PAGES } from "@/lib/categoryPages";
 import type { ColorSwatch, Company, ProductCategory, ProductIndexEntry } from "@/lib/types";
 
@@ -26,7 +26,7 @@ export function CategoryView({ category, company, products, colors }: CategoryVi
     <article className="bg-surface">
       <section className="section-padding page-top">
         <div className="container-content grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
-          <RevealOnScroll className="max-w-xl">
+          <RevealOnScroll priority className="max-w-xl">
             <nav aria-label="Breadcrumb" className="mb-6">
               <ol className="flex flex-wrap items-center gap-2 text-caption text-charcoal/50">
                 <li>
@@ -46,7 +46,7 @@ export function CategoryView({ category, company, products, colors }: CategoryVi
               {copy.body}
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-              <MagneticButton href="/contact">Get a Free Quote</MagneticButton>
+              <MagneticButton href={quoteHref(category)}>Get a Free Quote</MagneticButton>
               <MagneticButton
                 href={whatsappHref(company.contact.whatsapp, copy.whatsappPrefill)}
                 variant="secondary"
@@ -56,7 +56,7 @@ export function CategoryView({ category, company, products, colors }: CategoryVi
             </div>
           </RevealOnScroll>
 
-          <RevealOnScroll delay={0.12}>
+          <RevealOnScroll priority delay={0.12}>
             <WhyStudioViewer
               openingType={copy.openingType}
               category={category}
@@ -122,13 +122,14 @@ export function CategoryView({ category, company, products, colors }: CategoryVi
       <CTASection
         title="Need a size that isn’t listed?"
         body="Every Hi-Tech system is made to measure. Send openings, a floor plan, or a WhatsApp photo — we’ll spec the profile."
-        primaryHref="/contact"
+        primaryHref={quoteHref(category)}
         primaryLabel="Get a Free Quote"
         secondaryHref={whatsappHref(
           company.contact.whatsapp,
           `Hi Hi-Tech — I have openings to measure for uPVC ${CATEGORY_LABELS[category].toLowerCase()}.`
         )}
         secondaryLabel="WhatsApp us"
+        secondaryIcon="whatsapp"
       />
     </article>
   );

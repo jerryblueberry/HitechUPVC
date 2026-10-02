@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { CATEGORY_LABELS, CATEGORY_PATHS, OPENING_TYPE_LABELS } from "@/lib/constants";
+import { CATEGORY_LABELS, CATEGORY_PATHS, OPENING_TYPE_LABELS, quoteHref } from "@/lib/constants";
 import { getColors } from "@/lib/getData";
 import type { Product } from "@/lib/types";
 import { UpvcConfigurator } from "./UpvcConfigurator";
@@ -123,8 +123,8 @@ export function ProductDetailView({ product }: { product: Product }) {
             ) : null}
 
             <Link
-              href="/get-quote"
-              className="inline-block mt-10 px-7 py-3.5 rounded-full bg-charcoal text-surface font-medium transition-colors duration-200 hover:bg-navy focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-surface-muted"
+              href={quoteHref(product.category, product.openingType)}
+              className="mt-10 inline-flex items-center justify-center rounded-full bg-navy px-7 py-3.5 font-medium text-surface shadow-[0_1px_2px_rgba(14,42,62,0.12)] transition-[background-color,box-shadow] duration-300 ease-[var(--ease-premium)] hover:bg-charcoal hover:shadow-[0_8px_20px_-8px_rgba(14,42,62,0.45)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-surface-muted"
             >
               Get a quote for {product.name}
             </Link>

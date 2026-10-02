@@ -51,7 +51,7 @@ export function Header({ navigation, companyName, logo, whatsapp, tagline }: Hea
   const linkClass = (active: boolean) =>
     active ? "text-navy" : "text-charcoal/80 hover:text-navy";
 
-  const ctaClass = "bg-charcoal text-surface hover:bg-navy";
+  const ctaClass = "bg-navy text-surface hover:bg-charcoal";
 
   return (
     <>

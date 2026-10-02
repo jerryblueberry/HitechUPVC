@@ -1,14 +1,16 @@
 # USPStrip
 Status: review
 Owner: agent
-Last reviewed: 2026-09-27
+Last reviewed: 2026-09-29
 
 ## Purpose
 Apple-style spec cards highlighting energy efficiency, security, low maintenance, and warranty.
 
 ## Design Decisions
 - Matches the hero: `bg-surface`, left-aligned gold eyebrow + Fraunces heading,
-  charcoal/60 supporting copy (right-aligned on desktop)
+  charcoal/60 supporting copy
+- Tighter top padding (`pt-10` → `lg:pt-16`) so the strip sits closer after the
+  scroll-door sequence; bottom keeps full section rhythm
 - White `rounded-3xl` cards with a soft layered shadow and hairline ring;
   1 → 2 → 4 columns
 - Thin-stroke SVG icons in a muted circle (turns gold on hover), no emoji

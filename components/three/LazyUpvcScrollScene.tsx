@@ -9,3 +9,8 @@ export const LazyUpvcScrollScene = dynamic(
     loading: () => <div className="h-full w-full" />,
   }
 );
+
+/** Warm the scroll-scene chunk before the sticky pin mounts it. */
+export function prefetchUpvcScrollScene() {
+  void import("./UpvcScrollScene");
+}

@@ -6,11 +6,21 @@
  *
  * Progress arrives through a ref rather than a prop so scrolling never
  * re-renders React — the whole sequence runs inside one useFrame.
+ *
+ * Raw scroll is exponentially smoothed first (trackpad / finger jitter), then
+ * the camera and open angle read that smoothed value. One damp stage — not
+ * two — keeps the motion locked to the finger the way Apple product pages do.
  */
 
 import { useFrame, useThree } from "@react-three/fiber";
 import Image from "next/image";
-import { useEffect, useMemo, useRef, type RefObject } from "react";
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useSyncExternalStore,
+  type RefObject,
+} from "react";
 import * as THREE from "three";
 import type { OpeningType, ProductCategory } from "@/lib/types";
 import {
@@ -22,11 +32,34 @@ import {
   type HardwareSlug,
 } from "@/lib/upvc3d";
 import { getUpvcPngForOpening } from "@/lib/upvcAssets";
+import { SETTLE_EPSILON } from "./demand";
 import { UpvcStage } from "./UpvcStage";
 import { UpvcUnit } from "./UpvcUnit";
 
 const clamp01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
 const smooth = (t: number) => t * t * (3 - 2 * t);
+
+/** How quickly smoothed progress catches the finger (higher = snappier). */
+const PROGRESS_LAMBDA = 14;
+const PROGRESS_LAMBDA_TOUCH = 20;
+/** Door leaf catch-up — slightly softer than the camera for a physical feel. */
+const OPEN_DAMPING = 9;
+
+const COARSE_QUERY = "(pointer: coarse)";
+
+function subscribeCoarse(onChange: () => void) {
+  const query = window.matchMedia(COARSE_QUERY);
+  query.addEventListener("change", onChange);
+  return () => query.removeEventListener("change", onChange);
+}
+
+function useCoarsePointer() {
+  return useSyncExternalStore(
+    subscribeCoarse,
+    () => window.matchMedia(COARSE_QUERY).matches,
+    () => false
+  );
+}
 
 export interface CameraShot {
   /** Scroll position this shot is fully composed at, 0–1 */
@@ -37,26 +70,43 @@ export interface CameraShot {
 
 function CameraRig({
   progressRef,
+  smoothProgressRef,
   shots,
+  lambda,
 }: {
   progressRef: RefObject<number>;
+  smoothProgressRef: RefObject<number>;
   shots: CameraShot[];
+  lambda: number;
 }) {
   const camera = useThree((state) => state.camera);
+  const gl = useThree((state) => state.gl);
   const invalidate = useThree((state) => state.invalidate);
 
-  // Scroll is the only input; the frame loop idles between scroll events.
-  // Progress is written by framer-motion a frame or so after the scroll event,
-  // so keep rendering briefly after the last one to pick up its final value.
-  const lastScrollAt = useRef(0);
+  // Wake only while this canvas is on screen. A page-wide touch listener
+  // kept the scene redrawing while the visitor scrolled the rest of the page.
+  const lastInputAt = useRef(0);
+  const inView = useRef(false);
   useEffect(() => {
-    const onScroll = () => {
-      lastScrollAt.current = performance.now();
+    const wake = () => {
+      if (!inView.current) return;
+      lastInputAt.current = performance.now();
       invalidate();
     };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, [invalidate]);
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        inView.current = entry.isIntersecting;
+        if (entry.isIntersecting) wake();
+      },
+      { rootMargin: "80px" }
+    );
+    observer.observe(gl.domElement);
+    window.addEventListener("scroll", wake, { passive: true });
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("scroll", wake);
+    };
+  }, [gl, invalidate]);
 
   const keys = useMemo(
     () =>
@@ -70,12 +120,34 @@ function CameraRig({
 
   const desiredPosition = useRef(new THREE.Vector3());
   const desiredTarget = useRef(new THREE.Vector3());
-  const currentPosition = useRef(new THREE.Vector3());
-  const currentTarget = useRef(new THREE.Vector3());
   const initialised = useRef(false);
+  const shotsId = useRef(shots);
+
+  // Crossing the desktop/mobile breakpoint swaps the shot set — snap, don't damp.
+  useEffect(() => {
+    if (shotsId.current === shots) return;
+    shotsId.current = shots;
+    initialised.current = false;
+    invalidate();
+  }, [shots, invalidate]);
 
   useFrame((state, delta) => {
-    const p = clamp01(progressRef.current);
+    const step = Math.min(delta, 0.05);
+    const raw = clamp01(progressRef.current);
+
+    if (!initialised.current) {
+      smoothProgressRef.current = raw;
+      initialised.current = true;
+    } else {
+      smoothProgressRef.current = THREE.MathUtils.damp(
+        smoothProgressRef.current,
+        raw,
+        lambda,
+        step
+      );
+    }
+
+    const p = clamp01(smoothProgressRef.current);
 
     let i = 0;
     while (i < keys.length - 2 && p > keys[i + 1].at) i++;
@@ -87,34 +159,14 @@ function CameraRig({
     desiredPosition.current.lerpVectors(from.position, to.position, t);
     desiredTarget.current.lerpVectors(from.target, to.target, t);
 
-    if (!initialised.current) {
-      currentPosition.current.copy(desiredPosition.current);
-      currentTarget.current.copy(desiredTarget.current);
-      initialised.current = true;
-    }
+    camera.position.copy(desiredPosition.current);
+    camera.lookAt(desiredTarget.current);
 
-    // Damping smooths the step changes a trackpad produces between frames.
-    const step = Math.min(delta, 0.1);
-    const lambda = 6;
-    currentPosition.current.set(
-      THREE.MathUtils.damp(currentPosition.current.x, desiredPosition.current.x, lambda, step),
-      THREE.MathUtils.damp(currentPosition.current.y, desiredPosition.current.y, lambda, step),
-      THREE.MathUtils.damp(currentPosition.current.z, desiredPosition.current.z, lambda, step)
-    );
-    currentTarget.current.set(
-      THREE.MathUtils.damp(currentTarget.current.x, desiredTarget.current.x, lambda, step),
-      THREE.MathUtils.damp(currentTarget.current.y, desiredTarget.current.y, lambda, step),
-      THREE.MathUtils.damp(currentTarget.current.z, desiredTarget.current.z, lambda, step)
-    );
+    const catchingUp =
+      Math.abs(smoothProgressRef.current - raw) > SETTLE_EPSILON;
+    const recentlyInput = performance.now() - lastInputAt.current < 320;
 
-    camera.position.copy(currentPosition.current);
-    camera.lookAt(currentTarget.current);
-
-    if (
-      performance.now() - lastScrollAt.current < 250 ||
-      currentPosition.current.distanceToSquared(desiredPosition.current) > 1e-6 ||
-      currentTarget.current.distanceToSquared(desiredTarget.current) > 1e-6
-    ) {
+    if (catchingUp || recentlyInput) {
       state.invalidate();
     }
   });
@@ -150,14 +202,20 @@ export function UpvcScrollScene({
   fov = 34,
   className,
 }: UpvcScrollSceneProps) {
+  const coarse = useCoarsePointer();
+  const smoothProgressRef = useRef(0);
+
   const spec = useMemo(
     () => getUpvcModel(openingType, category),
     [openingType, category]
   );
 
   const openSource = useMemo(
-    () => () => clamp01((clamp01(progressRef.current) - openFrom) / (openTo - openFrom)),
-    [progressRef, openFrom, openTo]
+    () => () => {
+      const p = clamp01(smoothProgressRef.current);
+      return smooth(clamp01((p - openFrom) / (openTo - openFrom)));
+    },
+    [openFrom, openTo]
   );
 
   const poster = (
@@ -168,6 +226,7 @@ export function UpvcScrollScene({
         fill
         className="object-contain"
         sizes="100vw"
+        priority={false}
       />
     </div>
   );
@@ -179,11 +238,19 @@ export function UpvcScrollScene({
       fov={fov}
       groundY={-spec.height / 2 - 0.03}
       cameraPosition={shots[0].position}
-      maxDpr={1.5}
+      maxDpr={coarse ? 1.15 : 1.5}
+      antialias={!coarse}
+      contactShadow={!coarse}
+      fadeMs={450}
       renderWhenReduced={false}
       environmentIntensity={1.05}
     >
-      <CameraRig progressRef={progressRef} shots={shots} />
+      <CameraRig
+        progressRef={progressRef}
+        smoothProgressRef={smoothProgressRef}
+        shots={shots}
+        lambda={coarse ? PROGRESS_LAMBDA_TOUCH : PROGRESS_LAMBDA}
+      />
       <UpvcUnit
         spec={spec}
         finish={getFinish(finishSlug)}
@@ -191,7 +258,7 @@ export function UpvcScrollScene({
         glazing={GLAZING[glazingSlug]}
         isDoor={category === "doors" || openingType === "hinged"}
         openSource={openSource}
-        damping={7}
+        damping={OPEN_DAMPING}
       />
     </UpvcStage>
   );

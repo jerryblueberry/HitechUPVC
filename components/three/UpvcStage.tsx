@@ -19,13 +19,24 @@ import { Suspense, useCallback, useEffect, useRef, useState, type ReactNode } fr
 import * as THREE from "three";
 import { useInvalidateOn } from "./demand";
 import {
+  holdEagerStage,
+  releaseEagerStage,
+  useCanHover,
+  useEagerStageIdle,
   useHasApproached,
   useInViewport,
+  usePageSettled,
   usePrefersReducedMotion,
   useWebGLSupported,
 } from "./hooks";
 
 export const HDRI_PATH = "/hdri/studio_small_09_1k.hdr";
+/** Half-resolution copy for touch devices: 410 KB instead of 1.6 MB, same look at phone sizes */
+export const HDRI_PATH_SMALL = "/hdri/studio_small_09_512.hdr";
+
+export function hdriPathFor(canHover: boolean) {
+  return canHover ? HDRI_PATH : HDRI_PATH_SMALL;
+}
 
 export interface UpvcStageProps {
   children: ReactNode;
@@ -43,6 +54,13 @@ export interface UpvcStageProps {
   maxDpr?: number;
   /** Reduced motion still renders a static frame unless this is false */
   renderWhenReduced?: boolean;
+  /** Skip the approach observer — use for above-the-fold hero canvases */
+  eager?: boolean;
+  antialias?: boolean;
+  /** Fade-in once shaders compile (ms) */
+  fadeMs?: number;
+  /** Fires after compileAsync + first painted frame */
+  onReady?: () => void;
 }
 
 /** Compiles every material before the first visible frame, then reports ready. */
@@ -89,6 +107,10 @@ export function UpvcStage({
   environmentIntensity = 1,
   maxDpr = 2,
   renderWhenReduced = true,
+  eager = false,
+  antialias = true,
+  fadeMs = 500,
+  onReady,
 }: UpvcStageProps) {
   const hostRef = useRef<HTMLDivElement>(null);
   const approached = useHasApproached(hostRef);
@@ -97,30 +119,64 @@ export function UpvcStage({
   const reducedMotion = usePrefersReducedMotion();
   const [ready, setReady] = useState(false);
   const [contextLost, setContextLost] = useState(false);
-  const handleReady = useCallback(() => setReady(true), []);
+  const handleReady = useCallback(() => {
+    setReady(true);
+    onReady?.();
+  }, [onReady]);
 
+  const settled = usePageSettled();
+  const canHover = useCanHover();
+  const othersIdle = useEagerStageIdle();
+  const holding = useRef(false);
   const useFallback =
     webgl === false || contextLost || (reducedMotion && !renderWhenReduced);
+  const shouldMount = (eager || (approached && othersIdle)) && settled;
+
+  // Above-the-fold scenes hold the thread until their first frame, or 4.5s.
+  useEffect(() => {
+    if (!eager || useFallback) return;
+    holding.current = true;
+    holdEagerStage();
+    const release = () => {
+      if (!holding.current) return;
+      holding.current = false;
+      releaseEagerStage();
+    };
+    const timer = window.setTimeout(release, 4500);
+    return () => {
+      window.clearTimeout(timer);
+      release();
+    };
+  }, [eager, useFallback]);
+
+  useEffect(() => {
+    if (!eager || !ready || !holding.current) return;
+    holding.current = false;
+    releaseEagerStage();
+  }, [eager, ready]);
 
   return (
     <div ref={hostRef} className={className}>
       {useFallback ? (
         fallback
-      ) : webgl === null || !approached ? null : (
+      ) : webgl === null || !shouldMount ? null : (
         <div
-          className={`h-full w-full transition-opacity duration-700 ease-out ${
-            ready ? "opacity-100" : "opacity-0"
-          }`}
+          className="h-full w-full transition-opacity ease-out"
+          style={{
+            opacity: ready ? 1 : 0,
+            transitionDuration: `${fadeMs}ms`,
+          }}
         >
           <Canvas
             dpr={[1, maxDpr]}
-            frameloop={inView ? "demand" : "never"}
+            frameloop={inView || eager ? "demand" : "never"}
             gl={{
-              antialias: true,
+              antialias,
               alpha: backdrop === "transparent",
               // "high-performance" wakes the discrete GPU on dual-GPU laptops,
               // which stalls the page and drains the battery for no visible gain.
               powerPreference: "default",
+              stencil: false,
             }}
             camera={{ position: cameraPosition, fov, near: 0.05, far: 60 }}
             onCreated={({ gl }) => {
@@ -136,7 +192,7 @@ export function UpvcStage({
               );
             }}
           >
-            <WakeOnView inView={inView} />
+            <WakeOnView inView={inView || eager} />
 
             {/* HDRI does the heavy lifting; the key light just sharpens the
                 chamfer highlights and drives the contact shadow. */}
@@ -145,7 +201,7 @@ export function UpvcStage({
 
             <Suspense fallback={null}>
               <Environment
-                files={HDRI_PATH}
+                files={hdriPathFor(canHover)}
                 environmentIntensity={environmentIntensity}
                 background={backdrop === "studio"}
                 backgroundBlurriness={0.85}

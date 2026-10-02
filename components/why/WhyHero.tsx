@@ -1,7 +1,7 @@
 import { MagneticButton } from "@/components/ui/MagneticButton";
 import { RevealOnScroll } from "@/components/ui/RevealOnScroll";
 import { WhyStudioViewer } from "@/components/why/WhyStudioViewer";
-import { whatsappHref } from "@/lib/constants";
+import { quoteHref, whatsappHref } from "@/lib/constants";
 
 interface WhyHeroProps {
   whatsapp: string;
@@ -11,7 +11,7 @@ export function WhyHero({ whatsapp }: WhyHeroProps) {
   return (
     <section className="section-padding page-top">
       <div className="container-content grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
-        <RevealOnScroll className="max-w-xl">
+        <RevealOnScroll priority className="max-w-xl">
           <p className="eyebrow mb-4 text-gold">Why uPVC in Kathmandu</p>
           <h1 className="font-display text-[clamp(2.15rem,4vw,3.6rem)] leading-[1.05] tracking-tight text-charcoal text-balance">
             Upgrade to uPVC: stronger, quieter, maintenance-free windows for Nepal homes.
@@ -22,7 +22,7 @@ export function WhyHero({ whatsapp }: WhyHeroProps) {
             trouble-free use.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-            <MagneticButton href="/contact">Get a Free Quote</MagneticButton>
+            <MagneticButton href={quoteHref()}>Get a Free Quote</MagneticButton>
             <MagneticButton
               href={whatsappHref(
                 whatsapp,
@@ -35,7 +35,7 @@ export function WhyHero({ whatsapp }: WhyHeroProps) {
           </div>
         </RevealOnScroll>
 
-        <RevealOnScroll delay={0.12}>
+        <RevealOnScroll priority delay={0.12}>
           <WhyStudioViewer
             openingType="casement"
             posterAlt="White uPVC casement window — Hi-Tech uPVC Kathmandu"

@@ -8,7 +8,7 @@ Shared “under development — arriving soon” band for unfinished marketing r
 
 ## Implementation Notes
 - File: `components/ui/ComingSoon.tsx`
-- Used by `/get-quote`, `/gallery`, `/about`
+- Used by `/get-quote`, `/about`
 - First band: `section-padding page-top`
 - Quote/WhatsApp/products CTAs use live routes
 - Pages are `noindex` until the real content ships

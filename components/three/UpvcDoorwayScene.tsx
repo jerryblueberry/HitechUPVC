@@ -1,35 +1,48 @@
 "use client";
 
 /**
- * Page-load intro: white French doors set into a wall the same colour as the
- * page. The doors swing open and the camera walks through, so the real page
- * underneath (the canvas is transparent) is revealed through the doorway.
+ * Page-load intro: white French doors in a surface-coloured wall. Lights only
+ * (no 1.5 MB HDRI) so the first frame can compile immediately. The camera
+ * walks through a transparent canvas onto the real page.
  */
 
 import "./patchClock";
-import { Environment } from "@react-three/drei";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Suspense, useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import { getFinish, getUpvcModel, GLAZING, HARDWARE } from "@/lib/upvc3d";
-import { HDRI_PATH } from "./UpvcStage";
 import { UpvcUnit } from "./UpvcUnit";
 
 /** Must match `--color-surface` so the wall is indistinguishable from the page */
 const WALL_COLOR = "#f7f6f3";
 
 const FOV = 34;
-const OPEN_START = 0.25;
-const OPEN_DURATION = 1.15;
-const WALK_START = 0.85;
-const WALK_DURATION = 1.55;
-const WALK_END_Z = -1.6;
-export const DOORWAY_INTRO_SECONDS = WALK_START + WALK_DURATION;
 
 const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
 const easeInOutCubic = (t: number) =>
   t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 const clamp01 = (t: number) => Math.min(1, Math.max(0, t));
+
+function isCoarsePointer() {
+  return window.matchMedia("(pointer: coarse)").matches;
+}
+
+/** Slightly shorter on touch so phones finish before the fail-open timeout. */
+function introTiming(coarse: boolean) {
+  const OPEN_START = 0.04;
+  const OPEN_DURATION = coarse ? 0.5 : 0.58;
+  const WALK_START = coarse ? 0.26 : 0.34;
+  const WALK_DURATION = coarse ? 0.72 : 0.86;
+  const WALK_END_Z = -1.6;
+  return {
+    OPEN_START,
+    OPEN_DURATION,
+    WALK_START,
+    WALK_DURATION,
+    WALK_END_Z,
+    TOTAL: WALK_START + WALK_DURATION,
+  };
+}
 
 function Wall({ holeWidth, holeHeight }: { holeWidth: number; holeHeight: number }) {
   const geometry = useMemo(() => {
@@ -41,7 +54,6 @@ function Wall({ holeWidth, holeHeight }: { holeWidth: number; holeHeight: number
     shape.lineTo(-size, size);
     shape.closePath();
 
-    // Slightly inside the frame so the frame covers the cut edge.
     const hw = holeWidth / 2 - 0.012;
     const hh = holeHeight / 2 - 0.012;
     const hole = new THREE.Path();
@@ -64,35 +76,68 @@ function Wall({ holeWidth, holeHeight }: { holeWidth: number; holeHeight: number
   );
 }
 
+interface Timing {
+  OPEN_START: number;
+  OPEN_DURATION: number;
+  WALK_START: number;
+  WALK_DURATION: number;
+  WALK_END_Z: number;
+  TOTAL: number;
+}
+
 interface TimelineProps {
   clockRef: React.RefObject<number>;
+  playingRef: React.RefObject<boolean>;
   startZ: (aspect: number) => number;
+  timing: Timing;
   onReveal: () => void;
   onComplete: () => void;
 }
 
-function Timeline({ clockRef, startZ, onReveal, onComplete }: TimelineProps) {
+function Timeline({
+  clockRef,
+  playingRef,
+  startZ,
+  timing,
+  onReveal,
+  onComplete,
+}: TimelineProps) {
   const camera = useThree((state) => state.camera);
   const size = useThree((state) => state.size);
   const done = useRef(false);
   const revealed = useRef(false);
+  const placed = useRef(false);
 
   useFrame((_, delta) => {
-    // Clamp so a slow first frame (shader compile) doesn't skip the swing.
+    const z0 = startZ(size.width / Math.max(1, size.height));
+
+    // Park the camera on the first frame so compile / first paint aren't wrong.
+    if (!placed.current) {
+      placed.current = true;
+      camera.position.set(0, 0.04, z0);
+      camera.lookAt(0, 0, -8);
+    }
+
+    if (!playingRef.current) return;
     clockRef.current += Math.min(delta, 1 / 30);
     const t = clockRef.current;
 
-    const z0 = startZ(size.width / Math.max(1, size.height));
-    const walk = easeInOutCubic(clamp01((t - WALK_START) / WALK_DURATION));
-    camera.position.set(0, 0.04 * (1 - walk), THREE.MathUtils.lerp(z0, WALK_END_Z, walk));
+    const walk = easeInOutCubic(
+      clamp01((t - timing.WALK_START) / timing.WALK_DURATION)
+    );
+    camera.position.set(
+      0,
+      0.04 * (1 - walk),
+      THREE.MathUtils.lerp(z0, timing.WALK_END_Z, walk)
+    );
     camera.lookAt(0, 0, -8);
 
-    if (!revealed.current && t >= WALK_START) {
+    if (!revealed.current && t >= timing.WALK_START) {
       revealed.current = true;
       onReveal();
     }
 
-    if (!done.current && t >= DOORWAY_INTRO_SECONDS) {
+    if (!done.current && t >= timing.TOTAL) {
       done.current = true;
       onComplete();
     }
@@ -101,17 +146,43 @@ function Timeline({ clockRef, startZ, onReveal, onComplete }: TimelineProps) {
   return null;
 }
 
-function Ready({ onReady }: { onReady: () => void }) {
+function IntroReady({
+  playingRef,
+  onReady,
+  onLive,
+}: {
+  playingRef: React.RefObject<boolean>;
+  onReady: () => void;
+  onLive: () => void;
+}) {
+  const gl = useThree((state) => state.gl);
+  const scene = useThree((state) => state.scene);
+  const camera = useThree((state) => state.camera);
+  const invalidate = useThree((state) => state.invalidate);
+
   useEffect(() => {
-    onReady();
-  }, [onReady]);
+    let cancelled = false;
+    const start = () => {
+      if (cancelled) return;
+      playingRef.current = true;
+      onLive();
+      invalidate();
+      requestAnimationFrame(() => {
+        if (!cancelled) onReady();
+      });
+    };
+    const compile = gl.compileAsync?.(scene, camera) ?? Promise.resolve();
+    compile.then(start, start);
+    return () => {
+      cancelled = true;
+    };
+  }, [gl, scene, camera, invalidate, playingRef, onReady, onLive]);
+
   return null;
 }
 
 export interface UpvcDoorwaySceneProps {
-  /** Fires once the HDRI has loaded and the first frame is about to draw */
   onReady: () => void;
-  /** Fires as the camera starts walking through — the page behind should be ready to be seen */
   onReveal: () => void;
   onComplete: () => void;
   className?: string;
@@ -125,13 +196,20 @@ export function UpvcDoorwayScene({
 }: UpvcDoorwaySceneProps) {
   const spec = useMemo(() => getUpvcModel("french", "doors"), []);
   const clockRef = useRef(0);
+  const playingRef = useRef(false);
+  const [live, setLive] = useState(false);
+  const coarse = useMemo(() => isCoarsePointer(), []);
+  const timing = useMemo(() => introTiming(coarse), [coarse]);
+  const handleLive = useMemo(() => () => setLive(true), []);
 
   const openSource = useMemo(
-    () => () => easeOutCubic(clamp01((clockRef.current - OPEN_START) / OPEN_DURATION)),
-    []
+    () => () =>
+      easeOutCubic(
+        clamp01((clockRef.current - timing.OPEN_START) / timing.OPEN_DURATION)
+      ),
+    [timing]
   );
 
-  // Frame the doorway with a little wall showing, at any aspect ratio.
   const startZ = useMemo(() => {
     const vHalf = Math.tan(((FOV / 2) * Math.PI) / 180);
     return (aspect: number) =>
@@ -143,38 +221,45 @@ export function UpvcDoorwayScene({
   return (
     <Canvas
       className={className}
-      dpr={[1, 2]}
-      gl={{ antialias: true, alpha: true, powerPreference: "default" }}
-      camera={{ position: [0, 0.04, 6], fov: FOV, near: 0.02, far: 80 }}
+      frameloop={live ? "always" : "demand"}
+      dpr={[1, coarse ? 1.05 : 1.35]}
+      gl={{
+        antialias: false,
+        alpha: true,
+        powerPreference: "default",
+        stencil: false,
+        depth: true,
+      }}
+      camera={{ position: [0, 0.04, 6], fov: FOV, near: 0.02, far: 40 }}
       onCreated={({ gl }) => {
         gl.toneMapping = THREE.ACESFilmicToneMapping;
-        gl.toneMappingExposure = 1.05;
+        gl.toneMappingExposure = 1.08;
       }}
     >
-      <directionalLight position={[2.4, 3.2, 3]} intensity={1.1} />
-      <directionalLight position={[-2.5, 1, 2]} intensity={0.35} />
+      <hemisphereLight args={["#f7f4ee", "#c9c2b6", 0.9]} />
+      <directionalLight position={[2.4, 3.2, 3]} intensity={1.35} />
+      <directionalLight position={[-2.2, 1.2, 2]} intensity={0.4} />
 
-      <Suspense fallback={null}>
-        <Environment files={HDRI_PATH} />
-        <Wall holeWidth={spec.width} holeHeight={holeHeight} />
-        <UpvcUnit
-          spec={spec}
-          finish={getFinish("white")}
-          hardware={HARDWARE.chrome}
-          glazing={GLAZING.clear}
-          quality="balanced"
-          isDoor
-          openSource={openSource}
-          damping={9}
-        />
-        <Timeline
-          clockRef={clockRef}
-          startZ={startZ}
-          onReveal={onReveal}
-          onComplete={onComplete}
-        />
-        <Ready onReady={onReady} />
-      </Suspense>
+      <Wall holeWidth={spec.width} holeHeight={holeHeight} />
+      <UpvcUnit
+        spec={spec}
+        finish={getFinish("white")}
+        hardware={HARDWARE.chrome}
+        glazing={GLAZING.clear}
+        quality="draft"
+        isDoor
+        openSource={openSource}
+        damping={coarse ? 22 : 18}
+      />
+      <Timeline
+        clockRef={clockRef}
+        playingRef={playingRef}
+        startZ={startZ}
+        timing={timing}
+        onReveal={onReveal}
+        onComplete={onComplete}
+      />
+      <IntroReady playingRef={playingRef} onReady={onReady} onLive={handleLive} />
     </Canvas>
   );
 }

@@ -1,6 +1,3 @@
-"use client";
-
-import { motion, useMotionValue, useReducedMotion, useSpring } from "framer-motion";
 import Link from "next/link";
 import type { ReactNode } from "react";
 
@@ -12,6 +9,13 @@ interface MagneticButtonProps {
   variant?: "primary" | "secondary";
 }
 
+const VARIANTS = {
+  primary:
+    "bg-navy text-surface shadow-[0_1px_2px_rgba(14,42,62,0.12)] hover:bg-charcoal hover:shadow-[0_8px_20px_-8px_rgba(14,42,62,0.45)]",
+  secondary:
+    "border border-charcoal/20 text-charcoal hover:border-navy hover:bg-navy/[0.03] hover:text-navy",
+} as const;
+
 export function MagneticButton({
   href,
   onClick,
@@ -19,51 +23,14 @@ export function MagneticButton({
   className = "",
   variant = "primary",
 }: MagneticButtonProps) {
-  const reducedMotion = useReducedMotion();
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-  const springX = useSpring(x, { stiffness: 300, damping: 20 });
-  const springY = useSpring(y, { stiffness: 300, damping: 20 });
-
-  const baseStyles =
-    variant === "primary"
-      ? "bg-navy text-surface hover:bg-charcoal"
-      : "border border-charcoal/20 text-charcoal hover:border-navy hover:text-navy";
-
-  const classes = `inline-flex items-center justify-center px-6 py-3 rounded-full text-sm font-medium transition-colors ${baseStyles} ${className}`;
-
-  function handleMouseMove(e: React.MouseEvent<HTMLElement>) {
-    if (reducedMotion) return;
-    const rect = e.currentTarget.getBoundingClientRect();
-    x.set((e.clientX - rect.left - rect.width / 2) * 0.15);
-    y.set((e.clientY - rect.top - rect.height / 2) * 0.15);
-  }
-
-  function handleMouseLeave() {
-    x.set(0);
-    y.set(0);
-  }
-
-  const motionProps = reducedMotion
-    ? {}
-    : {
-        style: { x: springX, y: springY },
-        onMouseMove: handleMouseMove,
-        onMouseLeave: handleMouseLeave,
-        whileTap: { scale: 0.97 },
-      };
+  const classes = `inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-medium transition-[color,background-color,border-color,box-shadow,transform] duration-300 ease-[var(--ease-premium)] active:scale-[0.985] active:duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-surface motion-reduce:transition-colors motion-reduce:active:scale-100 ${VARIANTS[variant]} ${className}`;
 
   if (href) {
     const external = href.startsWith("http");
     return (
-      <motion.div {...motionProps} className="inline-block">
+      <div className="block w-full sm:inline-block sm:w-auto">
         {external ? (
-          <a
-            href={href}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={classes}
-          >
+          <a href={href} target="_blank" rel="noopener noreferrer" className={classes}>
             {children}
           </a>
         ) : (
@@ -71,18 +38,13 @@ export function MagneticButton({
             {children}
           </Link>
         )}
-      </motion.div>
+      </div>
     );
   }
 
   return (
-    <motion.button
-      type="button"
-      onClick={onClick}
-      className={classes}
-      {...motionProps}
-    >
+    <button type="button" onClick={onClick} className={classes}>
       {children}
-    </motion.button>
+    </button>
   );
 }

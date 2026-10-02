@@ -1,0 +1,180 @@
+{
+  "seo": {
+    "title": "About Us — uPVC Manufacturer in Kathmandu",
+    "description": "Hi-Tech uPVC Profile Industries is a Kathmandu-based manufacturer of uPVC windows, doors, and panels. From our Tarakeshwar factory, Lambagar glass unit, and Tokha workshop, we design, fabricate, and install across Nepal.",
+    "keywords": [
+      "about Hi-Tech uPVC",
+      "uPVC manufacturer Kathmandu",
+      "uPVC company Nepal",
+      "uPVC windows Kathmandu",
+      "uPVC doors Nepal",
+      "uPVC factory Tarakeshwar",
+      "Hitech Glass Lambagar",
+      "uPVC windows Tokha",
+      "double glazed windows Nepal",
+      "Hi-Tech Group Nepal"
+    ]
+  },
+  "hero": {
+    "eyebrow": "About us",
+    "title": "Made in Kathmandu, for the way Nepal lives.",
+    "body": "Hi-Tech uPVC Profile Industries designs, fabricates, and installs uPVC windows, doors, and panels from our own sites in the Kathmandu valley — built for valley dust, monsoon rain, and cold winter mornings.",
+    "image": "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1600&q=80",
+    "imageAlt": "Modern home at dusk with large dark-framed glazed doors and windows glowing with warm interior light",
+    "imageCaption": "Large-format glazing, slim dark frames — the kind of openings we build."
+  },
+  "story": {
+    "eyebrow": "Our story",
+    "title": "A local workshop with a factory standard.",
+    "paragraphs": [
+      "Hi-Tech began with a simple observation: homes in Kathmandu were still fitted with frames that swelled in the monsoon, let in dust, and needed painting every few years. Families deserved windows that simply worked.",
+      "Today we run our own factory at Bihani Chowk, Tarakeshwar, a glass processing unit at Lambagar, and a fabrication workshop in Tokha. Keeping profiles, glass, and fitting under one roof lets us control quality at every step — and answer for it.",
+      "Every frame is cut to the millimetre for its opening, assembled by our own team, and installed by fitters who live and work in the valley."
+    ]
+  },
+  "services": {
+    "eyebrow": "What we do",
+    "title": "From the first measurement to the last handle.",
+    "items": [
+      {
+        "title": "uPVC windows",
+        "body": "Sliding, casement, and tilt & turn windows with multi-chamber profiles and double glazing for quieter, warmer rooms.",
+        "href": "/products/windows"
+      },
+      {
+        "title": "uPVC doors",
+        "body": "Sliding patio, French, folding, and entrance doors with multi-point locking and weather-tight gaskets.",
+        "href": "/products/doors"
+      },
+      {
+        "title": "Panels & partitions",
+        "body": "uPVC panels for partitions, cladding, and interiors — moisture-proof, termite-proof, and easy to clean.",
+        "href": "/products/panels"
+      },
+      {
+        "title": "Glass processing",
+        "body": "Toughened, laminated, and double-glazed units prepared at our Lambagar glass unit for safety and insulation.",
+        "href": "/contact"
+      },
+      {
+        "title": "Site measurement & installation",
+        "body": "Our team measures on site, fabricates to size, and installs with clean finishing — homes, apartments, and commercial projects.",
+        "href": "/get-quote"
+      },
+      {
+        "title": "Aftercare & warranty",
+        "body": "Adjustments, hardware servicing, and warranty support long after handover. One call or WhatsApp message away.",
+        "href": "/contact"
+      }
+    ]
+  },
+  "sites": {
+    "eyebrow": "Where we work",
+    "title": "Three sites across the Kathmandu valley.",
+    "body": "Visit any of our sites to see profiles, glass, and finished units in person.",
+    "roles": [
+      {
+        "label": "Head Office & Factory",
+        "role": "Profile manufacturing & head office",
+        "description": "Our main factory and office, where uPVC profiles are processed and frames are cut, welded, and assembled."
+      },
+      {
+        "label": "Hitech Glass",
+        "role": "Glass processing",
+        "description": "Our glass unit in Kathmandu, preparing toughened and double-glazed units for every window and door."
+      },
+      {
+        "label": "Hi-Tech UPVC Windows",
+        "role": "Fabrication & display",
+        "description": "Fabrication workshop and display space in Tokha — see finished windows and doors and discuss your project."
+      }
+    ]
+  },
+  "values": {
+    "eyebrow": "How we work",
+    "title": "Principles we build by.",
+    "body": "Good uPVC windows and doors are only as good as the decisions behind them. These four principles guide every project we take on in the Kathmandu valley — from a single bedroom window to a full commercial facade.",
+    "highlight": {
+      "title": "One team, factory to fitting.",
+      "body": "Profiles, glass, fabrication, and installation stay with Hi-Tech — so there is always one number to call.",
+      "linkLabel": "Talk to our team",
+      "linkHref": "/contact"
+    },
+    "items": [
+      {
+        "icon": "mountain",
+        "title": "Built for Nepal",
+        "body": "Profiles, gaskets, and glass are chosen for Kathmandu conditions — fine valley dust, heavy monsoon rain, strong UV, and cold winter mornings.",
+        "proof": "UV-stable profiles · weather-tight seals"
+      },
+      {
+        "icon": "ruler",
+        "title": "Made to measure",
+        "body": "We measure every opening on site and fabricate each window and door to size, so frames sit square in local brick and concrete walls.",
+        "proof": "On-site measurement · custom fabrication"
+      },
+      {
+        "icon": "chat",
+        "title": "Honest advice",
+        "body": "We recommend the opening type, glazing, and hardware your room actually needs — and give a clear, itemised quote before any work begins.",
+        "proof": "Free consultation · itemised quotes"
+      },
+      {
+        "icon": "shield",
+        "title": "We stay accountable",
+        "body": "Our own factory, our own fitters, and our own aftercare team. If something needs adjusting after handover, we come back and fix it.",
+        "proof": "Warranty-backed · local aftercare"
+      }
+    ]
+  },
+  "serviceAreas": {
+    "eyebrow": "Service areas",
+    "title": "Serving Kathmandu, Lalitpur, Bhaktapur — and beyond.",
+    "body": "We install throughout the Kathmandu valley and deliver to projects across Nepal.",
+    "regions": [
+      {
+        "id": "valley",
+        "label": "Kathmandu valley",
+        "badge": "Full service",
+        "body": "Measured, fabricated, and installed by our own team — with aftercare a short drive away.",
+        "areas": [
+          "Kathmandu",
+          "Lalitpur",
+          "Bhaktapur",
+          "Tarakeshwar",
+          "Tokha",
+          "Budhanilkantha",
+          "Kirtipur"
+        ],
+        "features": [
+          "Free site measurement",
+          "Installed by our own fitters",
+          "Local aftercare & warranty"
+        ]
+      },
+      {
+        "id": "nepal",
+        "label": "Across Nepal",
+        "badge": "Delivery & projects",
+        "body": "Factory-fabricated units shipped to projects outside the valley, with installation arranged on request.",
+        "areas": ["Pokhara", "Chitwan"],
+        "moreLabel": "Your city — ask us",
+        "features": [
+          "Itemised quote from your drawings",
+          "Secure packing & delivery",
+          "Installation on request"
+        ]
+      }
+    ],
+    "contactLabel": "Not sure we cover your area? Ask us",
+    "contactHref": "/contact"
+  },
+  "cta": {
+    "title": "Planning a new home or renovation?",
+    "body": "Book a free site measurement in the Kathmandu valley, or send us your drawings for a clear, itemised quote.",
+    "primaryLabel": "Get a Free Quote",
+    "primaryHref": "/get-quote",
+    "secondaryLabel": "Visit our sites",
+    "secondaryHref": "/contact"
+  }
+}

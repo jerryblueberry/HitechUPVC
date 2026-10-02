@@ -3,12 +3,21 @@
     "slug": "modern-villa-renovation",
     "title": "Modern Villa Renovation",
     "location": "Baneshwor, Kathmandu",
+    "collection": "installations",
     "productCategory": "windows",
     "productSlug": "tilt-turn-classic",
-    "description": "Complete window replacement with tilt & turn systems in anthracite grey.",
+    "description": "Complete window replacement with tilt & turn systems in anthracite grey — quieter rooms, cleaner sightlines.",
+    "orientation": "landscape",
+    "featured": true,
     "images": [
-      "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80",
-      "https://images.unsplash.com/photo-1600607687644-c7171b42498f?auto=format&fit=crop&w=800&q=80"
+      {
+        "src": "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1600&q=80",
+        "alt": "Modern villa exterior with new uPVC windows",
+        "orientation": "landscape",
+        "width": 1600,
+        "height": 1067
+      },
+      "https://images.unsplash.com/photo-1600607687644-c7171b42498f?auto=format&fit=crop&w=1200&q=80"
     ],
     "beforeImage": "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=1200&q=80",
     "afterImage": "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80"
@@ -17,23 +26,178 @@
     "slug": "patio-extension",
     "title": "Patio Extension",
     "location": "Lazimpat, Kathmandu",
+    "collection": "installations",
     "productCategory": "doors",
     "productSlug": "sliding-patio",
-    "description": "Floor-to-ceiling sliding patio doors connecting living space to garden.",
+    "description": "Floor-to-ceiling sliding patio doors connecting living space to the garden.",
+    "orientation": "portrait",
     "images": [
-      "https://images.unsplash.com/photo-1600607687644-c7171b42498f?auto=format&fit=crop&w=800&q=80",
-      "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=800&q=80"
+      {
+        "src": "https://images.unsplash.com/photo-1600607687644-c7171b42498f?auto=format&fit=crop&w=1200&q=80",
+        "alt": "Sliding patio doors opening to a garden",
+        "orientation": "portrait",
+        "width": 1200,
+        "height": 1600
+      }
     ]
   },
   {
     "slug": "commercial-cladding",
     "title": "Commercial Cladding",
     "location": "Tarakeshwar, Kathmandu",
+    "collection": "installations",
     "productCategory": "panels",
     "productSlug": "cladding-smooth",
-    "description": "Smooth cladding panels for a contemporary office facade.",
+    "description": "Smooth cladding panels for a contemporary office facade near the Hi-Tech factory.",
+    "orientation": "landscape",
     "images": [
-      "https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=800&q=80"
+      {
+        "src": "https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=1600&q=80",
+        "alt": "Office facade with smooth uPVC cladding",
+        "orientation": "landscape"
+      }
+    ]
+  },
+  {
+    "slug": "apartment-tilt-turn",
+    "title": "Apartment Tilt & Turn Suite",
+    "location": "Budhanilkantha, Kathmandu",
+    "collection": "installations",
+    "productCategory": "windows",
+    "description": "Secure trickle ventilation and inward swing for easy cleaning on an upper-floor residence.",
+    "orientation": "square",
+    "images": [
+      {
+        "src": "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80",
+        "alt": "Apartment with white tilt and turn windows",
+        "orientation": "square"
+      }
+    ]
+  },
+  {
+    "slug": "factory-extrusion-line",
+    "title": "Extrusion Line",
+    "location": "Bihani Chowk, Tarakeshwar",
+    "collection": "factory",
+    "description": "Multi-chamber profiles leaving the line — steel-reinforced, measured for every order.",
+    "orientation": "landscape",
+    "featured": true,
+    "images": [
+      {
+        "src": "https://images.unsplash.com/photo-1581094794329-c8112a89af12?auto=format&fit=crop&w=1600&q=80",
+        "alt": "Manufacturing floor extrusion line",
+        "orientation": "landscape"
+      }
+    ]
+  },
+  {
+    "slug": "factory-assembly-bay",
+    "title": "Assembly Bay",
+    "location": "Bihani Chowk, Tarakeshwar",
+    "collection": "factory",
+    "description": "Leaves, hardware, and glazing assembled to site measurements before they leave the plant.",
+    "orientation": "portrait",
+    "images": [
+      {
+        "src": "https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?auto=format&fit=crop&w=1200&q=80",
+        "alt": "Factory assembly bay with fabricated frames",
+        "orientation": "portrait"
+      }
+    ]
+  },
+  {
+    "slug": "factory-quality-check",
+    "title": "Quality Check",
+    "location": "Bihani Chowk, Tarakeshwar",
+    "collection": "factory",
+    "description": "Every unit is checked for seal, hardware throw, and finish before dispatch.",
+    "orientation": "square",
+    "images": [
+      {
+        "src": "https://images.unsplash.com/photo-1565043589221-1a6fd9ae45c7?auto=format&fit=crop&w=1200&q=80",
+        "alt": "Quality inspection of finished window units",
+        "orientation": "square"
+      }
+    ]
+  },
+  {
+    "slug": "product-french-doors",
+    "title": "French Doors",
+    "location": "Studio",
+    "collection": "products",
+    "productCategory": "doors",
+    "productSlug": "french-classic",
+    "description": "Double leaves, slim meeting stile — the doorway that reads as unbroken glass when open.",
+    "orientation": "portrait",
+    "images": [
+      {
+        "src": "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=1200&q=80",
+        "alt": "White French uPVC doors in studio light",
+        "orientation": "portrait"
+      }
+    ]
+  },
+  {
+    "slug": "product-sliding-system",
+    "title": "Sliding System",
+    "location": "Studio",
+    "collection": "products",
+    "productCategory": "windows",
+    "description": "Stainless rollers within the frame depth — nothing projects into the room.",
+    "orientation": "landscape",
+    "images": [
+      {
+        "src": "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1600&q=80",
+        "alt": "Sliding uPVC window system detail",
+        "orientation": "landscape"
+      }
+    ]
+  },
+  {
+    "slug": "product-fluted-panel",
+    "title": "Fluted Wall Panel",
+    "location": "Studio",
+    "collection": "products",
+    "productCategory": "panels",
+    "description": "Woodgrain fluted panels for feature walls — the install that needs no paint.",
+    "orientation": "square",
+    "images": [
+      {
+        "src": "https://images.unsplash.com/photo-1615874959474-d609969a20ed?auto=format&fit=crop&w=1200&q=80",
+        "alt": "Fluted woodgrain uPVC wall panel detail",
+        "orientation": "square"
+      }
+    ]
+  },
+  {
+    "slug": "homestead-casement",
+    "title": "Homestead Casement",
+    "location": "Bhaktapur",
+    "collection": "installations",
+    "productCategory": "windows",
+    "description": "White casement windows on a restored courtyard house — sealed against dust and monsoon.",
+    "orientation": "landscape",
+    "images": [
+      {
+        "src": "https://images.unsplash.com/photo-1600047509807-ba8f99d367e7?auto=format&fit=crop&w=1600&q=80",
+        "alt": "Casement windows on a residential facade",
+        "orientation": "landscape"
+      }
+    ]
+  },
+  {
+    "slug": "showroom-hardware",
+    "title": "Hardware Detail",
+    "location": "Studio",
+    "collection": "products",
+    "description": "Brushed multi-point furniture — the lever you feel before you see.",
+    "orientation": "portrait",
+    "images": [
+      {
+        "src": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=1200&q=80",
+        "alt": "Close-up of brushed door hardware on a uPVC leaf",
+        "orientation": "portrait"
+      }
     ]
   }
 ]

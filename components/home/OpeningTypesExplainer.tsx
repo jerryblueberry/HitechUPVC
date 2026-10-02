@@ -5,6 +5,7 @@ import { useState } from "react";
 import type { OpeningType } from "@/lib/types";
 import { OPENING_TYPE_LABELS } from "@/lib/constants";
 import { DEMO_OPENING_TYPES } from "@/lib/upvc3d";
+import { ApproachedMount } from "@/components/three/ApproachedMount";
 import { LazyUpvcViewer } from "@/components/three/LazyUpvcViewer";
 import { RevealOnScroll } from "@/components/ui/RevealOnScroll";
 
@@ -90,14 +91,16 @@ export function OpeningTypesExplainer() {
                   "radial-gradient(90% 80% at 50% 40%, #ffffff 0%, #f7f6f3 55%, #ebe7e0 100%)",
               }}
             >
-              <LazyUpvcViewer
-                openingType={active}
-                category={DOOR_TYPES.includes(active) ? "doors" : "windows"}
-                autoPlay
-                interactive
-                className="aspect-[4/3] sm:aspect-[5/4] lg:aspect-[4/5]"
-                posterAlt={`${OPENING_TYPE_LABELS[active]} uPVC unit`}
-              />
+              <ApproachedMount className="aspect-[4/3] sm:aspect-[5/4] lg:aspect-[4/5]">
+                <LazyUpvcViewer
+                  openingType={active}
+                  category={DOOR_TYPES.includes(active) ? "doors" : "windows"}
+                  autoPlay
+                  interactive
+                  className="h-full w-full"
+                  posterAlt={`${OPENING_TYPE_LABELS[active]} uPVC unit`}
+                />
+              </ApproachedMount>
             </div>
             <p className="mt-3 text-center text-caption text-charcoal/40">
               Drag to look around

@@ -18,7 +18,7 @@ export default function ContactPage() {
     <article className="bg-surface">
       <section className="section-padding page-top">
         <div className="container-content">
-          <RevealOnScroll className="mb-8 max-w-2xl sm:mb-10 lg:mb-14">
+          <RevealOnScroll priority className="mb-8 max-w-2xl sm:mb-10 lg:mb-14">
             <p className="eyebrow mb-3 text-gold sm:mb-4">Contact</p>
             <h1 className="font-display text-[clamp(1.85rem,7vw,3.25rem)] leading-[1.05] tracking-tight text-charcoal text-balance">
               Visit us, or send a message.

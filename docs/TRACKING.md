@@ -15,7 +15,7 @@ Single source for backlog, in-progress, review, and done. Update on every task.
 - [ ] Carry configurator selections into the quote form
 
 ### Other Pages
-- [ ] Gallery page (coming-soon placeholder live)
+- [x] Gallery page — Apple-style grid/masonry, collection filters, Cloudinary-ready `projects.json`
 - [ ] About page (coming-soon placeholder live)
 - [ ] Get Quote multi-step form (coming-soon placeholder live)
 
@@ -35,7 +35,7 @@ Single source for backlog, in-progress, review, and done. Update on every task.
 
 ## In Progress
 
-- (empty)
+_(none)_
 
 ---
 
@@ -46,7 +46,7 @@ Real-time 3D (ADR 006) — awaiting sign-off:
 - [x] `lib/upvc3d.ts` — parametric model specs, finishes, hardware, glazing
 - [x] `components/three/` — geometry, materials, hardware, opening rigs, stage, camera fit
 - [x] CC0 Poly Haven studio HDRI in `public/hdri/`
-- [x] ScrollDoorSequence — pinned scroll-driven door sequence (replaces CurtainWindowReveal on home)
+- [x] ScrollDoorSequence — pinned scroll-driven door sequence (Apple-smooth progress, device-adaptive)
 - [x] OpeningTypesExplainer — now a real 3D viewer, single WebGL context
 - [x] UpvcConfigurator — live finish / hardware / glazing / opening
 - [x] Product detail routes for windows, doors, panels
@@ -60,7 +60,14 @@ Real-time 3D (ADR 006) — awaiting sign-off:
 - [x] Contact page — form with inline validation + dummy success; three pins on one map; layout matches home sections
 - [x] Why uPVC page — Kathmandu SEO landing (hero 3D, comparison, FAQ JSON-LD, sitemap); reuses home casement/showcase/before-after
 - [x] Products overview — `/products` hero 3D + family jumps + filterable grid (PNG/fluted posters); sitemap + CollectionPage JSON-LD
-- [x] Coming-soon placeholders — `/get-quote`, `/gallery`, `/about` (noindex until the real pages ship)
+- [x] Coming-soon placeholders — `/get-quote`, `/about` (noindex until the real pages ship); `/gallery` is live
+- [x] Doorway intro first-load — no HDRI, `compileAsync` gate, hero canvas deferred until overlay completes, intro lock on other canvases, 2.8s fail-open
+- [x] First-load polish — once-only exit drops intro WebGL before hero mounts; shorter mobile door timeline; snappier hero + section reveals
+- [x] Hero load — eager stage, prefetch viewer during intro, open after compile, touch DPR / no contact shadow
+- [x] Testimonials — phone snap / tablet 2-col / desktop bento (readable on every width)
+- [x] Stats band — 10 years, 1,000+ installations; cream display figures with hairline columns
+- [x] CTA section — solid navy, split headline/actions, no pulsing gold blob
+- [x] Product catalogue filters — sticky chips aligned with hero pills; finish swatches + snap scroll
 
 ---
 

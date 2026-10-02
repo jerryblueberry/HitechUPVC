@@ -27,7 +27,7 @@ Framer Motion patterns for Premium UPVC. All motion supports content — never d
 | PremiumText | Silent word/block fade | opacity + y:8–10, duration 0.75–0.9s |
 | ImageReveal | Scale or slide-in photos | whileInView, duration 1.1s |
 | Hero headline | Word/line reveal on load | `staggerChildren` + `AnimatedText` |
-| Section entrances | Fade + slight Y translate | `whileInView`, `viewport={{ once: true, amount: 0.3 }}` |
+| Section entrances | Fade + slight Y translate | `whileInView`, duration 0.55s, ease premium |
 | Product image hover | Zoom + shadow lift | `whileHover={{ scale: 1.04 }}` |
 | Mega menu | Height/opacity expand | `AnimatePresence`, `mode="wait"` |
 | Nav underline | Sliding indicator | shared `layoutId="nav-underline"` |
@@ -35,11 +35,12 @@ Framer Motion patterns for Premium UPVC. All motion supports content — never d
 | Stats counters | Count up on scroll | `useInView` + `animate()` |
 | Scrollytelling | Sticky media + scroll progress | `useScroll` + `useTransform` |
 | Before/after slider | Pointer-tracked handle | Shared `useMotionValue` for clip + handle (no extra drag transform) |
-| Testimonials marquee | Infinite scroll | CSS keyframe or `animate(x, repeat: Infinity)` |
+| Testimonials | Snap carousel (mobile) / featured + stack (desktop) | CSS `snap-x`; reduced motion stacks |
 | Opening-type demo | Cross-fade between states | `AnimatePresence` + SVG |
-| Page transitions | Soft fade/slide | `template.tsx` motion wrapper |
+| Page transitions | Soft fade/slide (not on `/`) | `template.tsx` motion wrapper |
+| Doorway intro | Fast French-door open + walk-through | Draft materials, touch-short timeline, canvas drops before hero mounts |
 | Buttons | Magnetic cursor + scale | `MagneticButton` + spring |
-| CTA background | Slow ambient gradient | infinite keyframes, low opacity |
+| CTA | Closing quote band | Solid navy; magnetic pills, no ambient pulse |
 
 ## UPVC Opening-Type Demos
 
@@ -71,8 +72,10 @@ Static rendered frame — no auto-play. Without WebGL, the static product image 
 
 `components/home/ScrollDoorSequence.tsx`. Scroll progress is written into a **ref**
 by `useMotionValueEvent` and read inside `useFrame` — scrolling must never trigger a
-React render. Camera keyframes lerp with smoothstep, then damp (λ = 6). Captions
-fade the column out, swap copy, then fade in — two beats never paint together.
+React render. Raw progress is exponentially smoothed (λ = 14); the camera locks to
+that value (one damp stage). Captions fade the column out, swap copy, then fade in —
+two beats never paint together. Touch devices drop DPR / shadow; the chunk prefetches
+before the pin.
 
 ## Shared Utilities
 

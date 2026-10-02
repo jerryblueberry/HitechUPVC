@@ -2,7 +2,7 @@
 
 Status: review
 Owner: agent
-Last reviewed: 2026-09-27
+Last reviewed: 2026-09-29
 
 ## Purpose
 
@@ -23,12 +23,17 @@ but is no longer mounted.
   at every point in the sequence rather than hoping the product stays out of the way.
 - **Ref, not state.** `useMotionValueEvent` writes scroll progress into a ref that
   `useFrame` reads. Scrolling causes zero React renders.
+- **One damp stage.** Raw scroll is exponentially smoothed (λ = 14); the camera
+  locks to that value. Double-damping was mushy — this tracks the finger.
+- **No progress chrome.** Scroll itself is the only affordance — keeps the product
+  and captions clean on every width.
 - **Seam with the hero.** Same surface + radial wash as the home hero so the
   pin starts with no empty band and no colour jump.
-- **All screen sizes.** Phones get the same 3D sequence with a portrait
-  composition (`MOBILE_SHOTS`): subject in the upper part of the frame, captions
-  anchored bottom over a bottom-edge scrim. Shot set is picked with a
-  `(min-width: 1024px)` `useSyncExternalStore` media query.
+- **All screen sizes.** Phones get a portrait composition (`MOBILE_SHOTS`) with the
+  subject high and captions low; shorter `bodyMobile` copy + tighter type so the
+  product stays visible. Shot set swaps at `(min-width: 1024px)`.
+- **Warm ahead.** Prefetch + `ApproachedMount` rootMargin `45%` so the canvas is
+  compiling before the pin locks.
 
 ## Props / Data
 
@@ -44,31 +49,31 @@ None. Copy and camera shots are local constants; the model comes from
 | 0.66 | Hinge side, door wide open |
 | 1.00 | Straight elevation |
 
-Door opens over scroll 0.18 → 0.68. Camera positions lerp with smoothstep between
-shots, then damp (λ = 6) to absorb trackpad jitter. The caption column fades out,
-swaps to the next beat (visibility, never two texts at once), then fades in.
+Door opens over scroll 0.18 → 0.68 (smoothstep of smoothed progress). Camera
+positions lerp with smoothstep between shots. Captions fade out, swap, fade in.
 Each beat is marked `01 — The detail`. Grid-stacked so height never jumps.
 
 ## Responsive Behavior
 
-- Pinned section: `h-[360vh]` on mobile, `h-[420vh]` at `lg`; sticky stage is
-  `100svh` so mobile URL-bar resizing doesn't jump the pin
-- Desktop: caption column left, left-edge scrim, subject right
-- Mobile: captions bottom (respecting the safe-area inset), bottom scrim, subject top
+- Pinned section: `h-[240vh]` phone → `sm:h-[300vh]` → `lg:h-[400vh]`; sticky
+  stage is `100svh` + `touch-pan-y` so scroll never fights the canvas
+- Desktop: caption column left, left-edge scrim, subject right, full body copy
+- Mobile: captions bottom (safe-area), shorter bottom scrim, compact type,
+  `bodyMobile` lines; product framed higher
+- Touch: DPR 1.15, no contact shadow, no antialias; desktop DPR 1.5 + shadow
 - Canvas is `pointer-events-none` so touch scrolling is never captured
 - `motion-reduce:` swaps the pinned section for the static prose version
 
 ## Accessibility
 
 Section carries `aria-label="Scroll-driven door sequence"`. The scrim is
-`aria-hidden`. Captions are real headings and paragraphs, so the content is readable
-without the canvas. Reduced motion falls through to the static poster
-(`renderWhenReduced={false}` on the stage).
+`aria-hidden`. Captions are real headings and paragraphs. Reduced motion falls
+through to the static poster (`renderWhenReduced={false}`).
 
 ## Dependencies
 
 `framer-motion` (`useScroll`, `useMotionValueEvent`, `useTransform`),
-`components/three/LazyUpvcScrollScene`
+`components/three/LazyUpvcScrollScene` (+ `prefetchUpvcScrollScene`)
 
 ## Review Checklist
 
@@ -76,6 +81,10 @@ without the canvas. Reduced motion falls through to the static poster
 - [x] Captions dissolve through each other — no empty gap between beats
 - [x] Only one caption fully legible at a time
 - [x] No React re-render while scrolling
-- [x] Mobile 3D sequence verified at 390×844 (start, mid, end shots)
+- [x] No progress indicator chrome
+- [x] Smooth progress tracking (single damp stage)
+- [x] Mobile copy + framing leave the product clear
+- [x] Touch DPR / no shadow; desktop full quality
+- [x] Prefetch + early approach mount
 - [x] Reduced-motion fallback renders the same information
 - [ ] Verify pin behaviour against a real trackpad at 1440px and 1920px

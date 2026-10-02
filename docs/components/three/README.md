@@ -22,9 +22,10 @@ are no downloaded models.
 | `FitCamera.tsx` | Frames a unit of known size, solving both vertical and horizontal FOV |
 | `UpvcViewer.tsx` | Self-framing viewer (explainer + configurator) |
 | `UpvcScrollScene.tsx` | Scroll-driven camera choreography |
-| `UpvcDoorwayScene.tsx` | Page-load intro: French doors in a surface-coloured wall, camera walks through (transparent canvas) |
+| `UpvcDoorwayScene.tsx` | Page-load intro: French doors in a surface-coloured wall, camera walks through (transparent canvas). Lights only — no HDRI. Clock starts after `compileAsync`. |
 | `Lazy*.tsx` | `next/dynamic` `ssr: false` entry points |
 | `hooks.ts` | Reduced motion, WebGL support, hover capability, viewport pausing, lazy canvas creation (safe to import anywhere) |
+| `ApproachedMount.tsx` | Unmounts 3D until near the viewport and the doorway intro has unlocked |
 | `demand.ts` | On-demand rendering helpers: `SETTLE_EPSILON`, `useInvalidateOn`, `useAutoPlayWake` (canvas-only) |
 | `patchClock.ts` | Suppresses R3F 9’s deprecated `THREE.Clock` constructor warning (Clock is a read-only export) |
 
@@ -62,16 +63,21 @@ assume it.
   Time-based loops use `useAutoPlayWake`; the scroll scene wakes on `scroll`.
 - `demand.ts` imports `@react-three/fiber`, so keep it out of `hooks.ts`, which
   non-3D components import
-- Canvases are created ~600px before they scroll into view (`useHasApproached`),
-  not on page load. They stay mounted after that.
+- Canvases are created ~220px before they scroll into view (`useHasApproached`),
+  and not at all while the doorway intro holds `lib/introSession` lock.
+  `ApproachedMount` keeps the lazy three.js chunk unmounted until then. The
+  home hero viewer uses `eager` so it mounts as soon as the intro unlocks,
+  without waiting on an intersection observer.
 - Shaders compile with `gl.compileAsync` before the first visible frame; the canvas
   fades in (700ms) once ready, so a model never pops in half-built
 - `powerPreference: "default"`: "high-performance" wakes the discrete GPU on
   dual-GPU laptops, stalling the page
-- DPR is clamped to `[1, maxDpr]` (2 by default, 1.5 for the full-screen scroll scene).
-  `PerformanceMonitor` was removed because it misreads demand rendering as low FPS.
+- DPR is clamped to `[1, maxDpr]` (2 by default; scroll scene 1.5 desktop / 1.15
+  touch). `PerformanceMonitor` was removed because it misreads demand rendering as low FPS.
+- Scroll scene: smooth progress (λ = 14) then camera locks; wake on scroll/wheel/touch;
+  no contact shadow / antialias on coarse pointers; shot-set swaps snap.
 - `quality="high"` (refractive glass, an extra pass per frame) drops to `balanced` on
-  touch devices
+  touch devices. The doorway intro uses `draft` (MeshStandard, no clearcoat)
 - A lost WebGL context swaps the canvas for the fallback poster instead of a blank box
 - Scroll-linked values pass through a **ref**, never React state
 

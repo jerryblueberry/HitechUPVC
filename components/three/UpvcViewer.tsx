@@ -54,6 +54,13 @@ export interface UpvcViewerProps {
   className?: string;
   /** Static poster used when WebGL is unavailable */
   posterAlt?: string;
+  /** Above-the-fold: skip approach observer */
+  eager?: boolean;
+  maxDpr?: number;
+  contactShadow?: boolean;
+  antialias?: boolean;
+  fadeMs?: number;
+  onReady?: () => void;
 }
 
 export function UpvcViewer({
@@ -70,6 +77,12 @@ export function UpvcViewer({
   quality = "high",
   className,
   posterAlt,
+  eager = false,
+  maxDpr,
+  contactShadow = true,
+  antialias,
+  fadeMs,
+  onReady,
 }: UpvcViewerProps) {
   const spec = useMemo(
     () => getUpvcModel(openingType, category),
@@ -83,7 +96,11 @@ export function UpvcViewer({
 
   // Refraction is an extra render pass per frame; phones get the blended pane.
   const canHover = useCanHover();
+  const coarse = !canHover;
   const effectiveQuality: RenderQuality = canHover ? quality : "balanced";
+  const effectiveDpr = maxDpr ?? (coarse ? 1.25 : 1.75);
+  const effectiveAntialias = antialias ?? !coarse;
+  const effectiveShadow = contactShadow && !coarse;
 
   // A square-wave target read every frame; the unit's damping turns it into
   // an eased swing, which is closer to a real closer than a linear tween.
@@ -113,6 +130,12 @@ export function UpvcViewer({
       groundY={-spec.height / 2 - (spec.hasSill ? 0.06 : 0.04)}
       cameraPosition={[1.1, 0.35, 3.4]}
       renderWhenReduced={!autoPlay}
+      eager={eager}
+      maxDpr={effectiveDpr}
+      contactShadow={effectiveShadow}
+      antialias={effectiveAntialias}
+      fadeMs={fadeMs ?? (eager ? 400 : 500)}
+      onReady={onReady}
     >
       <AutoPlayWake enabled={autoPlay} cycle={cycle} />
 

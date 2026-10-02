@@ -15,3 +15,8 @@ export const LazyUpvcViewer = dynamic(
     loading: () => <div className="h-full w-full" />,
   }
 );
+
+/** Warm the viewer chunk (and three.js) before the hero mounts it. */
+export function prefetchUpvcViewer() {
+  void import("./UpvcViewer");
+}

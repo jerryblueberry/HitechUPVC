@@ -1,12 +1,18 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 
 interface RevealOnScrollProps {
   children: ReactNode;
   className?: string;
   delay?: number;
+  as?: "div" | "li";
+  /**
+   * Above the fold: animate with CSS from the server HTML instead of waiting
+   * for hydration, so the page copy paints (and counts for LCP) immediately.
+   */
+  priority?: boolean;
 }
 
 const ease = [0.22, 1, 0.36, 1] as const;
@@ -15,26 +21,43 @@ export function RevealOnScroll({
   children,
   className = "",
   delay = 0,
+  as = "div",
+  priority = false,
 }: RevealOnScrollProps) {
   const reducedMotion = useReducedMotion();
 
-  if (reducedMotion) {
-    return <div className={className}>{children}</div>;
+  if (priority) {
+    const Tag = as;
+    return (
+      <Tag
+        className={`reveal-load ${className}`}
+        style={{ "--reveal-delay": `${delay}s` } as CSSProperties}
+      >
+        {children}
+      </Tag>
+    );
   }
 
+  if (reducedMotion) {
+    const Tag = as;
+    return <Tag className={className}>{children}</Tag>;
+  }
+
+  const MotionTag = as === "li" ? motion.li : motion.div;
+
   return (
-    <motion.div
+    <MotionTag
       className={className}
-      initial={{ opacity: 0, y: 16 }}
+      initial={{ opacity: 0, y: 14 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.2 }}
+      viewport={{ once: true, amount: 0.18 }}
       transition={{
-        duration: 0.85,
+        duration: 0.55,
         delay,
         ease,
       }}
     >
       {children}
-    </motion.div>
+    </MotionTag>
   );
 }

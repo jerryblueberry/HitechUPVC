@@ -10,7 +10,7 @@ import * as THREE from "three";
 import type { FinishSpec, GlazingSpec, HardwareSpec } from "@/lib/upvc3d";
 import { getGrainTexture } from "./geometry";
 
-export type RenderQuality = "high" | "balanced";
+export type RenderQuality = "high" | "balanced" | "draft";
 
 /** Releases the GPU resources a material holds once it is replaced or unmounted. */
 function useDisposeOnUnmount<T extends { dispose(): void }>(value: T): T {
@@ -19,8 +19,19 @@ function useDisposeOnUnmount<T extends { dispose(): void }>(value: T): T {
 }
 
 /** Frame, sash, bead and panel surfaces. */
-export function useUpvcMaterial(finish: FinishSpec) {
+export function useUpvcMaterial(
+  finish: FinishSpec,
+  quality: RenderQuality = "balanced"
+) {
   const material = useMemo(() => {
+    if (quality === "draft") {
+      return new THREE.MeshStandardMaterial({
+        color: new THREE.Color(finish.color),
+        roughness: finish.roughness,
+        metalness: 0,
+      });
+    }
+
     const material = new THREE.MeshPhysicalMaterial({
       color: new THREE.Color(finish.color),
       roughness: finish.roughness,
@@ -49,6 +60,7 @@ export function useUpvcMaterial(finish: FinishSpec) {
     finish.clearcoat,
     finish.clearcoatRoughness,
     finish.woodgrain,
+    quality,
   ]);
 
   return useDisposeOnUnmount(material);
@@ -71,12 +83,23 @@ export function useHardwareMaterial(hardware: HardwareSpec) {
 }
 
 /**
- * Sealed double-glazed unit. `high` quality uses real refraction, which costs
- * an extra render pass per frame; `balanced` falls back to an alpha-blended
- * pane with a strong clearcoat, which still reads as glass against the HDRI.
+ * Sealed double-glazed unit. `high` uses real refraction (an extra pass);
+ * `balanced` is an alpha-blended pane with clearcoat; `draft` is a cheap
+ * standard material for the page-load intro.
  */
 export function useGlassMaterial(glazing: GlazingSpec, quality: RenderQuality) {
   const material = useMemo(() => {
+    if (quality === "draft") {
+      return new THREE.MeshStandardMaterial({
+        color: new THREE.Color(glazing.color),
+        roughness: 0.08,
+        metalness: 0,
+        transparent: true,
+        opacity: 0.28 + glazing.density * 0.35,
+        side: THREE.DoubleSide,
+      });
+    }
+
     if (quality === "high") {
       return new THREE.MeshPhysicalMaterial({
         color: new THREE.Color(glazing.color),

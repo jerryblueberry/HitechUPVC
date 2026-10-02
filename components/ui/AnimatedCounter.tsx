@@ -38,7 +38,7 @@ export function AnimatedCounter({
 
   return (
     <span ref={ref} className={className}>
-      {display !== null ? `${display}${suffix}` : `\u00A0`}
+      {display !== null ? `${display.toLocaleString("en-US")}${suffix}` : `\u00A0`}
     </span>
   );
 }

@@ -1,7 +1,7 @@
 # Hero
 Status: review
 Owner: agent
-Last reviewed: 2026-09-27
+Last reviewed: 2026-09-29
 
 ## Purpose
 First home section — Apple-style 3D product carousel. The visitor enters through
@@ -22,18 +22,24 @@ site (ADR 006).
 - Lever throws, both leaves swing open, camera walks through the doorway;
   the canvas is transparent so the real page is revealed behind the doors
 - Server renders a surface-coloured cover with the wordmark, so there is no
-  flash of the page while three.js + the HDRI load
-- Hero copy animates in as the camera starts walking through (`onReveal`)
+  flash of the page while three.js loads (the intro canvas does **not** wait
+  on the 1.5 MB HDRI)
+- Hero copy rises as the camera starts walking through (`onReveal`) — 0.55s ease, tight stagger
+- `prefetchUpvcViewer()` warms the hero chunk during the walk
+- Hero 3D stage mounts when the overlay completes (`onComplete`), after the intro canvas has dropped
+- Stage uses `eager` (no approach wait), device DPR (1.25 touch / 1.75 desktop), no contact shadow on touch
+- Open / shut timers start only after `onReady` (shaders compiled)
+- First paint uses stage fade only; slide changes use a short crossfade
 - Plays once per session (`sessionStorage`); click anywhere to skip
-- Skipped entirely for reduced motion or no WebGL; 4s load timeout reveals the page
+- Skipped entirely for reduced motion or no WebGL; 2.4s load timeout fails open
 
 ## Carousel
 - Desktop: copy + CTAs + product chips on the left, 3D stage on the right with
   counter and prev/next arrows in its bottom-right corner
-- Mobile: copy → 3D stage → CTAs → chips (horizontally scrollable); swipe the stage
-- 7s per slide; the unit opens at 0.9s and shuts at 4.8s, so every slide shows
-  one full movement. Gold progress bar inside the active chip
-- Pauses on hover; no auto-advance or opening under reduced motion
+- Mobile: copy → 3D stage → CTAs → chips (snap scroller); swipe the stage; pause on touch
+- 7s per slide; the unit opens at 0.7s and shuts at 4.6s after the canvas is ready
+- Gold progress bar inside the active chip
+- Pauses on hover / touch; no auto-advance or opening under reduced motion
 - Slide change: copy crossfades, stage fades/scales in (layout effect, no flash)
 - Secondary link goes to the slide's product detail page
 - Warm radial gradient (`#fff` → surface → `#ebe7e0`), charcoal type, gold eyebrow
@@ -52,4 +58,7 @@ site (ADR 006).
 - [x] Accessible carousel: tablist chips, labelled arrows, `aria-roledescription`
 - [x] Verified at 390px, 1024px and 1280px widths
 - [x] three.js lazy-loaded, never server-rendered
+- [x] Intro canvas has no HDRI; hero `LazyUpvcViewer` mounts only after `onComplete`
+- [x] Eager hero stage; open animation waits for compile; touch DPR / no shadow
+- [x] All carousel features preserved (swipe, chips, autoplay, open/shut)
 - [x] `tsc`, `eslint` and `next build` pass

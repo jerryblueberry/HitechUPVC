@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { CATEGORY_LABELS, CATEGORY_PATHS } from "@/lib/constants";
 import type { ProductCategory } from "@/lib/types";
+import { ApproachedMount } from "@/components/three/ApproachedMount";
 import { useCanHover } from "@/components/three/hooks";
 import { LazyUpvcPanelViewer } from "@/components/three/LazyUpvcPanelViewer";
 import { LazyUpvcViewer } from "@/components/three/LazyUpvcViewer";
@@ -54,7 +55,7 @@ export function ProductCategoryShowcase({ counts }: ProductCategoryShowcaseProps
           </MagneticButton>
         </RevealOnScroll>
 
-        <div className="-mx-6 flex snap-x snap-mandatory scroll-px-6 gap-8 overflow-x-auto px-6 pb-2 [scrollbar-width:none] md:mx-0 md:grid md:grid-cols-3 md:gap-10 md:overflow-visible md:px-0 md:pb-0 lg:gap-14">
+        <div className="-mx-6 flex snap-x snap-mandatory scroll-px-6 touch-manipulation gap-8 overflow-x-auto overscroll-x-contain px-6 pb-2 [scrollbar-width:none] md:mx-0 md:grid md:grid-cols-3 md:gap-10 md:overflow-visible md:px-0 md:pb-0 lg:gap-14">
           {CATEGORIES.map((category, i) => {
             const isActive = active === category;
             const label = CATEGORY_LABELS[category];
@@ -79,21 +80,25 @@ export function ProductCategoryShowcase({ counts }: ProductCategoryShowcaseProps
                       className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,var(--color-cream)_0%,white_40%,var(--color-surface)_78%,var(--color-taupe)_100%)]"
                     />
                     {category === "panels" ? (
-                      <LazyUpvcPanelViewer
-                        open={isActive ? 1 : 0}
-                        autoPlay={!canHover}
-                        className="pointer-events-none absolute inset-0"
-                      />
+                      <ApproachedMount className="pointer-events-none absolute inset-0">
+                        <LazyUpvcPanelViewer
+                          open={isActive ? 1 : 0}
+                          autoPlay={!canHover}
+                          className="h-full w-full"
+                        />
+                      </ApproachedMount>
                     ) : (
-                      <LazyUpvcViewer
-                        openingType={category === "windows" ? "casement" : "french"}
-                        category={category}
-                        open={isActive ? 1 : 0}
-                        autoPlay={!canHover}
-                        quality="balanced"
-                        className="pointer-events-none absolute inset-0"
-                        posterAlt={`Hi-Tech uPVC ${label}`}
-                      />
+                      <ApproachedMount className="pointer-events-none absolute inset-0">
+                        <LazyUpvcViewer
+                          openingType={category === "windows" ? "casement" : "french"}
+                          category={category}
+                          open={isActive ? 1 : 0}
+                          autoPlay={!canHover}
+                          quality="balanced"
+                          className="h-full w-full"
+                          posterAlt={`Hi-Tech uPVC ${label}`}
+                        />
+                      </ApproachedMount>
                     )}
                   </div>
 

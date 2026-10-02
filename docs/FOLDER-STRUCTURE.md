@@ -28,6 +28,7 @@ frontend/
     home/                           → Home page sections
     why/                            → Why uPVC page sections
     products/                       → Product listing & detail
+    gallery/                        → GalleryView, GalleryCard, GalleryLightbox
     ui/                             → Reusable wrappers (AnimatedText, etc.)
     animations/                     → OpeningTypeDemo, shared motion
     three/                          → Real-time 3D (ADR 006) — see components/three/README.md

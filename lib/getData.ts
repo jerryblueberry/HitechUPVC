@@ -1,4 +1,5 @@
 import type {
+  AboutContent,
   ColorSwatch,
   Company,
   FAQ,
@@ -7,10 +8,12 @@ import type {
   ProductCategory,
   ProductIndexEntry,
   Project,
+  QuoteContent,
   TeamMember,
   Testimonial,
 } from "./types";
 
+import aboutData from "@/data/about.json";
 import colorsData from "@/data/colors.json";
 import companyData from "@/data/company.json";
 import doorsData from "@/data/doors.json";
@@ -19,6 +22,7 @@ import navigationData from "@/data/navigation.json";
 import panelsData from "@/data/panels.json";
 import productsData from "@/data/products.json";
 import projectsData from "@/data/projects.json";
+import quoteData from "@/data/quote.json";
 import teamData from "@/data/team.json";
 import testimonialsData from "@/data/testimonials.json";
 import windowsData from "@/data/windows.json";
@@ -31,6 +35,14 @@ const categoryData: Record<ProductCategory, Product[]> = {
 
 export function getCompany(): Company {
   return companyData as Company;
+}
+
+export function getAbout(): AboutContent {
+  return aboutData as AboutContent;
+}
+
+export function getQuote(): QuoteContent {
+  return quoteData as QuoteContent;
 }
 
 export function getNavigation(): Navigation {

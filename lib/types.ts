@@ -70,6 +70,8 @@ export interface Testimonial {
   name: string;
   role?: string;
   projectType: string;
+  /** Neighbourhood or city in Nepal */
+  location?: string;
   quote: string;
   rating: number;
   image?: string;
@@ -82,14 +84,36 @@ export interface FAQ {
   category?: string;
 }
 
+export type GalleryCollection = "installations" | "factory" | "products";
+
+export type GalleryOrientation = "landscape" | "portrait" | "square";
+
+/**
+ * Cloudinary-ready image entry. Plain URL strings in `images` still work —
+ * resolve with `resolveGalleryImage` / `getProjectCover` in `lib/gallery.ts`.
+ */
+export interface GalleryImage {
+  src: string;
+  alt?: string;
+  width?: number;
+  height?: number;
+  orientation?: GalleryOrientation;
+  /** Optional Cloudinary public id for later transforms */
+  publicId?: string;
+}
+
 export interface Project {
   slug: string;
   title: string;
   location: string;
-  productCategory: ProductCategory;
+  /** Gallery bucket — installations, factory floor, or product photography */
+  collection: GalleryCollection;
+  productCategory?: ProductCategory;
   productSlug?: string;
   description: string;
-  images: string[];
+  images: Array<string | GalleryImage>;
+  orientation?: GalleryOrientation;
+  featured?: boolean;
   beforeImage?: string;
   afterImage?: string;
 }
@@ -148,6 +172,90 @@ export interface Company {
   certifications: string[];
   social: { platform: string; url: string }[];
   process: { step: number; title: string; description: string }[];
+}
+
+export type QuoteProductId = "windows" | "doors" | "panels";
+
+export interface QuoteContent {
+  seo: { title: string; description: string; keywords: string[] };
+  hero: { eyebrow: string; title: string; body: string };
+  steps: string[];
+  products: {
+    id: QuoteProductId;
+    label: string;
+    styles: string[];
+    /** Style label → 3D opening type; panels use the fluted panel viewer instead */
+    previews?: Record<string, OpeningType>;
+  }[];
+  glass: string[];
+  /** Glass label → 3D glazing slug in lib/upvc3d.ts; unlisted labels render clear */
+  glassPreviews: Record<string, "clear" | "low-e" | "obscure" | "tinted">;
+  units: string[];
+  projectTypes: string[];
+  timelines: string[];
+  locations: string[];
+  whatsappIntro: string;
+  aside: { title: string; points: { title: string; body: string }[] };
+}
+
+export type AboutValueIcon = "mountain" | "ruler" | "chat" | "shield";
+
+interface AboutSectionHeading {
+  eyebrow: string;
+  title: string;
+}
+
+export interface AboutContent {
+  seo: { title: string; description: string; keywords: string[] };
+  hero: AboutSectionHeading & {
+    body: string;
+    image: string;
+    imageAlt: string;
+    imageCaption: string;
+  };
+  story: AboutSectionHeading & { paragraphs: string[] };
+  services: AboutSectionHeading & {
+    items: { title: string; body: string; href: string }[];
+  };
+  sites: AboutSectionHeading & {
+    body: string;
+    /** `label` must match a `company.contact.addresses[].label` */
+    roles: { label: string; role: string; description: string }[];
+  };
+  values: AboutSectionHeading & {
+    body: string;
+    highlight: { title: string; body: string; linkLabel: string; linkHref: string };
+    items: {
+      icon: AboutValueIcon;
+      title: string;
+      body: string;
+      proof: string;
+    }[];
+  };
+  serviceAreas: AboutSectionHeading & {
+    body: string;
+    /** First region is rendered as the featured (primary) card */
+    regions: {
+      id: string;
+      label: string;
+      badge: string;
+      body: string;
+      areas: string[];
+      /** Optional trailing chip linking to `contactHref` */
+      moreLabel?: string;
+      features: string[];
+    }[];
+    contactLabel: string;
+    contactHref: string;
+  };
+  cta: {
+    title: string;
+    body: string;
+    primaryLabel: string;
+    primaryHref: string;
+    secondaryLabel: string;
+    secondaryHref: string;
+  };
 }
 
 export interface ProductIndexEntry {

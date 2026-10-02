@@ -1,22 +1,25 @@
 # CTASection
-Status: planned
+Status: review
 Owner: agent
-Last reviewed: —
+Last reviewed: 2026-09-29
 
 ## Purpose
-Bottom-of-page call to action — quote form teaser or WhatsApp/call buttons with ambient background motion.
+Closing call to action — quote and contact — reused on home, products, category, and Why uPVC.
 
 ## Design Decisions
-- Dark or navy section for contrast
-- Subtle gradient/blob animation at low opacity
-- Primary: link to /get-quote
-
-## Animation Spec
-Slow ambient keyframes on background; MagneticButton on primary CTA
+- Solid navy band (same family as StatsCounter), no pulsing gold blob
+- Desktop: headline left, actions right, vertically centred with the copy block
+- Mobile / tablet: stacked copy, full-width equal buttons; from `sm` side-by-side with shared min width
+- Heading uses a responsive clamp; body stays short so it never spans 90rem
+- Primary gold pill → `/get-quote`; secondary ghost on navy; WhatsApp glyph optional
+- Magnetic wrappers stretch full-width under `sm` so CTA alignment stays even
 
 ## Implementation Notes
 - File: `components/home/CTASection.tsx`
 
 ## Review Checklist
-- [ ] Matches DESIGN-SYSTEM tokens
-- [ ] CTA links to /get-quote
+- [x] Matches DESIGN-SYSTEM tokens
+- [x] CTA links to /get-quote on home
+- [x] Readable and tappable at 390px and 1280px
+- [x] Reduced motion: no decorative animation
+- [x] WhatsApp secondary shows the glyph beside the label

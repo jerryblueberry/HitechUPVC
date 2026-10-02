@@ -10,6 +10,7 @@ Official WhatsApp glyph that opens a chat with the company number (`wa.me`).
 - Number comes from `company.contact.whatsapp` via `whatsappHref()` — digits only
 - Green `#25D366` circle, white glyph; opens in a new tab
 - Desktop header (before Get a Quote) and MobileNav drawer — not in the mobile header bar
+- Exports `WhatsAppIcon` for text buttons (CTA, Coming Soon)
 
 ## Props / Data
 - `number: string` — display form, e.g. `+977 981-0058285`
@@ -20,3 +21,4 @@ Official WhatsApp glyph that opens a chat with the company number (`wa.me`).
 ## Review Checklist
 - [x] Uses getData() / company JSON, not a hardcoded href in the header
 - [x] `aria-label` on the icon-only control
+- [x] Shared glyph used on CTA WhatsApp buttons
