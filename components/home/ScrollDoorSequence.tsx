@@ -7,15 +7,22 @@
  */
 
 import {
-  cubicBezier,
+  AnimatePresence,
   motion,
+  useInView,
   useMotionValueEvent,
   useScroll,
   useTransform,
-  type MotionValue,
+  type Variants,
 } from "framer-motion";
 import Image from "next/image";
-import { useCallback, useRef, useState, useSyncExternalStore } from "react";
+import {
+  Fragment,
+  useCallback,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
 import { ApproachedMount } from "@/components/three/ApproachedMount";
 import { useWebGLSupported } from "@/components/three/hooks";
 import { LazyUpvcScrollScene } from "@/components/three/LazyUpvcScrollScene";
@@ -79,49 +86,143 @@ const CAPTIONS = [
   },
 ];
 
-const EASE = cubicBezier(0.22, 1, 0.36, 1);
+const EASE = [0.22, 1, 0.36, 1] as const;
 
 /**
- * Copy swaps only while the column is faded out. Two captions must never
- * paint on top of each other — that reads as corrupted text.
+ * Scroll position each caption takes over at — just ahead of the camera
+ * arriving on its shot (0.34, 0.66), while the camera is slowing into it.
  */
-function useCaptionSwap(progress: MotionValue<number>) {
-  const veil = useTransform(
-    progress,
-    [0, 0.28, 0.32, 0.35, 0.58, 0.62, 0.65, 1],
-    [1, 1, 0, 1, 1, 0, 1, 1],
-    { ease: [EASE, EASE, EASE, EASE, EASE, EASE, EASE] }
-  );
-  const y = useTransform(
-    progress,
-    [0, 0.28, 0.32, 0.35, 0.58, 0.62, 0.65, 1],
-    [0, 0, 6, 0, 0, 6, 0, 0],
-    { ease: [EASE, EASE, EASE, EASE, EASE, EASE, EASE] }
-  );
+const BEAT_STARTS = [0, 0.3, 0.62];
+/** A beat changes only once scroll is clearly past its edge, so a hand resting on the boundary never flickers the copy. */
+const BEAT_HYSTERESIS = 0.02;
 
-  const slot0 = useTransform(progress, [0, 0.329, 0.331, 1], [1, 1, 0, 0]);
-  const slot1 = useTransform(
-    progress,
-    [0, 0.329, 0.331, 0.629, 0.631, 1],
-    [0, 0, 1, 1, 0, 0]
-  );
-  const slot2 = useTransform(progress, [0, 0.629, 0.631, 1], [0, 0, 1, 1]);
-  const hidden0 = useTransform(slot0, (current) =>
-    current > 0.5 ? "visible" : "hidden"
-  );
-  const hidden1 = useTransform(slot1, (current) =>
-    current > 0.5 ? "visible" : "hidden"
-  );
-  const hidden2 = useTransform(slot2, (current) =>
-    current > 0.5 ? "visible" : "hidden"
-  );
+function nextBeat(progress: number, current: number) {
+  let beat = current;
+  while (
+    beat < BEAT_STARTS.length - 1 &&
+    progress >= BEAT_STARTS[beat + 1] + BEAT_HYSTERESIS
+  ) {
+    beat += 1;
+  }
+  while (beat > 0 && progress < BEAT_STARTS[beat] - BEAT_HYSTERESIS) {
+    beat -= 1;
+  }
+  return beat;
+}
 
-  return {
-    veil,
-    y,
-    slot: [slot0, slot1, slot2],
-    hidden: [hidden0, hidden1, hidden2],
-  };
+/**
+ * Captions play on time, not on scroll: scrubbed opacity leaves half-faded
+ * copy wherever the visitor stops. Scroll only picks which beat is showing.
+ */
+const captionVariants: Variants = {
+  hidden: {},
+  shown: { transition: { staggerChildren: 0.11, delayChildren: 0.05 } },
+  exit: {
+    opacity: 0,
+    y: -14,
+    filter: "blur(6px)",
+    transition: { duration: 0.32, ease: EASE },
+  },
+};
+
+const metaVariants: Variants = {
+  hidden: {},
+  shown: { transition: { staggerChildren: 0.08 } },
+};
+
+const fadeInVariants: Variants = {
+  hidden: { opacity: 0, x: -8 },
+  shown: { opacity: 1, x: 0, transition: { duration: 0.6, ease: EASE } },
+};
+
+const ruleVariants: Variants = {
+  hidden: { scaleX: 0 },
+  shown: { scaleX: 1, transition: { duration: 0.8, ease: EASE } },
+};
+
+const titleVariants: Variants = {
+  hidden: {},
+  shown: { transition: { staggerChildren: 0.055 } },
+};
+
+const wordVariants: Variants = {
+  hidden: { y: "108%" },
+  shown: { y: "0%", transition: { duration: 0.9, ease: EASE } },
+};
+
+const bodyVariants: Variants = {
+  hidden: { opacity: 0, y: 12, filter: "blur(6px)" },
+  shown: {
+    opacity: 1,
+    y: 0,
+    filter: "blur(0px)",
+    transition: { duration: 0.85, ease: EASE, delay: 0.12 },
+  },
+};
+
+function CaptionReveal({
+  caption,
+  index,
+}: {
+  caption: (typeof CAPTIONS)[number];
+  index: number;
+}) {
+  const words = caption.title.split(" ");
+  return (
+    <motion.div
+      variants={captionVariants}
+      initial="hidden"
+      animate="shown"
+      exit="exit"
+    >
+      <motion.div
+        variants={metaVariants}
+        className="mb-2.5 flex items-center gap-2.5 sm:mb-4 sm:gap-3"
+      >
+        <motion.span
+          variants={fadeInVariants}
+          className="font-medium tabular-nums text-[0.625rem] tracking-[0.16em] text-gold sm:text-[0.6875rem]"
+        >
+          0{index + 1}
+          <span className="text-gold/45"> / 0{CAPTIONS.length}</span>
+        </motion.span>
+        <motion.span
+          variants={ruleVariants}
+          className="h-px w-5 origin-left bg-gold/45 sm:w-7"
+        />
+        <motion.p variants={fadeInVariants} className="eyebrow mb-0 text-gold">
+          {caption.eyebrow}
+        </motion.p>
+      </motion.div>
+      <motion.p
+        variants={titleVariants}
+        className="mb-2.5 font-display text-[clamp(1.45rem,5.5vw,2.75rem)] leading-[1.12] tracking-tight text-balance text-charcoal sm:mb-4"
+      >
+        {words.map((word, i) => (
+          <Fragment key={`${word}-${i}`}>
+            {i > 0 && " "}
+            <span className="-mb-[0.14em] inline-block overflow-hidden pb-[0.14em] align-bottom">
+              <motion.span variants={wordVariants} className="inline-block">
+                {word}
+              </motion.span>
+            </span>
+          </Fragment>
+        ))}
+      </motion.p>
+      <motion.p
+        variants={bodyVariants}
+        className="max-w-sm text-[0.9375rem] leading-relaxed text-charcoal/65 sm:text-base lg:hidden"
+      >
+        {caption.bodyMobile}
+      </motion.p>
+      <motion.p
+        variants={bodyVariants}
+        className="hidden max-w-sm text-base leading-relaxed text-charcoal/65 lg:block"
+      >
+        {caption.body}
+      </motion.p>
+    </motion.div>
+  );
 }
 
 export function ScrollDoorSequence() {
@@ -138,11 +239,17 @@ export function ScrollDoorSequence() {
     offset: ["start start", "end end"],
   });
 
+  const [beat, setBeat] = useState(0);
   useMotionValueEvent(scrollYProgress, "change", (value) => {
     progressRef.current = value;
+    const next = nextBeat(value, beat);
+    if (next !== beat) setBeat(next);
   });
 
-  const captions = useCaptionSwap(scrollYProgress);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const stageSeen = useInView(stageRef, { once: true, amount: 0.45 });
+  // A few pixels of travel across the whole pin keeps the copy alive between beats.
+  const captionDrift = useTransform(scrollYProgress, [0, 1], [12, -12]);
 
   const webgl = useWebGLSupported();
   const [sceneReady, setSceneReady] = useState(false);
@@ -186,7 +293,21 @@ export function ScrollDoorSequence() {
         className="relative h-[260vh] bg-surface motion-reduce:hidden sm:h-[280vh] lg:h-[320vh]"
         aria-label="Scroll-driven door sequence"
       >
-        <div className="sticky top-0 h-[100svh] touch-pan-y overflow-hidden">
+        <div
+          ref={stageRef}
+          className="sticky top-0 h-[100svh] touch-pan-y overflow-hidden"
+        >
+          {/* The full story for assistive tech; the animated layer below is visual only. */}
+          <div className="sr-only">
+            {CAPTIONS.map((caption) => (
+              <article key={caption.title}>
+                <p>{caption.eyebrow}</p>
+                <h2>{caption.title}</h2>
+                <p>{caption.body}</p>
+              </article>
+            ))}
+          </div>
+
           {/* Warm studio falloff behind the unit */}
           <div
             className="absolute inset-0"
@@ -275,38 +396,19 @@ export function ScrollDoorSequence() {
 
             <div className="container-content flex h-full items-end pb-[max(2.5rem,env(safe-area-inset-bottom))] lg:items-center lg:pb-0">
               <motion.div
-                style={{ opacity: captions.veil, y: captions.y }}
-                className="w-full max-w-md will-change-[opacity,transform] lg:max-w-[28rem]"
+                style={{ y: captionDrift }}
+                className="w-full max-w-md lg:max-w-[28rem]"
+                aria-hidden
               >
-                <div className="grid">
-                  {CAPTIONS.map((caption, i) => (
-                    <motion.article
-                      key={caption.title}
-                      style={{
-                        opacity: captions.slot[i],
-                        visibility: captions.hidden[i],
-                      }}
-                      className="col-start-1 row-start-1"
-                    >
-                      <div className="mb-2.5 flex items-center gap-2.5 sm:mb-4 sm:gap-3">
-                        <span className="font-medium tabular-nums text-[0.625rem] tracking-[0.16em] text-gold sm:text-[0.6875rem]">
-                          0{i + 1}
-                        </span>
-                        <span className="h-px w-5 bg-gold/45 sm:w-7" aria-hidden />
-                        <p className="eyebrow mb-0 text-gold">{caption.eyebrow}</p>
-                      </div>
-                      <h2 className="mb-2.5 font-display text-[clamp(1.45rem,5.5vw,2.75rem)] leading-[1.12] tracking-tight text-balance text-charcoal sm:mb-4">
-                        {caption.title}
-                      </h2>
-                      <p className="max-w-sm text-[0.9375rem] leading-relaxed text-charcoal/65 sm:text-base lg:hidden">
-                        {caption.bodyMobile}
-                      </p>
-                      <p className="hidden max-w-sm text-base leading-relaxed text-charcoal/65 lg:block">
-                        {caption.body}
-                      </p>
-                    </motion.article>
-                  ))}
-                </div>
+                <AnimatePresence mode="wait">
+                  {stageSeen && (
+                    <CaptionReveal
+                      key={beat}
+                      caption={CAPTIONS[beat]}
+                      index={beat}
+                    />
+                  )}
+                </AnimatePresence>
               </motion.div>
             </div>
           </div>

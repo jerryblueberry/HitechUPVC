@@ -35,12 +35,24 @@ import {
 } from "@/lib/upvc3d";
 import { getUpvcPngForOpening } from "@/lib/upvcAssets";
 import { SETTLE_EPSILON } from "./demand";
+import { useCanHover } from "./hooks";
 import { sceneQuality, useDeviceTier } from "./quality";
 import { UpvcStage } from "./UpvcStage";
 import { UpvcUnit } from "./UpvcUnit";
 
 const clamp01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
 const smooth = (t: number) => t * t * (3 - 2 * t);
+/** 0 = constant speed, 1 = full stop at every shot. */
+const GLIDE_DWELL = 0.6;
+/**
+ * Between two shots: slows as it nears each composition but keeps moving.
+ * Pure smoothstep reaches zero speed at every shot, which reads as a stop.
+ */
+const glide = (t: number) => t + GLIDE_DWELL * (smooth(t) - t);
+/** Cursor drift as a share of camera-to-target distance (~1.5° of orbit). */
+const PARALLAX_REACH = 0.026;
+/** Drift catch-up — slow, so the cursor nudges the camera rather than steers it. */
+const PARALLAX_LAMBDA = 3.2;
 
 /** How quickly smoothed progress catches the finger (higher = snappier). */
 const PROGRESS_LAMBDA = 18;
@@ -65,11 +77,13 @@ function CameraRig({
   smoothProgressRef,
   shots,
   reducedDpr,
+  parallax,
 }: {
   progressRef: RefObject<number>;
   smoothProgressRef: RefObject<number>;
   shots: CameraShot[];
   reducedDpr: number;
+  parallax: boolean;
 }) {
   const camera = useThree((state) => state.camera);
   const gl = useThree((state) => state.gl);
@@ -101,18 +115,46 @@ function CameraRig({
     };
   }, [gl, invalidate]);
 
-  const keys = useMemo(
-    () =>
-      shots.map((shot) => ({
-        at: shot.at,
-        position: new THREE.Vector3(...shot.position),
-        target: new THREE.Vector3(...shot.target),
-      })),
+  // One continuous path through every shot, so the camera glides past each
+  // composition instead of stopping on it and turning a corner.
+  const path = useMemo(
+    () => ({
+      ats: shots.map((shot) => shot.at),
+      position: new THREE.CatmullRomCurve3(
+        shots.map((shot) => new THREE.Vector3(...shot.position)),
+        false,
+        "centripetal"
+      ),
+      target: new THREE.CatmullRomCurve3(
+        shots.map((shot) => new THREE.Vector3(...shot.target)),
+        false,
+        "centripetal"
+      ),
+    }),
     [shots]
   );
 
+  // Pointer drift: a small orbit around the target that follows the cursor.
+  const pointerGoal = useRef(new THREE.Vector2());
+  const pointer = useRef(new THREE.Vector2());
+  useEffect(() => {
+    if (!parallax) return;
+    const onMove = (event: PointerEvent) => {
+      if (event.pointerType !== "mouse" || !inView.current) return;
+      pointerGoal.current.set(
+        (event.clientX / window.innerWidth) * 2 - 1,
+        (event.clientY / window.innerHeight) * 2 - 1
+      );
+      invalidate();
+    };
+    window.addEventListener("pointermove", onMove, { passive: true });
+    return () => window.removeEventListener("pointermove", onMove);
+  }, [parallax, invalidate]);
+
   const desiredPosition = useRef(new THREE.Vector3());
   const desiredTarget = useRef(new THREE.Vector3());
+  const right = useRef(new THREE.Vector3());
+  const up = useRef(new THREE.Vector3());
   const initialised = useRef(false);
   const shotsId = useRef(shots);
 
@@ -150,23 +192,51 @@ function CameraRig({
 
     const p = clamp01(smoothProgressRef.current);
 
+    const { ats } = path;
     let i = 0;
-    while (i < keys.length - 2 && p > keys[i + 1].at) i++;
-    const from = keys[i];
-    const to = keys[i + 1];
-    const span = Math.max(1e-4, to.at - from.at);
-    const t = smooth(clamp01((p - from.at) / span));
+    while (i < ats.length - 2 && p > ats[i + 1]) i++;
+    const span = Math.max(1e-4, ats[i + 1] - ats[i]);
+    const u = (i + glide(clamp01((p - ats[i]) / span))) / (ats.length - 1);
 
-    desiredPosition.current.lerpVectors(from.position, to.position, t);
-    desiredTarget.current.lerpVectors(from.target, to.target, t);
+    path.position.getPoint(u, desiredPosition.current);
+    path.target.getPoint(u, desiredTarget.current);
 
     camera.position.copy(desiredPosition.current);
     camera.lookAt(desiredTarget.current);
 
+    let drifting = false;
+    if (parallax) {
+      pointer.current.x = THREE.MathUtils.damp(
+        pointer.current.x,
+        pointerGoal.current.x,
+        PARALLAX_LAMBDA,
+        step
+      );
+      pointer.current.y = THREE.MathUtils.damp(
+        pointer.current.y,
+        pointerGoal.current.y,
+        PARALLAX_LAMBDA,
+        step
+      );
+      drifting =
+        pointer.current.distanceToSquared(pointerGoal.current) > 1e-6;
+
+      const reach =
+        desiredPosition.current.distanceTo(desiredTarget.current) *
+        PARALLAX_REACH;
+      camera.updateMatrixWorld();
+      right.current.setFromMatrixColumn(camera.matrixWorld, 0);
+      up.current.setFromMatrixColumn(camera.matrixWorld, 1);
+      camera.position
+        .addScaledVector(right.current, pointer.current.x * reach)
+        .addScaledVector(up.current, -pointer.current.y * reach * 0.6);
+      camera.lookAt(desiredTarget.current);
+    }
+
     const catchingUp =
       Math.abs(smoothProgressRef.current - raw) > SETTLE_EPSILON;
     const recentlyInput = performance.now() - lastInputAt.current < 320;
-    const moving = catchingUp || recentlyInput;
+    const moving = catchingUp || recentlyInput || drifting;
 
     if (warmup.current < WARMUP_FRAMES) {
       warmup.current += 1;
@@ -229,6 +299,7 @@ export function UpvcScrollScene({
   onReady,
 }: UpvcScrollSceneProps) {
   const quality = sceneQuality(useDeviceTier());
+  const canHover = useCanHover();
   const smoothProgressRef = useRef(0);
 
   const spec = useMemo(
@@ -278,6 +349,7 @@ export function UpvcScrollScene({
         smoothProgressRef={smoothProgressRef}
         shots={shots}
         reducedDpr={quality.reducedDpr}
+        parallax={canHover}
       />
       <UpvcUnit
         spec={spec}
