@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Fraunces, Inter } from "next/font/google";
 import { OrganizationJsonLd } from "@/components/ui/OrganizationJsonLd";
 import { defaultMetadata } from "@/lib/seo";
@@ -19,6 +19,11 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = defaultMetadata();
+
+/** Same surface colour as the manifest, so mobile browser chrome matches the page. */
+export const viewport: Viewport = {
+  themeColor: "#f7f6f3",
+};
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
