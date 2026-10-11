@@ -55,6 +55,8 @@ export interface UpvcViewerProps {
   className?: string;
   /** Static poster used when WebGL is unavailable */
   posterAlt?: string;
+  /** Defaults to the stock cutout for the opening type */
+  posterSrc?: string;
   /** Above-the-fold: skip approach observer */
   eager?: boolean;
   maxDpr?: number;
@@ -78,6 +80,7 @@ export function UpvcViewer({
   quality = "high",
   className,
   posterAlt,
+  posterSrc,
   eager = false,
   maxDpr,
   contactShadow = true,
@@ -117,7 +120,7 @@ export function UpvcViewer({
   const poster = (
     <div className="relative h-full w-full">
       <Image
-        src={getUpvcPngForOpening(openingType)}
+        src={posterSrc ?? getUpvcPngForOpening(openingType)}
         alt={posterAlt ?? `${openingType} uPVC unit`}
         fill
         className="object-contain"

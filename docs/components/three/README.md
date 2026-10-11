@@ -26,6 +26,7 @@ are no downloaded models.
 | `Lazy*.tsx` | `next/dynamic` `ssr: false` entry points |
 | `hooks.ts` | Reduced motion, WebGL support, hover capability, viewport pausing, lazy canvas creation (safe to import anywhere) |
 | `quality.ts` | Device tier + the DPR / MSAA / shadow / glass / HDRI budget every surface reads |
+| `warmHome.ts` | Starts the HDRI download (tier-matched), the home viewer chunk and the scroll-door chunk at module load |
 | `ApproachedMount.tsx` | Unmounts 3D until near the viewport and the doorway intro has unlocked |
 | `demand.ts` | On-demand rendering helpers: `SETTLE_EPSILON`, `useInvalidateOn`, `useAutoPlayWake` (canvas-only) |
 | `patchClock.ts` | Suppresses R3F 9’s deprecated `THREE.Clock` constructor warning (Clock is a read-only export) |
@@ -70,7 +71,14 @@ assume it.
   home hero viewer uses `eager` so it mounts as soon as the intro unlocks,
   without waiting on an intersection observer.
 - Shaders compile with `gl.compileAsync` before the first visible frame; the canvas
-  fades in (700ms) once ready, so a model never pops in half-built
+  fades in once ready, so a model never pops in half-built. An `eager` stage keeps
+  its hold until that fade has finished, so the door canvas compiles behind a
+  settled hero rather than under its fade.
+- The HDRI is decoded into drei's loader cache (`useEnvironment.preload`) the moment
+  `UpvcStage.tsx` evaluates, which `warmHomeScene` triggers at page load. Each
+  canvas then finds its lighting ready instead of suspending on it.
+- `gl.debug.checkShaderErrors` is off in production: reading every shader log
+  blocks until the GPU finishes compiling, which cancels out `compileAsync`.
 - `powerPreference: "default"`: "high-performance" wakes the discrete GPU on
   dual-GPU laptops, stalling the page
 - `quality.ts` holds the single render policy: a device tier (`high` hover /

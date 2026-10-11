@@ -16,7 +16,13 @@
 
 import { useFrame, useThree } from "@react-three/fiber";
 import Image from "next/image";
-import { useEffect, useMemo, useRef, type RefObject } from "react";
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  type ReactNode,
+  type RefObject,
+} from "react";
 import * as THREE from "three";
 import type { OpeningType, ProductCategory } from "@/lib/types";
 import {
@@ -201,6 +207,10 @@ export interface UpvcScrollSceneProps {
   openTo?: number;
   fov?: number;
   className?: string;
+  /** Shown without WebGL; defaults to the stock cutout */
+  fallback?: ReactNode;
+  /** Fires once the first compiled frame is on screen */
+  onReady?: () => void;
 }
 
 export function UpvcScrollScene({
@@ -215,6 +225,8 @@ export function UpvcScrollScene({
   openTo = 0.68,
   fov = 34,
   className,
+  fallback,
+  onReady,
 }: UpvcScrollSceneProps) {
   const quality = sceneQuality(useDeviceTier());
   const smoothProgressRef = useRef(0);
@@ -248,14 +260,16 @@ export function UpvcScrollScene({
   return (
     <UpvcStage
       className={className}
-      fallback={poster}
+      fallback={fallback === undefined ? poster : fallback}
       fov={fov}
       groundY={-spec.height / 2 - 0.03}
       cameraPosition={shots[0].position}
       maxDpr={quality.dpr}
       antialias={quality.antialias}
       contactShadow={quality.contactShadow}
-      fadeMs={450}
+      fadeMs={200}
+      onReady={onReady}
+      immediate
       renderWhenReduced={false}
       environmentIntensity={1.05}
     >

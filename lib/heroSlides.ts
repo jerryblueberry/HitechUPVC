@@ -12,6 +12,16 @@ export interface Hero3DSlide {
   href: string;
 }
 
+/**
+ * A still of the live unit in its closed pose, rendered from the same scene and
+ * cropped to the camera's fit box, so `object-contain` lands it where the
+ * canvas will draw it. Shown from the server HTML until the canvas is ready.
+ * Re-capture if the model, lighting or `FitCamera` framing changes.
+ */
+export function heroPoster(slide: Hero3DSlide): string {
+  return `/images/hero/${slide.id}.webp`;
+}
+
 /** Home hero carousel — each slide is a live 3D unit (ADR 006). */
 export const HERO_3D_SLIDES: Hero3DSlide[] = [
   {

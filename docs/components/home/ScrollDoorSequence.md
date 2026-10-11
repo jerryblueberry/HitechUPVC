@@ -65,8 +65,18 @@ Each beat is marked `01 — The detail`. Grid-stacked so height never jumps.
   `bodyMobile` lines; product framed higher
 - Same pipeline on both: 4× MSAA, contact shadow, DPR 1.9 phone / 2 desktop,
   stepping down once to 1.35 / 1.5 only if the device drops frames
-- Touch mounts the scene 15% of a viewport early (40%/30% on pointer devices) so
-  shaders are compiled before the pin is reached
+- The chunk is prefetched with the hero (`warmHomeScene`). The canvas mounts
+  once the hero's first frame is done (`immediate`, root margin `160%`), so it
+  is compiled while the visitor is still on the carousel
+- **Poster first.** `public/images/door/door-desktop.webp` (2.6:1) and
+  `door-mobile.webp` (1.6:1) are the opening shot rendered by this scene with a
+  transparent background, one per shot set. With a fixed vertical FOV, any
+  viewport narrower than the capture is a centred slice of it, so `object-cover`
+  matches the first live frame. CSS picks one (`lg:`), so only that file
+  downloads (~30 KB). It paints from the server HTML, fades out once the scene
+  reports `onReady`, then unmounts; it also fades if the visitor scrolls past 4%
+  first, and stays as the static frame without WebGL. Re-capture both if the
+  model, lighting or the first shot of either set changes
 - Canvas is `pointer-events-none` so touch scrolling is never captured
 - `motion-reduce:` swaps the pinned section for the static prose version
 

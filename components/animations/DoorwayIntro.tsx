@@ -51,6 +51,11 @@ function shouldPlaySnapshot(): boolean {
   );
 }
 
+/** True only on a desktop first visit, while the intro still has to play. */
+export function isDoorwayIntroPending(): boolean {
+  return shouldPlaySnapshot();
+}
+
 interface DoorwayIntroProps {
   brand: string;
   logo: string;
@@ -78,7 +83,6 @@ export function DoorwayIntro({ brand, logo, onReveal, onComplete }: DoorwayIntro
     if (finishing.current) return;
     finishing.current = true;
     markIntroSeen();
-    unlockIntro();
     onReveal?.();
     // Drop the WebGL canvas immediately so the hero can claim a context,
     // then fade the cover and hand off.

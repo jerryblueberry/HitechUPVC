@@ -27,7 +27,15 @@ site (ADR 006).
 - Hero copy rises as the camera starts walking through (`onReveal`) — 0.55s ease, tight stagger
 - `prefetchUpvcViewer()` warms the hero chunk during the walk
 - Hero 3D stage mounts when the overlay completes (`onComplete`), after the intro canvas has dropped
-- Stage uses `eager` (no approach wait) and takes its DPR, MSAA and contact shadow from `components/three/quality.ts` — 1.9 on a phone, 2 on a desktop
+- Stage uses `eager` and does not wait for the page-idle gate. `warmHomeScene()` starts the viewer chunk, the door-section chunk and the studio HDRI as soon as this module loads. On a phone or a return visit the canvas mounts on the first client render; a desktop first visit waits only for the intro to finish
+- **Poster first.** `public/images/hero/<slide id>.webp` is a still of the live
+  unit (closed pose, transparent, same HDRI), rendered by the stage itself and
+  cropped to the `FitCamera` fit box (width = height × projected width / unit
+  height), so `object-contain` puts it exactly where the canvas draws. It is in
+  the server HTML with `preload` + `fetchPriority="high"` (15 KB, the page's LCP),
+  the canvas fades in over it, then it fades out and unmounts. It also serves as
+  the no-WebGL fallback. Re-capture all five if the model, materials, lighting
+  or framing change
 - Open / shut timers start only after `onReady` (shaders compiled)
 - First paint uses stage fade only; slide changes use a short crossfade
 - Plays once per session (`sessionStorage`); click anywhere to skip
@@ -54,7 +62,7 @@ site (ADR 006).
 ## Review Checklist
 - [x] Matches DESIGN-SYSTEM tokens (surface, charcoal, navy, gold)
 - [x] Animations respect prefers-reduced-motion (intro skipped, lineup static, `MotionConfig reducedMotion="user"`)
-- [x] WebGL fallback: intro skipped, stage shows the viewer's PNG poster
+- [x] WebGL fallback: intro skipped, stage shows the rendered slide poster
 - [x] Accessible carousel: tablist chips, labelled arrows, `aria-roledescription`
 - [x] Verified at 390px, 1024px and 1280px widths
 - [x] three.js lazy-loaded, never server-rendered

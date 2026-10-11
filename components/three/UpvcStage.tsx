@@ -13,7 +13,7 @@
  */
 
 import "./patchClock";
-import { ContactShadows, Environment } from "@react-three/drei";
+import { ContactShadows, Environment, useEnvironment } from "@react-three/drei";
 import { Canvas, useThree } from "@react-three/fiber";
 import {
   Suspense,
@@ -36,9 +36,15 @@ import {
   usePrefersReducedMotion,
   useWebGLSupported,
 } from "./hooks";
-import { hdriFor, useDeviceTier } from "./quality";
+import { hdriFor, probeDeviceTier, useDeviceTier } from "./quality";
 
 export { HDRI_PATH, HDRI_PATH_SMALL } from "./quality";
+
+// Decode the HDRI into the shared loader cache while this chunk is still
+// arriving, so every canvas finds its lighting ready instead of suspending.
+if (typeof window !== "undefined") {
+  useEnvironment.preload({ files: hdriFor(probeDeviceTier()) });
+}
 
 export interface UpvcStageProps {
   children: ReactNode;
@@ -58,6 +64,11 @@ export interface UpvcStageProps {
   renderWhenReduced?: boolean;
   /** Skip the approach observer — use for above-the-fold hero canvases */
   eager?: boolean;
+  /**
+   * Mount as soon as the hero canvas has painted, without waiting for the
+   * page-idle gate. For the section directly under the hero.
+   */
+  immediate?: boolean;
   antialias?: boolean;
   /** Fade-in once shaders compile (ms) */
   fadeMs?: number;
@@ -110,6 +121,7 @@ export function UpvcStage({
   maxDpr = 2,
   renderWhenReduced = true,
   eager = false,
+  immediate = false,
   antialias = true,
   fadeMs = 500,
   onReady,
@@ -132,7 +144,12 @@ export function UpvcStage({
   const holding = useRef(false);
   const useFallback =
     webgl === false || contextLost || (reducedMotion && !renderWhenReduced);
-  const shouldMount = (eager || (approached && othersIdle)) && settled;
+  // The hero paints as soon as it is asked. The door under it follows the
+  // moment that first frame is done. Everything further down still waits
+  // until the page has had a quiet moment, so it never competes with them.
+  const shouldMount = eager
+    ? true
+    : approached && othersIdle && (immediate || settled);
 
   // Above-the-fold scenes hold the thread until their first frame, or 4.5s.
   useEffect(() => {
@@ -151,11 +168,17 @@ export function UpvcStage({
     };
   }, [eager, useFallback]);
 
+  // Hand over once the fade has landed, so the next canvas compiles behind a
+  // finished frame rather than under the fade.
   useEffect(() => {
     if (!eager || !ready || !holding.current) return;
-    holding.current = false;
-    releaseEagerStage();
-  }, [eager, ready]);
+    const timer = window.setTimeout(() => {
+      if (!holding.current) return;
+      holding.current = false;
+      releaseEagerStage();
+    }, fadeMs);
+    return () => window.clearTimeout(timer);
+  }, [eager, ready, fadeMs]);
 
   // Stable identity, so a scene that raises its own pixel ratio at runtime
   // (see UpvcScrollScene) is not reset to the ceiling on the next render.
@@ -186,6 +209,9 @@ export function UpvcStage({
             }}
             camera={{ position: cameraPosition, fov, near: 0.05, far: 60 }}
             onCreated={({ gl }) => {
+              // The check reads every shader log, which stalls until the GPU
+              // finishes compiling and undoes the parallel compile.
+              gl.debug.checkShaderErrors = process.env.NODE_ENV !== "production";
               gl.toneMapping = THREE.ACESFilmicToneMapping;
               gl.toneMappingExposure = 1.05;
               gl.domElement.addEventListener(

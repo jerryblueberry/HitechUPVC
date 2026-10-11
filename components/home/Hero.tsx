@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import {
   animate,
@@ -12,16 +13,20 @@ import {
   useTransform,
   type PanInfo,
 } from "framer-motion";
-import { useCallback, useEffect, useLayoutEffect, useRef, useState, type PointerEvent } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore, type PointerEvent } from "react";
 import type { Company } from "@/lib/types";
-import { HERO_3D_SLIDES } from "@/lib/heroSlides";
-import { DoorwayIntro } from "@/components/animations/DoorwayIntro";
+import { HERO_3D_SLIDES, heroPoster } from "@/lib/heroSlides";
+import { DoorwayIntro, isDoorwayIntroPending } from "@/components/animations/DoorwayIntro";
 import { useCanHover } from "@/components/three/hooks";
-import {
-  LazyUpvcViewer,
-  prefetchUpvcViewer,
-} from "@/components/three/LazyUpvcViewer";
+import { LazyUpvcViewer } from "@/components/three/LazyUpvcViewer";
+import { warmHomeScene } from "@/components/three/warmHome";
 import { MagneticButton } from "@/components/ui/MagneticButton";
+
+const noopSubscribe = () => () => {};
+
+// The viewer chunk, the door-section chunk and the studio HDRI start downloading
+// as this file evaluates, before the intro or hydration effects run.
+warmHomeScene();
 
 const ease = [0.22, 1, 0.36, 1] as const;
 const SLIDE_MS = 7000;
@@ -29,6 +34,7 @@ const SLIDE_MS = 7000;
 const OPEN_AT_MS = 700;
 const CLOSE_AT_MS = 4600;
 const SWIPE_PX = 60;
+const STAGE_FADE_MS = 180;
 /** Touch devices skip the intro, so the copy must paint from the server HTML, not after hydration. */
 const VISIBLE_ON_TOUCH = "pointer-coarse:opacity-100! pointer-coarse:transform-none!";
 
@@ -53,7 +59,16 @@ export function Hero({ company }: HeroProps) {
   const swipe = useRef<{ x: number; y: number } | null>(null);
   const [pageRevealed, setPageRevealed] = useState(false);
   const [stageReady, setStageReady] = useState(false);
+  // Server snapshot says "intro pending" so the canvas is not in the SSR HTML.
+  // On a phone or a return visit the client snapshot flips it on immediately,
+  // without waiting for the intro's effect.
+  const introPending = useSyncExternalStore(
+    noopSubscribe,
+    isDoorwayIntroPending,
+    () => true
+  );
   const [viewerReady, setViewerReady] = useState(false);
+  const [posterDone, setPosterDone] = useState(false);
   const [index, setIndex] = useState(0);
   const [opened, setOpened] = useState(false);
   const [paused, setPaused] = useState(false);
@@ -65,17 +80,16 @@ export function Hero({ company }: HeroProps) {
   const total = HERO_3D_SLIDES.length;
   const slide = HERO_3D_SLIDES[index];
   const state = pageRevealed ? "show" : "hidden";
-  const autoAdvance = stageReady && viewerReady && !paused && !reducedMotion;
+  const stageLive = stageReady || !introPending;
+  const autoAdvance = stageLive && viewerReady && !paused && !reducedMotion;
 
   const handleReveal = useCallback(() => {
     setPageRevealed(true);
-    prefetchUpvcViewer();
   }, []);
 
   const handleComplete = useCallback(() => {
     setPageRevealed(true);
     setStageReady(true);
-    prefetchUpvcViewer();
   }, []);
 
   const handleViewerReady = useCallback(() => setViewerReady(true), []);
@@ -102,18 +116,18 @@ export function Hero({ company }: HeroProps) {
 
   // Open / shut only after shaders have painted — avoids hitching mid-fade.
   useEffect(() => {
-    if (!stageReady || !viewerReady || reducedMotion) return;
+    if (!stageLive || !viewerReady || reducedMotion) return;
     const open = window.setTimeout(() => setOpened(true), OPEN_AT_MS);
     const close = window.setTimeout(() => setOpened(false), CLOSE_AT_MS);
     return () => {
       window.clearTimeout(open);
       window.clearTimeout(close);
     };
-  }, [index, stageReady, viewerReady, reducedMotion]);
+  }, [index, stageLive, viewerReady, reducedMotion]);
 
   // Fade on slide change only — first paint uses UpvcStage's own fade.
   useLayoutEffect(() => {
-    if (!stageReady) return;
+    if (!stageLive) return;
     if (firstStagePaint.current) {
       firstStagePaint.current = false;
       stageControls.set({ opacity: 1, scale: 1 });
@@ -125,7 +139,7 @@ export function Hero({ company }: HeroProps) {
       scale: 1,
       transition: { duration: 0.4, ease },
     });
-  }, [index, stageReady, stageControls]);
+  }, [index, stageLive, stageControls]);
 
   function onDragEnd(_: unknown, info: PanInfo) {
     if (info.offset.x < -SWIPE_PX) goTo(index + 1);
@@ -222,20 +236,38 @@ export function Hero({ company }: HeroProps) {
               }}
             >
               <motion.div className="absolute inset-0" animate={stageControls}>
-                {stageReady ? (
+                {/* Painted from the server HTML; the live canvas fades in over it. */}
+                {!posterDone && (
+                  <Image
+                    src={heroPoster(slide)}
+                    alt=""
+                    fill
+                    preload={index === 0}
+                    fetchPriority={index === 0 ? "high" : "auto"}
+                    sizes="(min-width: 1024px) 50vw, 100vw"
+                    className="pointer-events-none object-contain transition-opacity duration-300 ease-out"
+                    style={{
+                      opacity: viewerReady ? 0 : 1,
+                      transitionDelay: viewerReady ? `${STAGE_FADE_MS}ms` : "0ms",
+                    }}
+                    onTransitionEnd={() => {
+                      if (viewerReady) setPosterDone(true);
+                    }}
+                  />
+                )}
+                {stageLive && (
                   <LazyUpvcViewer
                     openingType={slide.openingType}
                     category={slide.category}
                     open={opened ? 1 : 0}
                     quality="balanced"
                     eager
-                    fadeMs={400}
-                    className="h-full w-full"
+                    fadeMs={STAGE_FADE_MS}
+                    className="relative h-full w-full"
                     posterAlt={`${slide.eyebrow} in white uPVC`}
+                    posterSrc={heroPoster(slide)}
                     onReady={handleViewerReady}
                   />
-                ) : (
-                  <div className="h-full w-full" aria-hidden />
                 )}
               </motion.div>
             </motion.div>

@@ -14,14 +14,15 @@ import {
   useTransform,
   type MotionValue,
 } from "framer-motion";
-import { useEffect, useRef, useSyncExternalStore } from "react";
+import Image from "next/image";
+import { useCallback, useRef, useState, useSyncExternalStore } from "react";
 import { ApproachedMount } from "@/components/three/ApproachedMount";
-import { useCoarsePointer } from "@/components/three/hooks";
-import {
-  LazyUpvcScrollScene,
-  prefetchUpvcScrollScene,
-} from "@/components/three/LazyUpvcScrollScene";
+import { useWebGLSupported } from "@/components/three/hooks";
+import { LazyUpvcScrollScene } from "@/components/three/LazyUpvcScrollScene";
 import type { CameraShot } from "@/components/three/UpvcScrollScene";
+import { warmHomeScene } from "@/components/three/warmHome";
+
+warmHomeScene();
 
 /**
  * Landscape: targets sit left of the unit so the product composes into the
@@ -125,7 +126,6 @@ function useCaptionSwap(progress: MotionValue<number>) {
 
 export function ScrollDoorSequence() {
   const sectionRef = useRef<HTMLDivElement>(null);
-  const coarse = useCoarsePointer();
   const progressRef = useRef(0);
   const isDesktop = useSyncExternalStore(
     subscribeToDesktop,
@@ -142,24 +142,15 @@ export function ScrollDoorSequence() {
     progressRef.current = value;
   });
 
-  // Warm the three.js chunk before the pin is reached.
-  useEffect(() => {
-    const el = sectionRef.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          prefetchUpvcScrollScene();
-          observer.disconnect();
-        }
-      },
-      { rootMargin: window.matchMedia("(pointer: coarse)").matches ? "20% 0px" : "40% 0px" }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
-
   const captions = useCaptionSwap(scrollYProgress);
+
+  const webgl = useWebGLSupported();
+  const [sceneReady, setSceneReady] = useState(false);
+  const [posterDone, setPosterDone] = useState(false);
+  const handleSceneReady = useCallback(() => setSceneReady(true), []);
+  // The still is the opening shot only. If the visitor is already moving
+  // through the sequence before the scene is up, it gets out of the way.
+  const posterScrollFade = useTransform(scrollYProgress, [0, 0.04], [1, 0]);
 
   return (
     <>
@@ -207,9 +198,49 @@ export function ScrollDoorSequence() {
             aria-hidden
           />
 
+          {/*
+            The opening shot, rendered by this scene and captured wide: with a
+            fixed vertical FOV any viewport is a centred slice of it, so
+            object-cover lands it exactly where the first live frame draws.
+            Re-capture if the model, lighting or the first shot changes.
+          */}
+          {!posterDone && (
+            <motion.div
+              className="pointer-events-none absolute inset-0"
+              style={{ opacity: webgl === false ? 1 : posterScrollFade }}
+              aria-hidden
+            >
+              <div
+                className="absolute inset-0 transition-opacity duration-300 ease-out"
+                style={{
+                  opacity: sceneReady ? 0 : 1,
+                  transitionDelay: sceneReady ? "200ms" : "0ms",
+                }}
+                onTransitionEnd={() => {
+                  if (sceneReady) setPosterDone(true);
+                }}
+              >
+                <Image
+                  src="/images/door/door-mobile.webp"
+                  alt=""
+                  fill
+                  sizes="160vh"
+                  className="object-cover lg:hidden"
+                />
+                <Image
+                  src="/images/door/door-desktop.webp"
+                  alt=""
+                  fill
+                  sizes="260vh"
+                  className="hidden object-cover lg:block"
+                />
+              </div>
+            </motion.div>
+          )}
+
           <ApproachedMount
             className="pointer-events-none absolute inset-0"
-            rootMargin={coarse ? "15% 0px" : "30% 0px"}
+            rootMargin="160% 0px"
           >
             <LazyUpvcScrollScene
               progressRef={progressRef}
@@ -218,6 +249,8 @@ export function ScrollDoorSequence() {
               category="doors"
               hardwareSlug="brushed"
               className="h-full w-full"
+              fallback={null}
+              onReady={handleSceneReady}
             />
           </ApproachedMount>
 
