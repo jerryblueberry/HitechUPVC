@@ -1,60 +1,58 @@
 [
   {
-    "slug": "modern-villa-renovation",
-    "title": "Modern Villa Renovation",
-    "location": "Baneshwor, Kathmandu",
+    "slug": "house-elevation",
+    "title": "House elevation",
+    "location": "",
     "collection": "installations",
     "productCategory": "windows",
-    "productSlug": "tilt-turn-classic",
-    "description": "Complete window replacement with tilt & turn systems in anthracite grey — quieter rooms, cleaner sightlines.",
-    "orientation": "landscape",
+    "description": "A finished home with large glazed openings, a balcony, and a rooftop canopy above the top floor.",
+    "orientation": "portrait",
     "featured": true,
     "images": [
       {
-        "src": "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1600&q=80",
-        "alt": "Modern villa exterior with new uPVC windows",
-        "orientation": "landscape",
-        "width": 1600,
-        "height": 1067
-      },
-      "https://images.unsplash.com/photo-1600607687644-c7171b42498f?auto=format&fit=crop&w=1200&q=80"
-    ],
-    "beforeImage": "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=1200&q=80",
-    "afterImage": "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80"
-  },
-  {
-    "slug": "patio-extension",
-    "title": "Patio Extension",
-    "location": "Lazimpat, Kathmandu",
-    "collection": "installations",
-    "productCategory": "doors",
-    "productSlug": "sliding-patio",
-    "description": "Floor-to-ceiling sliding patio doors connecting living space to the garden.",
-    "orientation": "portrait",
-    "images": [
-      {
-        "src": "https://images.unsplash.com/photo-1600607687644-c7171b42498f?auto=format&fit=crop&w=1200&q=80",
-        "alt": "Sliding patio doors opening to a garden",
+        "src": "https://res.cloudinary.com/dgsphdhns/image/upload/v1791739470/22_jwsck2.jpg",
+        "alt": "Finished house with large windows, a glazed balcony, and a rooftop canopy",
         "orientation": "portrait",
         "width": 1200,
-        "height": 1600
+        "height": 1600,
+        "publicId": "22_jwsck2"
       }
     ]
   },
   {
-    "slug": "commercial-cladding",
-    "title": "Commercial Cladding",
-    "location": "Tarakeshwar, Kathmandu",
+    "slug": "terrace-doors",
+    "title": "Terrace doors",
+    "location": "",
     "collection": "installations",
-    "productCategory": "panels",
-    "productSlug": "cladding-smooth",
-    "description": "Smooth cladding panels for a contemporary office facade near the Hi-Tech factory.",
+    "productCategory": "doors",
+    "description": "Sliding doors and a fixed light above, opening from the room straight onto a covered terrace.",
+    "orientation": "portrait",
+    "images": [
+      {
+        "src": "https://res.cloudinary.com/dgsphdhns/image/upload/v1791739470/333_h7ijjl.jpg",
+        "alt": "Sliding doors opening from a room onto a covered terrace",
+        "orientation": "portrait",
+        "width": 1200,
+        "height": 1600,
+        "publicId": "333_h7ijjl"
+      }
+    ]
+  },
+  {
+    "slug": "rooftop-canopy",
+    "title": "Rooftop canopy",
+    "location": "",
+    "collection": "installations",
+    "description": "A translucent roof on a steel frame, shading an open terrace with the hills in the distance.",
     "orientation": "landscape",
     "images": [
       {
-        "src": "https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=1600&q=80",
-        "alt": "Office facade with smooth uPVC cladding",
-        "orientation": "landscape"
+        "src": "https://res.cloudinary.com/dgsphdhns/image/upload/v1791739471/11_tzbvhl.jpg",
+        "alt": "Translucent rooftop canopy over a terrace, with hills beyond",
+        "orientation": "landscape",
+        "width": 1600,
+        "height": 1200,
+        "publicId": "11_tzbvhl"
       }
     ]
   },

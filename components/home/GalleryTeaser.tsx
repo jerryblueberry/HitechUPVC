@@ -2,9 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
 import type { Project } from "@/lib/types";
-import { getProjectCover } from "@/lib/gallery";
+import { getProjectCover, masonryAspectClass } from "@/lib/gallery";
 import { IMAGES } from "@/lib/images";
 import { PremiumText } from "@/components/ui/PremiumText";
 import { RevealOnScroll } from "@/components/ui/RevealOnScroll";
@@ -20,54 +19,70 @@ export function GalleryTeaser({ projects }: GalleryTeaserProps) {
   const fallback = teaser.length > 0 ? teaser : projects.slice(0, 3);
 
   return (
-    <section className="section-padding">
+    <section className="section-padding" aria-label="Completed projects">
       <div className="container-content">
-        <RevealOnScroll className="mb-12 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-          <div>
+        <RevealOnScroll className="mb-12 flex flex-col gap-6 sm:mb-14 sm:flex-row sm:items-end sm:justify-between lg:mb-16">
+          <div className="max-w-xl">
             <p className="eyebrow mb-4 text-gold">Gallery</p>
             <PremiumText
               as="h2"
               mode="words"
-              className="font-display text-h2 text-navy"
+              className="font-display text-h2 text-balance text-navy"
             >
               Completed projects
             </PremiumText>
+            <p className="mt-4 max-w-[62ch] text-base leading-relaxed text-charcoal/70 sm:text-lg">
+              Full-height windows, sliding doors onto a terrace, and a rooftop
+              canopy — recent homes, fitted and finished.
+            </p>
           </div>
           <Link
             href="/gallery"
-            className="text-sm font-medium text-gold hover:underline"
+            className="group/link shrink-0 self-start text-sm font-medium text-gold transition-colors duration-300 hover:text-navy focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-4 focus-visible:ring-offset-surface sm:self-end"
           >
-            View all projects →
+            View all projects
+            <span
+              className="ml-1.5 inline-block transition-transform duration-300 ease-[var(--ease-premium)] group-hover/link:translate-x-1 motion-reduce:transition-none"
+              aria-hidden
+            >
+              ›
+            </span>
           </Link>
         </RevealOnScroll>
 
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+        <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 sm:gap-x-6 sm:gap-y-10 lg:grid-cols-4 lg:items-start lg:@container">
           {fallback.map((project, i) => {
             const cover = getProjectCover(project);
-            const image =
-              cover.src || IMAGES.gallery[i] || IMAGES.gallery[0];
+            const image = cover.src || IMAGES.gallery[i] || IMAGES.gallery[0];
+            const wide = i === fallback.length - 1 && fallback.length === 3;
+            const aspect = wide
+              ? "aspect-[4/3] lg:aspect-auto lg:h-[calc((100cqw-4.5rem)/3)]"
+              : masonryAspectClass(cover.orientation ?? "portrait");
 
             return (
-              <RevealOnScroll key={project.slug} delay={i * 0.12}>
-                <Link href="/gallery" className="group block">
-                  <motion.div
-                    className="relative mb-4 aspect-[4/3] overflow-hidden rounded-2xl"
-                    whileHover={{ scale: 1.02 }}
-                    transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+              <RevealOnScroll
+                key={project.slug}
+                delay={i * 0.08}
+                className={wide ? "sm:col-span-2" : undefined}
+              >
+                <Link
+                  href="/gallery"
+                  className="group block focus-visible:outline-none"
+                >
+                  <div
+                    className={`relative overflow-hidden rounded-2xl bg-surface-muted shadow-[0_1px_2px_rgba(27,27,29,0.04),0_16px_40px_-20px_rgba(27,27,29,0.18)] ring-1 ring-charcoal/[0.06] transition-[transform,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-translate-y-0.5 group-hover:shadow-[0_1px_2px_rgba(27,27,29,0.04),0_28px_56px_-24px_rgba(27,27,29,0.22)] group-focus-visible:ring-2 group-focus-visible:ring-gold group-focus-visible:ring-offset-4 group-focus-visible:ring-offset-surface motion-reduce:transition-none motion-reduce:group-hover:translate-y-0 sm:rounded-3xl ${aspect}`}
                   >
                     <Image
                       src={image}
                       alt={cover.alt || project.title}
                       fill
-                      className="object-cover transition-transform duration-700 group-hover:scale-105"
-                      sizes="(max-width: 768px) 100vw, 33vw"
+                      className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+                      sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
                     />
-                    <div className="absolute inset-0 bg-charcoal/0 transition-colors duration-500 group-hover:bg-charcoal/20" />
-                  </motion.div>
-                  <h3 className="font-display text-lg text-navy transition-colors duration-300 group-hover:text-gold">
+                  </div>
+                  <h3 className="mt-4 font-display text-lg tracking-tight text-navy transition-colors duration-300 group-hover:text-gold">
                     {project.title}
                   </h3>
-                  <p className="text-sm text-charcoal/60">{project.location}</p>
                 </Link>
               </RevealOnScroll>
             );

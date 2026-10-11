@@ -191,7 +191,9 @@ export function GalleryLightbox({ project, onClose }: GalleryLightboxProps) {
             >
               {project.title}
             </h2>
-            <p className="mt-1 text-sm text-charcoal/50">{project.location}</p>
+            {project.location ? (
+              <p className="mt-1 text-sm text-charcoal/50">{project.location}</p>
+            ) : null}
             <p className="mt-3 max-w-2xl text-[0.9375rem] leading-relaxed text-charcoal/65 sm:text-base">
               {project.description}
             </p>

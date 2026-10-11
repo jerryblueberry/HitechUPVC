@@ -32,7 +32,11 @@ export function GalleryCard({
       <button
         type="button"
         onClick={() => onOpen(project)}
-        aria-label={`${project.title} — ${project.location}`}
+        aria-label={
+          project.location
+            ? `${project.title}, ${project.location}`
+            : project.title
+        }
         className="group relative block w-full cursor-pointer overflow-hidden rounded-2xl bg-surface-muted shadow-[0_1px_2px_rgba(27,27,29,0.04),0_16px_40px_-20px_rgba(27,27,29,0.18)] ring-1 ring-charcoal/[0.06] transition-[box-shadow,transform] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:shadow-[0_1px_2px_rgba(27,27,29,0.04),0_28px_56px_-24px_rgba(27,27,29,0.22)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gold sm:rounded-3xl"
       >
         <div className={`relative w-full overflow-hidden ${aspect}`}>
