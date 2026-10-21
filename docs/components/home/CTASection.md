@@ -7,7 +7,7 @@ Last reviewed: 2026-09-29
 Closing call to action — quote and contact — reused on home, products, category, and Why uPVC.
 
 ## Design Decisions
-- Solid navy band (same family as StatsCounter), no pulsing gold blob
+- Solid navy band — intentional closing “full stop” after the light page (stats are surface + hairlines now)
 - Desktop: headline left, actions right, vertically centred with the copy block
 - Mobile / tablet: stacked copy, full-width equal buttons; from `sm` side-by-side with shared min width
 - Heading uses a responsive clamp; body stays short so it never spans 90rem

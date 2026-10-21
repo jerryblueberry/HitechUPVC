@@ -41,8 +41,11 @@
   --spacing-page-top: 2.75rem;
   --spacing-page-top-lg: 3.5rem;
 
-  /* Motion */
+  /* Motion — keep the vocabulary small (reveal / mask / draw) */
   --ease-premium: cubic-bezier(0.22, 1, 0.36, 1);
+  --motion-reveal-duration: 0.55s;
+  --motion-reveal-y: 16px;
+  --motion-stagger: 0.08s;
 }
 
 html {

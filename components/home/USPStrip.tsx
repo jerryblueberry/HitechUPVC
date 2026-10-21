@@ -1,56 +1,109 @@
-import type { ReactNode } from "react";
 import type { CompanyUSP } from "@/lib/types";
 import { RevealOnScroll } from "@/components/ui/RevealOnScroll";
 import { AnimatedCounter } from "@/components/ui/AnimatedCounter";
 
-const iconProps = {
-  width: 22,
-  height: 22,
-  viewBox: "0 0 24 24",
-  fill: "none",
-  stroke: "currentColor",
-  strokeWidth: 1.5,
-  strokeLinecap: "round",
-  strokeLinejoin: "round",
-} as const;
+const LG_COL = [
+  "lg:col-start-1",
+  "lg:col-start-2",
+  "lg:col-start-3",
+  "lg:col-start-4",
+] as const;
 
-const ICONS: Record<string, ReactNode> = {
-  energy: (
-    <svg {...iconProps}>
-      <path d="M13 2 4.5 13.5H12L11 22l8.5-11.5H12L13 2Z" />
-    </svg>
-  ),
-  security: (
-    <svg {...iconProps}>
-      <path d="M12 3 4.5 6v5.5c0 4.6 3.2 8.4 7.5 9.5 4.3-1.1 7.5-4.9 7.5-9.5V6L12 3Z" />
-      <path d="m9 12 2 2 4-4" />
-    </svg>
-  ),
-  maintenance: (
-    <svg {...iconProps}>
-      <path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1" />
-    </svg>
-  ),
-  warranty: (
-    <svg {...iconProps}>
-      <circle cx="12" cy="9" r="5.5" />
-      <path d="m8.5 13.5-1.5 7.5 5-2.5 5 2.5-1.5-7.5" />
-    </svg>
-  ),
-};
+const LG_DIVIDER = [
+  "",
+  "lg:border-l lg:border-charcoal/12",
+  "lg:border-l lg:border-charcoal/12",
+  "lg:border-l lg:border-charcoal/12",
+] as const;
 
-/** Headline figure per USP, when the data carries a value */
+function unitFor(icon: string) {
+  if (icon === "energy") return "W/m²K";
+  if (icon === "warranty") return "years";
+  return "";
+}
+
 function Figure({ usp }: { usp: CompanyUSP }) {
   if (!usp.value) return null;
 
-  const unit = usp.icon === "energy" ? "W/m²K" : usp.icon === "warranty" ? "years" : "";
   const numeric = Number(usp.value);
+  const unit = unitFor(usp.icon);
 
   return (
-    <p className="mb-3 flex items-baseline gap-2 font-display text-5xl leading-none tracking-tight text-charcoal">
-      {Number.isInteger(numeric) ? <AnimatedCounter value={numeric} /> : usp.value}
-      {unit && <span className="font-sans text-base font-medium text-charcoal/45">{unit}</span>}
+    <p className="flex items-baseline gap-2 font-display text-[clamp(2.35rem,3.4vw,3.25rem)] leading-none tracking-tight text-charcoal tabular-nums">
+      {Number.isInteger(numeric) ? (
+        <AnimatedCounter value={numeric} />
+      ) : (
+        usp.value
+      )}
+      {unit ? (
+        <span className="font-sans text-sm font-medium tracking-normal text-charcoal/70">
+          {unit}
+        </span>
+      ) : null}
     </p>
+  );
+}
+
+/** Hairline dividers — one grid, no floating cards. Same rhythm as StatsCounter. */
+function cellShell(index: number) {
+  return [
+    "h-full px-0 py-8 sm:px-8 sm:py-9",
+    index > 0 ? "border-t border-charcoal/12 sm:border-t-0" : "",
+    index >= 2 ? "sm:border-t sm:border-charcoal/12" : "",
+    index % 2 === 1 ? "sm:border-l sm:border-charcoal/12" : "",
+  ].join(" ");
+}
+
+function SpecPoint({
+  usp,
+  index,
+  mode,
+}: {
+  usp: CompanyUSP;
+  index: number;
+  mode: "stack" | "grid";
+}) {
+  const col = LG_COL[index] ?? LG_COL[0];
+  const rule = LG_DIVIDER[index] ?? "";
+
+  if (mode === "stack") {
+    return (
+      <>
+        <h3 className="font-display text-xl leading-tight tracking-tight text-charcoal sm:text-[1.35rem]">
+          {usp.title}
+        </h3>
+        <div
+          className="mt-4 min-h-[2.75rem] sm:min-h-[3rem]"
+          aria-hidden={!usp.value}
+        >
+          <Figure usp={usp} />
+        </div>
+        <p className="mt-3 max-w-[36ch] text-sm leading-relaxed text-charcoal/70 sm:mt-4">
+          {usp.description}
+        </p>
+      </>
+    );
+  }
+
+  return (
+    <>
+      <h3
+        className={`font-display text-[1.35rem] leading-snug tracking-tight text-charcoal ${col} lg:row-start-1 lg:px-10 lg:pt-10 ${rule}`}
+      >
+        {usp.title}
+      </h3>
+      <div
+        className={`flex min-h-[3.5rem] items-end ${col} lg:row-start-2 lg:px-10 lg:pt-4 ${rule}`}
+        aria-hidden={!usp.value}
+      >
+        <Figure usp={usp} />
+      </div>
+      <p
+        className={`text-sm leading-relaxed text-charcoal/70 ${col} lg:row-start-3 lg:px-10 lg:pt-4 lg:pb-10 ${rule}`}
+      >
+        {usp.description}
+      </p>
+    </>
   );
 }
 
@@ -60,42 +113,47 @@ interface USPStripProps {
 
 export function USPStrip({ usps }: USPStripProps) {
   return (
-    <section className="bg-surface pt-10 pb-[var(--spacing-section)] sm:pt-12 lg:pt-16 lg:pb-[var(--spacing-section-lg)]">
+    <section
+      className="bg-surface pt-10 pb-[var(--spacing-section)] sm:pt-12 lg:pt-16 lg:pb-[var(--spacing-section-lg)]"
+      aria-labelledby="why-hitech-heading"
+    >
       <div className="container-content">
-        <RevealOnScroll className="mb-10 max-w-2xl lg:mb-14">
+        <RevealOnScroll className="max-w-2xl lg:max-w-3xl">
           <p className="eyebrow mb-4 text-gold">Why Hi-Tech uPVC</p>
-          <h2 className="font-display text-[clamp(2rem,3.6vw,3.25rem)] leading-[1.05] tracking-tight text-charcoal text-balance">
+          <h2
+            id="why-hitech-heading"
+            className="font-display text-[clamp(2rem,3.6vw,3.25rem)] leading-[1.05] tracking-tight text-balance text-charcoal"
+          >
             Built better, in every detail.
           </h2>
-          <p className="mt-4 max-w-lg text-base leading-relaxed text-charcoal/60 sm:text-lg">
+          <p className="mt-4 max-w-[62ch] text-base leading-relaxed text-charcoal/70 sm:text-lg">
             Multi-chamber profiles, steel-reinforced frames and hardware tested
             for decades of daily use.
           </p>
         </RevealOnScroll>
 
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-5">
-          {usps.map((usp, i) => (
-            <RevealOnScroll key={usp.title} delay={i * 0.08} className="h-full">
-              <article className="group flex h-full min-h-[240px] flex-col rounded-3xl bg-white p-7 shadow-[0_1px_2px_rgba(27,27,29,0.04),0_12px_32px_-16px_rgba(27,27,29,0.12)] ring-1 ring-charcoal/[0.05] transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:shadow-[0_1px_2px_rgba(27,27,29,0.04),0_24px_48px_-20px_rgba(27,27,29,0.2)] lg:min-h-[280px]">
-                <span
-                  className="flex h-11 w-11 items-center justify-center rounded-full bg-surface-muted/60 text-charcoal transition-colors duration-500 group-hover:bg-gold/15 group-hover:text-gold"
-                  aria-hidden
-                >
-                  {ICONS[usp.icon]}
-                </span>
+        <div className="mt-12 border-t border-charcoal/12 sm:mt-14 lg:mt-16">
+          {/* Tablet and phone */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:hidden">
+            {usps.map((usp, i) => (
+              <RevealOnScroll
+                key={usp.title}
+                delay={i * 0.06}
+                className={cellShell(i)}
+              >
+                <SpecPoint usp={usp} index={i} mode="stack" />
+              </RevealOnScroll>
+            ))}
+          </div>
 
-                <div className="mt-auto pt-10">
-                  <Figure usp={usp} />
-                  <h3 className="text-lg font-semibold tracking-tight text-charcoal">
-                    {usp.title}
-                  </h3>
-                  <p className="mt-1.5 text-sm leading-relaxed text-charcoal/60">
-                    {usp.description}
-                  </p>
-                </div>
-              </article>
-            </RevealOnScroll>
-          ))}
+          {/* Desktop: shared rows — motion wrappers would break display:contents */}
+          <div className="hidden grid-cols-4 grid-rows-[auto_auto_auto] lg:grid">
+            {usps.map((usp, i) => (
+              <div key={usp.title} className="contents">
+                <SpecPoint usp={usp} index={i} mode="grid" />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>

@@ -19,6 +19,10 @@ import { HERO_3D_SLIDES, heroPoster } from "@/lib/heroSlides";
 import { DoorwayIntro, isDoorwayIntroPending } from "@/components/animations/DoorwayIntro";
 import { useCanHover } from "@/components/three/hooks";
 import { LazyUpvcViewer } from "@/components/three/LazyUpvcViewer";
+import {
+  allowsPrimaryLive3d,
+  useDeviceTier,
+} from "@/components/three/quality";
 import { warmHomeScene } from "@/components/three/warmHome";
 import { MagneticButton } from "@/components/ui/MagneticButton";
 
@@ -56,6 +60,8 @@ export function Hero({ company }: HeroProps) {
   const { hero } = company;
   const reducedMotion = useReducedMotion();
   const canHover = useCanHover();
+  const tier = useDeviceTier();
+  const live3d = allowsPrimaryLive3d(tier) && !reducedMotion;
   const swipe = useRef<{ x: number; y: number } | null>(null);
   const [pageRevealed, setPageRevealed] = useState(false);
   const [stageReady, setStageReady] = useState(false);
@@ -80,8 +86,9 @@ export function Hero({ company }: HeroProps) {
   const total = HERO_3D_SLIDES.length;
   const slide = HERO_3D_SLIDES[index];
   const state = pageRevealed ? "show" : "hidden";
-  const stageLive = stageReady || !introPending;
-  const autoAdvance = stageLive && viewerReady && !paused && !reducedMotion;
+  const stageLive = live3d && (stageReady || !introPending);
+  const autoAdvance =
+    stageLive && viewerReady && !paused && !reducedMotion;
 
   const handleReveal = useCallback(() => {
     setPageRevealed(true);
@@ -183,14 +190,31 @@ export function Hero({ company }: HeroProps) {
         onTouchStart={() => setPaused(true)}
         onTouchEnd={() => setPaused(false)}
       >
-        <h1 className="sr-only">{hero.headline}</h1>
-
-        <div className="container-content grid w-full grid-cols-1 items-start gap-x-12 gap-y-6 pb-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] lg:grid-rows-[auto_auto] lg:pb-10">
-          {/* Copy */}
+        <div className="container-content grid w-full grid-cols-1 items-start gap-x-12 gap-y-6 pb-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] lg:grid-rows-[auto_auto_auto] lg:pb-10">
           <motion.div
-            className={`lg:col-start-1 lg:row-start-1 lg:self-end ${VISIBLE_ON_TOUCH}`}
+            className={`lg:col-span-2 ${VISIBLE_ON_TOUCH}`}
             variants={rise}
             custom={0}
+            initial="hidden"
+            animate={state}
+          >
+            <p className="text-sm leading-snug text-charcoal/60 sm:text-[0.9375rem]">
+              Made in Kathmandu. Fitted across Nepal.
+              <span className="mx-2 text-charcoal/25" aria-hidden>
+                ·
+              </span>
+              10-year warranty
+            </p>
+            <h1 className="mt-2 font-display text-[clamp(1.15rem,2vw,1.35rem)] leading-snug tracking-tight text-charcoal">
+              {hero.headline}
+            </h1>
+          </motion.div>
+
+          {/* Copy */}
+          <motion.div
+            className={`lg:col-start-1 lg:row-start-2 lg:self-end ${VISIBLE_ON_TOUCH}`}
+            variants={rise}
+            custom={1}
             initial="hidden"
             animate={state}
           >
@@ -215,9 +239,9 @@ export function Hero({ company }: HeroProps) {
 
           {/* 3D stage */}
           <motion.div
-            className={`relative lg:col-start-2 lg:row-span-2 lg:row-start-1 ${VISIBLE_ON_TOUCH}`}
+            className={`relative lg:col-start-2 lg:row-span-2 lg:row-start-2 ${VISIBLE_ON_TOUCH}`}
             variants={rise}
-            custom={1}
+            custom={2}
             initial="hidden"
             animate={state}
           >
@@ -240,22 +264,23 @@ export function Hero({ company }: HeroProps) {
                 {!posterDone && (
                   <Image
                     src={heroPoster(slide)}
-                    alt=""
+                    alt={`${slide.eyebrow} in white uPVC`}
                     fill
                     preload={index === 0}
                     fetchPriority={index === 0 ? "high" : "auto"}
                     sizes="(min-width: 1024px) 50vw, 100vw"
                     className="pointer-events-none object-contain transition-opacity duration-300 ease-out"
                     style={{
-                      opacity: viewerReady ? 0 : 1,
-                      transitionDelay: viewerReady ? `${STAGE_FADE_MS}ms` : "0ms",
+                      opacity: stageLive && viewerReady ? 0 : 1,
+                      transitionDelay:
+                        stageLive && viewerReady ? `${STAGE_FADE_MS}ms` : "0ms",
                     }}
                     onTransitionEnd={() => {
-                      if (viewerReady) setPosterDone(true);
+                      if (stageLive && viewerReady) setPosterDone(true);
                     }}
                   />
                 )}
-                {stageLive && (
+                {stageLive ? (
                   <LazyUpvcViewer
                     openingType={slide.openingType}
                     category={slide.category}
@@ -268,7 +293,7 @@ export function Hero({ company }: HeroProps) {
                     posterSrc={heroPoster(slide)}
                     onReady={handleViewerReady}
                   />
-                )}
+                ) : null}
               </motion.div>
             </motion.div>
 
@@ -299,9 +324,9 @@ export function Hero({ company }: HeroProps) {
 
           {/* Actions + carousel controls */}
           <motion.div
-            className={`lg:col-start-1 lg:row-start-2 lg:self-start ${VISIBLE_ON_TOUCH}`}
+            className={`lg:col-start-1 lg:row-start-3 lg:self-start ${VISIBLE_ON_TOUCH}`}
             variants={rise}
-            custom={2}
+            custom={3}
             initial="hidden"
             animate={state}
           >

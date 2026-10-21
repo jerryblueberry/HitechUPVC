@@ -13,16 +13,15 @@ export function ProcessTimeline({ process }: ProcessTimelineProps) {
     >
       <div className="container-content">
         <RevealOnScroll className="mb-10 max-w-2xl lg:mb-14">
-          <p className="eyebrow mb-3 text-gold sm:mb-4">Our Process</p>
           <h2
             id="process-heading"
             className="font-display text-[clamp(1.85rem,4.2vw,3.25rem)] leading-[1.05] tracking-tight text-balance text-charcoal"
           >
             From consultation to aftercare
           </h2>
-          <p className="mt-3 max-w-lg text-[0.9375rem] leading-relaxed text-charcoal/60 sm:mt-4 sm:text-base lg:text-lg">
-            Five clear steps from the first conversation to ongoing support —
-            measured, made, and fitted by our team.
+          <p className="mt-3 max-w-lg text-[0.9375rem] leading-relaxed text-charcoal/70 sm:mt-4 sm:text-base lg:text-lg">
+            Measured on site, made at our Tarakeshwar factory, and fitted by our
+            team — five clear steps from the first conversation to aftercare.
           </p>
         </RevealOnScroll>
 

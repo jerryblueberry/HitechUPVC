@@ -4,19 +4,20 @@ Owner: agent
 Last reviewed: 2026-09-29
 
 ## Purpose
-Apple-style spec cards highlighting energy efficiency, security, low maintenance, and warranty.
+A ruled specification list for energy efficiency, security, low maintenance, and warranty.
 
 ## Design Decisions
 - Matches the hero: `bg-surface`, left-aligned gold eyebrow + Fraunces heading,
-  charcoal/60 supporting copy
+  charcoal/70 supporting copy
 - Tighter top padding (`pt-10` → `lg:pt-16`) so the strip sits closer after the
   scroll-door sequence; bottom keeps full section rhythm
-- White `rounded-3xl` cards with a soft layered shadow and hairline ring;
-  1 → 2 → 4 columns
-- Thin-stroke SVG icons in a muted circle (turns gold on hover), no emoji
-- Content bottom-aligned; USPs with a `value` get a large display figure
-  (`1.1 W/m²K`, `10 years`)
-- Hover: 4px lift + deeper shadow
+- No cards. One top rule on the grid, then the same divider pattern as
+  `StatsCounter` (1 → 2 columns below `lg`, shared 4×3 grid from `lg`)
+- Desktop uses `display: contents` so titles, figures, and descriptions share
+  rows across columns. Scroll reveal runs on stacked layouts only — motion
+  transforms break `contents`
+- Every point: title, figure row, description. Figures only where `value` is set
+- Not interactive, so there is no hover lift
 
 ## Props / Data
 - `company.json` — usps array (warranty title shortened to "Warranty"; the figure carries the number)

@@ -83,7 +83,7 @@
   "process": [
     { "step": 1, "title": "Consultation", "description": "Discuss your needs and preferences" },
     { "step": 2, "title": "Measurement", "description": "Precise on-site measurements" },
-    { "step": 3, "title": "Manufacturing", "description": "Custom-built to your specifications" },
+    { "step": 3, "title": "Manufacturing", "description": "Extruded and assembled at our Tarakeshwar factory" },
     { "step": 4, "title": "Installation", "description": "Expert fitting by certified installers" },
     { "step": 5, "title": "Aftercare", "description": "Ongoing support and warranty service" }
   ]

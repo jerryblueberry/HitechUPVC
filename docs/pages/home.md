@@ -1,40 +1,43 @@
 # Home Page
-Status: done
-Owner: agent
-Last reviewed: —
+
+Status: in progress (redesign pass 2026-10-20)  
+Owner: agent  
+Last reviewed: 2026-10-20
 
 ## Purpose
-Primary landing page positioning Premium UPVC as a premium manufacturer. Converts visitors via quote CTA and product exploration.
+
+Primary landing for Hi-Tech uPVC Profile Industries — product-led manufacturer
+story with one cinematic beat, then calm proof and conversion.
 
 ## Sections (top to bottom)
-1. Hero — see [Hero.md](../components/home/Hero.md)
-2. USPStrip — see [USPStrip.md](../components/home/USPStrip.md)
-3. ProductCategoryShowcase
-4. OpeningTypesExplainer
-5. Why UPVC comparison (inline or link to /why-upvc)
-6. BeforeAfterSlider
-7. ProcessTimeline
-8. TestimonialsMarquee
-9. StatsCounter
-10. Gallery teaser
-11. CTASection
-12. Footer (layout)
+
+1. Hero — company identity line + 3D carousel (poster-first; live 3D by tier)
+2. ScrollDoorSequence — signature pinned story (+ Tarakeshwar caption beat)
+3. USPStrip — ruled Why Hi-Tech specs
+4. ProductCategoryShowcase — poster-first tiles; live 3D on high-tier hover
+5. OpeningTypesExplainer — compact; live 3D on high-tier after tab select
+6. ProcessTimeline — factory-aware steps (no eyebrow)
+7. ProofChapter — testimonials + stats + gallery under one heading
+8. CTASection — navy full-stop; measurement CTA + WhatsApp
+9. Footer (layout)
+
+**Removed from home:** BeforeAfterSlider (keep component for real Nepal pairs later).
+
+Plan: [HOME-REDESIGN-PLAN.md](../HOME-REDESIGN-PLAN.md)  
+Audit: [HOME-PAGE-REVIEW.md](../HOME-PAGE-REVIEW.md)
 
 ## Route
+
 `app/(marketing)/page.tsx`
 
 ## Data Sources
-- `company.json` — stats, hero copy
-- `navigation.json`
-- `testimonials.json`
-- `projects.json` — gallery teaser
-- `windows.json` / `doors.json` / `panels.json` — category showcase
 
-## SEO
-- Title: "Premium UPVC | Windows, Doors & Panels"
-- Meta description: energy efficiency, security, warranty focus
+- `company.json` — hero, usps, stats, process, contact
+- `testimonials.json`, `projects.json`
+- `windows.json` / `doors.json` / `panels.json` — category counts
 
-## Review Checklist
-- [ ] All sections use section-padding and container-content
-- [ ] Page loads with server components where possible
-- [ ] Each section doc marked done
+## SEO / a11y notes
+
+- Visible `h1` = `company.hero.headline` with trust line (Kathmandu / warranty)
+- Slide titles remain `h2`
+- Proof chapter uses one `h2`; gallery titles are `h3` when embedded

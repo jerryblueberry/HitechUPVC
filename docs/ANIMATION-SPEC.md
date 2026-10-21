@@ -72,11 +72,11 @@ Static rendered frame — no auto-play. Without WebGL, the static product image 
 
 `components/home/ScrollDoorSequence.tsx`. Scroll progress is written into a **ref**
 by `useMotionValueEvent` and read inside `useFrame` — scrolling must never trigger a
-React render. Raw progress is exponentially smoothed (λ = 18, the same on touch and
-pointer); the camera locks to that value (one damp stage). Captions fade the column
-out, swap copy, then fade in — two beats never paint together. Touch and desktop run
-the same quality (`components/three/quality.ts`), with one measured step down in
-pixel ratio if the device drops frames; the chunk prefetches before the pin.
+React render. Raw progress is exponentially smoothed (λ = 18); the camera rides a
+Catmull-Rom spline with glide easing. Captions use timed `AnimatePresence` beats
+(not scrubbed opacity). Live 3D mounts only when `allowsPrimaryLive3d(tier)` —
+low tier stays on posters. Secondary home viewers (category, opening types) use
+`allowsSecondaryLive3d` (high tier only). See `docs/HOME-REDESIGN-PLAN.md`.
 
 ## Shared Utilities
 

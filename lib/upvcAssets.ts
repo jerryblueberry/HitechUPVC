@@ -1,6 +1,10 @@
 /**
- * Local UPVC product assets — PNG cutouts + real frame sequences from composite showcase.
- * Replace files in /public/images/upvc/ with owned photography before launch.
+ * Local UPVC product assets.
+ *
+ * Studio stills under `/images/hero/*.webp` are captures from our live parametric
+ * renderer (no stock watermarks). Prefer those for posters and no-WebGL fallbacks.
+ * The PNGs in `/images/upvc/` are legacy Vecteezy cutouts — do not use on marketing
+ * surfaces until replaced with owned photography.
  */
 
 import type { OpeningType, ProductCategory } from "./types";
@@ -41,21 +45,32 @@ export const OPENING_TYPE_SEQUENCE: Record<OpeningType, readonly string[]> = {
   fixed: [UPVC_SEQUENCES.slidingWindow[0]],
 };
 
+/** Closed-pose stills from the live 3D stage — transparent, no watermarks. */
 export const OPENING_TYPE_PNG: Record<OpeningType, string> = {
-  sliding: UPVC_PNG.windowSliding,
-  casement: UPVC_PNG.windowCasement,
-  "tilt-turn": UPVC_PNG.windowOpen,
-  folding: UPVC_PNG.doorFrench,
-  french: UPVC_PNG.doorFrench,
-  hinged: UPVC_PNG.doorFrench,
-  fixed: UPVC_PNG.windowModern,
+  sliding: "/images/hero/sliding.webp",
+  casement: "/images/hero/casement.webp",
+  "tilt-turn": "/images/hero/tilt-turn.webp",
+  folding: "/images/hero/folding.webp",
+  french: "/images/hero/french.webp",
+  hinged: "/images/hero/french.webp",
+  fixed: "/images/hero/casement.webp",
 };
 
 export const CATEGORY_PNG: Record<ProductCategory, string> = {
-  windows: UPVC_PNG.windowModern,
-  doors: UPVC_PNG.doorFrench,
-  panels: UPVC_PNG.windowCasement,
+  windows: "/images/hero/casement.webp",
+  doors: "/images/hero/french.webp",
+  /** No dedicated still yet — showcase mounts live 3D / studio wash instead. */
+  panels: "/images/hero/casement.webp",
 };
+
+/** Category posters for the home showcase. `null` = no still; use live or wash. */
+export function categoryShowcasePoster(
+  category: ProductCategory
+): string | null {
+  if (category === "windows") return "/images/hero/casement.webp";
+  if (category === "doors") return "/images/hero/french.webp";
+  return null;
+}
 
 export function getSequenceForOpening(type: OpeningType): readonly string[] {
   return OPENING_TYPE_SEQUENCE[type];

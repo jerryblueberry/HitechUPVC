@@ -3,6 +3,8 @@ import { RevealOnScroll } from "@/components/ui/RevealOnScroll";
 
 interface TestimonialsMarqueeProps {
   testimonials: Testimonial[];
+  /** Inside ProofChapter — no section chrome or heading */
+  embedded?: boolean;
 }
 
 function Star({ filled }: { filled: boolean }) {
@@ -68,18 +70,18 @@ function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
   );
 }
 
-export function TestimonialsMarquee({ testimonials }: TestimonialsMarqueeProps) {
+export function TestimonialsMarquee({
+  testimonials,
+  embedded = false,
+}: TestimonialsMarqueeProps) {
   const featured = testimonials[0];
   const rest = testimonials.slice(1);
 
   if (!featured) return null;
 
-  return (
-    <section
-      className="section-padding overflow-hidden bg-surface-muted"
-      aria-labelledby="testimonials-heading"
-    >
-      <div className="container-content">
+  const body = (
+    <div className={embedded ? "container-content" : "container-content"}>
+      {!embedded ? (
         <RevealOnScroll className="mb-8 max-w-2xl sm:mb-10 lg:mb-14">
           <p className="eyebrow mb-4 text-gold">Testimonials</p>
           <h2
@@ -92,30 +94,42 @@ export function TestimonialsMarquee({ testimonials }: TestimonialsMarqueeProps) 
             Homeowners and architects in Nepal, in their own words.
           </p>
         </RevealOnScroll>
+      ) : null}
 
-        {/* Phone: horizontal snap with a peek of the next card. */}
-        <div className="-mx-6 flex snap-x snap-mandatory scroll-px-6 touch-manipulation gap-4 overflow-x-auto overscroll-x-contain px-6 pb-1 [scrollbar-width:none] motion-reduce:mx-0 motion-reduce:flex-col motion-reduce:overflow-visible motion-reduce:px-0 md:hidden [&::-webkit-scrollbar]:hidden">
-          {[featured, ...rest].map((t) => (
-            <div
-              key={t.id}
-              className="w-[min(19.5rem,85vw)] shrink-0 snap-start motion-reduce:w-full"
-            >
-              <TestimonialCard testimonial={t} />
-            </div>
-          ))}
-        </div>
-
-        <div className="hidden md:grid md:grid-cols-3 md:items-stretch md:gap-4 lg:gap-6">
-          <RevealOnScroll className="h-full">
-            <TestimonialCard testimonial={featured} />
-          </RevealOnScroll>
-          {rest.map((t, i) => (
-            <RevealOnScroll key={t.id} delay={0.08 * (i + 1)} className="h-full">
-              <TestimonialCard testimonial={t} />
-            </RevealOnScroll>
-          ))}
-        </div>
+      <div className="-mx-6 flex snap-x snap-mandatory scroll-px-6 touch-manipulation gap-4 overflow-x-auto overscroll-x-contain px-6 pb-1 [scrollbar-width:none] motion-reduce:mx-0 motion-reduce:flex-col motion-reduce:overflow-visible motion-reduce:px-0 md:hidden [&::-webkit-scrollbar]:hidden">
+        {[featured, ...rest].map((t) => (
+          <div
+            key={t.id}
+            className="w-[min(19.5rem,85vw)] shrink-0 snap-start motion-reduce:w-full"
+          >
+            <TestimonialCard testimonial={t} />
+          </div>
+        ))}
       </div>
+
+      <div className="hidden md:grid md:grid-cols-3 md:items-stretch md:gap-4 lg:gap-6">
+        <RevealOnScroll className="h-full">
+          <TestimonialCard testimonial={featured} />
+        </RevealOnScroll>
+        {rest.map((t, i) => (
+          <RevealOnScroll key={t.id} delay={0.08 * (i + 1)} className="h-full">
+            <TestimonialCard testimonial={t} />
+          </RevealOnScroll>
+        ))}
+      </div>
+    </div>
+  );
+
+  if (embedded) {
+    return <div className="overflow-hidden pb-12 sm:pb-14 lg:pb-16">{body}</div>;
+  }
+
+  return (
+    <section
+      className="section-padding overflow-hidden bg-surface-muted"
+      aria-labelledby="testimonials-heading"
+    >
+      {body}
     </section>
   );
 }

@@ -3,12 +3,10 @@ import { ScrollDoorSequence } from "@/components/home/ScrollDoorSequence";
 import { USPStrip } from "@/components/home/USPStrip";
 import { ProductCategoryShowcase } from "@/components/home/ProductCategoryShowcase";
 import { OpeningTypesExplainer } from "@/components/home/OpeningTypesExplainer";
-import { BeforeAfterSlider } from "@/components/home/BeforeAfterSlider";
 import { ProcessTimeline } from "@/components/home/ProcessTimeline";
-import { TestimonialsMarquee } from "@/components/home/TestimonialsMarquee";
-import { StatsCounter } from "@/components/home/StatsCounter";
-import { GalleryTeaser } from "@/components/home/GalleryTeaser";
+import { ProofChapter } from "@/components/home/ProofChapter";
 import { CTASection } from "@/components/home/CTASection";
+import { whatsappHref } from "@/lib/constants";
 import {
   getCompany,
   getDoors,
@@ -36,12 +34,21 @@ export default function HomePage() {
         }}
       />
       <OpeningTypesExplainer />
-      <BeforeAfterSlider />
       <ProcessTimeline process={company.process} />
-      <TestimonialsMarquee testimonials={testimonials} />
-      <StatsCounter stats={company.stats} />
-      <GalleryTeaser projects={projects} />
-      <CTASection />
+      <ProofChapter
+        testimonials={testimonials}
+        stats={company.stats}
+        projects={projects}
+      />
+      <CTASection
+        title="Ready for quieter rooms and cleaner sightlines?"
+        body="Book a free site measurement. We measure, make at Tarakeshwar, and fit — with a 10-year warranty on profiles and hardware."
+        primaryLabel="Book a free site measurement"
+        primaryHref="/get-quote"
+        secondaryHref={whatsappHref(company.contact.whatsapp)}
+        secondaryLabel="WhatsApp us"
+        secondaryIcon="whatsapp"
+      />
     </>
   );
 }

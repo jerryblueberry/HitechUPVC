@@ -131,3 +131,20 @@ const SCENE: Record<DeviceTier, SceneQuality> = {
 export function sceneQuality(tier: DeviceTier): SceneQuality {
   return SCENE[tier];
 }
+
+/**
+ * Primary surfaces: hero carousel and the scroll-door pin.
+ * Low tier (and no-WebGL callers) stay on posters.
+ */
+export function allowsPrimaryLive3d(tier: DeviceTier): boolean {
+  return tier !== "low";
+}
+
+/**
+ * Secondary surfaces: category tiles and the opening-types explainer.
+ * Only high-tier devices get live canvases — mid/low use posters until
+ * we promote mid to “tap to play” with a shared canvas (follow-up).
+ */
+export function allowsSecondaryLive3d(tier: DeviceTier): boolean {
+  return tier === "high";
+}

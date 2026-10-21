@@ -27,6 +27,10 @@ import { ApproachedMount } from "@/components/three/ApproachedMount";
 import { useWebGLSupported } from "@/components/three/hooks";
 import { LazyUpvcScrollScene } from "@/components/three/LazyUpvcScrollScene";
 import type { CameraShot } from "@/components/three/UpvcScrollScene";
+import {
+  allowsPrimaryLive3d,
+  useDeviceTier,
+} from "@/components/three/quality";
 import { warmHomeScene } from "@/components/three/warmHome";
 
 warmHomeScene();
@@ -78,11 +82,11 @@ const CAPTIONS = [
       "Three hinges carry the weight. The swing stays true after tens of thousands of cycles.",
   },
   {
-    eyebrow: "The result",
-    title: "A doorway, not a door",
-    body: "Slim sightlines, a thermally broken threshold, and a sealed unit that keeps the weather where it belongs.",
+    eyebrow: "The factory",
+    title: "Extruded and assembled in Tarakeshwar",
+    body: "Slim sightlines and a sealed unit — made at our Kathmandu valley plant, fitted for monsoon dust, heat, and cold mornings.",
     bodyMobile:
-      "Slim sightlines, a thermally broken threshold — weather stays where it belongs.",
+      "Made at our Tarakeshwar plant — sealed for Kathmandu dust, monsoon, and cold mornings.",
   },
 ];
 
@@ -252,11 +256,14 @@ export function ScrollDoorSequence() {
   const captionDrift = useTransform(scrollYProgress, [0, 1], [12, -12]);
 
   const webgl = useWebGLSupported();
+  const tier = useDeviceTier();
+  const live3d = allowsPrimaryLive3d(tier) && webgl !== false;
   const [sceneReady, setSceneReady] = useState(false);
   const [posterDone, setPosterDone] = useState(false);
   const handleSceneReady = useCallback(() => setSceneReady(true), []);
   // The still is the opening shot only. If the visitor is already moving
   // through the sequence before the scene is up, it gets out of the way.
+  // On low-tier devices the poster stays for the whole pin.
   const posterScrollFade = useTransform(scrollYProgress, [0, 0.04], [1, 0]);
 
   return (
@@ -290,7 +297,7 @@ export function ScrollDoorSequence() {
       */}
       <section
         ref={sectionRef}
-        className="relative h-[260vh] bg-surface motion-reduce:hidden sm:h-[280vh] lg:h-[320vh]"
+        className="relative h-[200vh] bg-surface motion-reduce:hidden sm:h-[240vh] lg:h-[320vh]"
         aria-label="Scroll-driven door sequence"
       >
         <div
@@ -328,17 +335,19 @@ export function ScrollDoorSequence() {
           {!posterDone && (
             <motion.div
               className="pointer-events-none absolute inset-0"
-              style={{ opacity: webgl === false ? 1 : posterScrollFade }}
+              style={{
+                opacity: !live3d ? 1 : posterScrollFade,
+              }}
               aria-hidden
             >
               <div
                 className="absolute inset-0 transition-opacity duration-300 ease-out"
                 style={{
-                  opacity: sceneReady ? 0 : 1,
-                  transitionDelay: sceneReady ? "200ms" : "0ms",
+                  opacity: live3d && sceneReady ? 0 : 1,
+                  transitionDelay: live3d && sceneReady ? "200ms" : "0ms",
                 }}
                 onTransitionEnd={() => {
-                  if (sceneReady) setPosterDone(true);
+                  if (live3d && sceneReady) setPosterDone(true);
                 }}
               >
                 <Image
@@ -359,21 +368,23 @@ export function ScrollDoorSequence() {
             </motion.div>
           )}
 
-          <ApproachedMount
-            className="pointer-events-none absolute inset-0"
-            rootMargin="160% 0px"
-          >
-            <LazyUpvcScrollScene
-              progressRef={progressRef}
-              shots={isDesktop ? DESKTOP_SHOTS : MOBILE_SHOTS}
-              openingType="hinged"
-              category="doors"
-              hardwareSlug="brushed"
-              className="h-full w-full"
-              fallback={null}
-              onReady={handleSceneReady}
-            />
-          </ApproachedMount>
+          {live3d ? (
+            <ApproachedMount
+              className="pointer-events-none absolute inset-0"
+              rootMargin="160% 0px"
+            >
+              <LazyUpvcScrollScene
+                progressRef={progressRef}
+                shots={isDesktop ? DESKTOP_SHOTS : MOBILE_SHOTS}
+                openingType="hinged"
+                category="doors"
+                hardwareSlug="brushed"
+                className="h-full w-full"
+                fallback={null}
+                onReady={handleSceneReady}
+              />
+            </ApproachedMount>
+          ) : null}
 
           <div className="pointer-events-none absolute inset-0">
             {/* Desktop: left scrim. Mobile: shorter bottom scrim — product stays clear. */}

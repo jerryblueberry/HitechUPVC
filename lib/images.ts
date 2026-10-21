@@ -18,9 +18,10 @@ export const IMAGES = {
   },
 
   categories: {
-    windows: "/images/upvc/window-modern.png",
-    doors: "/images/upvc/door-french.png",
-    panels: "/images/upvc/window-casement.png",
+    windows: "/images/hero/casement.webp",
+    doors: "/images/hero/french.webp",
+    /** Placeholder until owned panel photography ships */
+    panels: "/images/hero/casement.webp",
   },
 
   scrollStory: {
@@ -30,11 +31,11 @@ export const IMAGES = {
   },
 
   openingTypes: {
-    sliding: "/images/upvc/window-sliding.png",
-    casement: "/images/upvc/window-casement.png",
-    "tilt-turn": "/images/upvc/window-open.png",
-    folding: "/images/upvc/door-french.png",
-    french: "/images/upvc/door-french.png",
+    sliding: "/images/hero/sliding.webp",
+    casement: "/images/hero/casement.webp",
+    "tilt-turn": "/images/hero/tilt-turn.webp",
+    folding: "/images/hero/folding.webp",
+    french: "/images/hero/french.webp",
   },
 
   gallery: [
