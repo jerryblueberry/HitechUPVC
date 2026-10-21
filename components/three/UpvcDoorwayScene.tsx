@@ -27,12 +27,16 @@ function isCoarsePointer() {
   return window.matchMedia("(pointer: coarse)").matches;
 }
 
-/** Slightly shorter on touch so phones finish before the fail-open timeout. */
+/**
+ * Phones open the leaves far enough to read, then walk through.
+ * The walk starts later than on desktop so the swing is the clear beat,
+ * and the whole timeline still finishes in about a second.
+ */
 function introTiming(coarse: boolean) {
-  const OPEN_START = 0.04;
-  const OPEN_DURATION = coarse ? 0.5 : 0.58;
-  const WALK_START = coarse ? 0.26 : 0.34;
-  const WALK_DURATION = coarse ? 0.72 : 0.86;
+  const OPEN_START = coarse ? 0.06 : 0.04;
+  const OPEN_DURATION = coarse ? 0.62 : 0.58;
+  const WALK_START = coarse ? 0.4 : 0.34;
+  const WALK_DURATION = coarse ? 0.68 : 0.86;
   const WALK_END_Z = -1.6;
   return {
     OPEN_START,
@@ -212,9 +216,16 @@ export function UpvcDoorwayScene({
 
   const startZ = useMemo(() => {
     const vHalf = Math.tan(((FOV / 2) * Math.PI) / 180);
+    // Portrait phones are tall and narrow. A desktop margin leaves the doors
+    // as a small band; a tighter pad fills the width so they read as a doorway.
+    const heightPad = coarse ? 1.04 : 1.3;
+    const widthPad = coarse ? 1.06 : 1.35;
     return (aspect: number) =>
-      Math.max((spec.height * 1.3) / 2 / vHalf, (spec.width * 1.35) / 2 / (vHalf * aspect));
-  }, [spec]);
+      Math.max(
+        (spec.height * heightPad) / 2 / vHalf,
+        (spec.width * widthPad) / 2 / (vHalf * aspect)
+      );
+  }, [spec, coarse]);
 
   const holeHeight = spec.height + (spec.hasThreshold ? 0.05 : 0);
 
@@ -222,9 +233,9 @@ export function UpvcDoorwayScene({
     <Canvas
       className={className}
       frameloop={live ? "always" : "demand"}
-      dpr={[1, coarse ? 1.05 : 1.35]}
+      dpr={[1, coarse ? 1.25 : 1.35]}
       gl={{
-        antialias: false,
+        antialias: coarse,
         alpha: true,
         powerPreference: "default",
         stencil: false,

@@ -8,11 +8,12 @@ First-visit page-load: French doors open and the camera walks through onto the h
 
 ## Performance
 - No HDRI on this canvas (1.5 MB `studio_small_09_1k.hdr` is for later viewers; the 410 KB `studio_small_09_512.hdr` is reserved for Save-Data, low-memory and 2g devices)
-- Skipped on touch (`pointer: coarse`), Save-Data, and `deviceMemory < 4`; the SSR cover is hidden with `pointer-coarse:hidden` so phones never see it
+- Plays on phones as well as desktops. Skipped for Save-Data, 2g, `deviceMemory < 4`, reduced motion, and no WebGL
+- Touch framing is tighter (doors fill the width) with a slightly later walk so the swing reads before the camera moves
 - `quality="draft"` materials (MeshStandard, no clearcoat/refraction) so shaders compile fast
-- Antialias off, DPR capped (1.05 touch / 1.35 desktop), `frameloop` idle until `compileAsync` then always
+- DPR capped (1.25 touch with antialias / 1.35 desktop without), `frameloop` idle until `compileAsync` then always
 - Clock starts only after compile — first frame parks the camera at the correct start Z
-- Touch devices use a shorter open + walk (~1.0s) so phones finish before the fail-open
+- Touch timeline is about 1.1s: leaves swing open, then the camera walks through
 - `lib/introSession.ts` locks other canvases until the overlay exits
 - Finish is once-only: canvas unmounts immediately, cover fades (~240ms), then hero WebGL mounts
 - Hero `LazyUpvcViewer` mounts on `onComplete`, not mid-walk

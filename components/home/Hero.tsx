@@ -39,7 +39,11 @@ const OPEN_AT_MS = 700;
 const CLOSE_AT_MS = 4600;
 const SWIPE_PX = 60;
 const STAGE_FADE_MS = 180;
-/** Touch devices skip the intro, so the copy must paint from the server HTML, not after hydration. */
+/**
+ * Return visits and skipped intros (reduced motion, no WebGL, data-saver)
+ * paint the copy immediately. A first visit — phone or laptop — waits for
+ * the doorway reveal, same rise as desktop.
+ */
 const VISIBLE_ON_TOUCH = "pointer-coarse:opacity-100! pointer-coarse:transform-none!";
 
 const rise = {
@@ -65,9 +69,8 @@ export function Hero({ company }: HeroProps) {
   const swipe = useRef<{ x: number; y: number } | null>(null);
   const [pageRevealed, setPageRevealed] = useState(false);
   const [stageReady, setStageReady] = useState(false);
-  // Server snapshot says "intro pending" so the canvas is not in the SSR HTML.
-  // On a phone or a return visit the client snapshot flips it on immediately,
-  // without waiting for the intro's effect.
+  // Server snapshot says "intro pending" so the hero canvas is not in the
+  // SSR HTML. A return visit or a skipped intro flips this off immediately.
   const introPending = useSyncExternalStore(
     noopSubscribe,
     isDoorwayIntroPending,
@@ -86,6 +89,7 @@ export function Hero({ company }: HeroProps) {
   const total = HERO_3D_SLIDES.length;
   const slide = HERO_3D_SLIDES[index];
   const state = pageRevealed ? "show" : "hidden";
+  const revealClass = introPending ? "" : VISIBLE_ON_TOUCH;
   const stageLive = live3d && (stageReady || !introPending);
   const autoAdvance =
     stageLive && viewerReady && !paused && !reducedMotion;
@@ -192,7 +196,7 @@ export function Hero({ company }: HeroProps) {
       >
         <div className="container-content grid w-full grid-cols-1 items-start gap-x-12 gap-y-6 pb-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] lg:grid-rows-[auto_auto_auto] lg:pb-10">
           <motion.div
-            className={`lg:col-span-2 ${VISIBLE_ON_TOUCH}`}
+            className={`lg:col-span-2 ${revealClass}`}
             variants={rise}
             custom={0}
             initial="hidden"
@@ -212,7 +216,7 @@ export function Hero({ company }: HeroProps) {
 
           {/* Copy */}
           <motion.div
-            className={`lg:col-start-1 lg:row-start-2 lg:self-end ${VISIBLE_ON_TOUCH}`}
+            className={`lg:col-start-1 lg:row-start-2 lg:self-end ${revealClass}`}
             variants={rise}
             custom={1}
             initial="hidden"
@@ -239,7 +243,7 @@ export function Hero({ company }: HeroProps) {
 
           {/* 3D stage */}
           <motion.div
-            className={`relative lg:col-start-2 lg:row-span-2 lg:row-start-2 ${VISIBLE_ON_TOUCH}`}
+            className={`relative lg:col-start-2 lg:row-span-2 lg:row-start-2 ${revealClass}`}
             variants={rise}
             custom={2}
             initial="hidden"
@@ -324,7 +328,7 @@ export function Hero({ company }: HeroProps) {
 
           {/* Actions + carousel controls */}
           <motion.div
-            className={`lg:col-start-1 lg:row-start-3 lg:self-start ${VISIBLE_ON_TOUCH}`}
+            className={`lg:col-start-1 lg:row-start-3 lg:self-start ${revealClass}`}
             variants={rise}
             custom={3}
             initial="hidden"

@@ -28,16 +28,22 @@ const ease = [0.22, 1, 0.36, 1] as const;
 const noopSubscribe = () => () => {};
 
 type ConstrainedNavigator = Navigator & {
-  connection?: { saveData?: boolean };
+  connection?: { saveData?: boolean; effectiveType?: string };
   deviceMemory?: number;
 };
 
-/** Phones, data-saver and low-memory devices go straight to the page. */
+/**
+ * Skip only when the intro would stall the first paint. A phone is not one
+ * of those cases — the doorway scene is drafted for touch (no HDRI, short
+ * timeline). Data-saver, 2g, and low memory still go straight to the page.
+ */
 function isConstrainedDevice(): boolean {
   const nav = navigator as ConstrainedNavigator;
+  const connection = nav.connection;
   return (
-    window.matchMedia("(pointer: coarse)").matches ||
-    nav.connection?.saveData === true ||
+    connection?.saveData === true ||
+    connection?.effectiveType === "slow-2g" ||
+    connection?.effectiveType === "2g" ||
     (nav.deviceMemory !== undefined && nav.deviceMemory < 4)
   );
 }
@@ -51,7 +57,7 @@ function shouldPlaySnapshot(): boolean {
   );
 }
 
-/** True only on a desktop first visit, while the intro still has to play. */
+/** True on a first visit that can play the intro, including phones. */
 export function isDoorwayIntroPending(): boolean {
   return shouldPlaySnapshot();
 }
@@ -67,8 +73,8 @@ interface DoorwayIntroProps {
 
 /**
  * First-visit intro: 3D French doors open and the camera walks through into
- * the page. Plays once per session; skipped for reduced motion, no WebGL,
- * and touch / data-saver / low-memory devices.
+ * the page. Plays once per session on laptop and phone. Skipped for reduced
+ * motion, no WebGL, data-saver, 2g, and low-memory devices.
  * The cover is painted immediately so there is no flash of the page beneath.
  */
 export function DoorwayIntro({ brand, logo, onReveal, onComplete }: DoorwayIntroProps) {
@@ -134,7 +140,7 @@ export function DoorwayIntro({ brand, logo, onReveal, onComplete }: DoorwayIntro
       {visible && (
         <motion.div
           key="doorway-intro"
-          className="fixed inset-0 z-[100] cursor-pointer pointer-coarse:hidden"
+          className="fixed inset-0 z-[100] cursor-pointer"
           initial={false}
           animate={{ opacity: exiting ? 0 : 1 }}
           exit={{ opacity: 0 }}
