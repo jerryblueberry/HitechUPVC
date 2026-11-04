@@ -5,7 +5,6 @@ import {
   getCompany,
   getDoors,
   getFAQs,
-  getPanels,
   getProjects,
   getWindows,
 } from "@/lib/getData";
@@ -88,7 +87,6 @@ export default function WhyUpvcPage() {
   const counts = {
     windows: getWindows().length,
     doors: getDoors().length,
-    panels: getPanels().length,
   };
 
   return (

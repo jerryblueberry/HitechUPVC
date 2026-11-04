@@ -19,21 +19,30 @@ import Image from "next/image";
 import {
   Fragment,
   useCallback,
+  useEffect,
   useRef,
   useState,
   useSyncExternalStore,
 } from "react";
+import { SequenceCanvas } from "@/components/sequence/SequenceCanvas";
+import { SequenceVideo } from "@/components/sequence/SequenceVideo";
+import { prefetchSequence } from "@/components/sequence/frameStore";
 import { ApproachedMount } from "@/components/three/ApproachedMount";
 import { useWebGLSupported } from "@/components/three/hooks";
 import { LazyUpvcScrollScene } from "@/components/three/LazyUpvcScrollScene";
 import type { CameraShot } from "@/components/three/UpvcScrollScene";
 import {
-  allowsPrimaryLive3d,
+  allowsScrollSceneLive3d,
+  prefersHomeSequences,
   useDeviceTier,
 } from "@/components/three/quality";
 import { warmHomeScene } from "@/components/three/warmHome";
+import { ClaimDoorCanvas } from "@/components/home/ClaimDoorCanvas";
+import { doorSequenceFor, doorVideoFor, frameUrl } from "@/lib/sequences";
 
 warmHomeScene();
+
+const LANDSCAPE_QUERY = "(min-width: 1024px), (min-aspect-ratio: 1/1)";
 
 /**
  * Landscape: targets sit left of the unit so the product composes into the
@@ -61,6 +70,12 @@ const DESKTOP_QUERY = "(min-width: 1024px)";
 
 function subscribeToDesktop(onChange: () => void) {
   const query = window.matchMedia(DESKTOP_QUERY);
+  query.addEventListener("change", onChange);
+  return () => query.removeEventListener("change", onChange);
+}
+
+function subscribeToLandscape(onChange: () => void) {
+  const query = window.matchMedia(LANDSCAPE_QUERY);
   query.addEventListener("change", onChange);
   return () => query.removeEventListener("change", onChange);
 }
@@ -237,6 +252,11 @@ export function ScrollDoorSequence() {
     () => window.matchMedia(DESKTOP_QUERY).matches,
     () => false
   );
+  const isLandscape = useSyncExternalStore(
+    subscribeToLandscape,
+    () => window.matchMedia(LANDSCAPE_QUERY).matches,
+    () => false
+  );
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -252,19 +272,43 @@ export function ScrollDoorSequence() {
 
   const stageRef = useRef<HTMLDivElement>(null);
   const stageSeen = useInView(stageRef, { once: true, amount: 0.45 });
+  // Start downloading frames well before the pin sticks.
+  const nearPin = useInView(sectionRef, {
+    once: true,
+    margin: "120% 0px",
+  });
   // A few pixels of travel across the whole pin keeps the copy alive between beats.
   const captionDrift = useTransform(scrollYProgress, [0, 1], [12, -12]);
 
   const webgl = useWebGLSupported();
   const tier = useDeviceTier();
-  const live3d = allowsPrimaryLive3d(tier) && webgl !== false;
+  // Mid + high: live WebGL (same finish as desktop). Low: WebM scrub, else frames.
+  const live3d = allowsScrollSceneLive3d(tier) && webgl !== false;
+  const offline = prefersHomeSequences(tier) && !live3d;
+  const doorSequence = offline ? doorSequenceFor(isLandscape) : null;
+  const doorVideo = offline ? doorVideoFor(isLandscape) : null;
+  const useVideo = Boolean(doorVideo);
+  const useSequence = Boolean(doorSequence) && !useVideo;
   const [sceneReady, setSceneReady] = useState(false);
+  const [offlineReady, setOfflineReady] = useState(false);
   const [posterDone, setPosterDone] = useState(false);
   const handleSceneReady = useCallback(() => setSceneReady(true), []);
+  const handleOfflineReady = useCallback(() => setOfflineReady(true), []);
+  const productReady = live3d ? sceneReady : offlineReady;
+  const showMotion = live3d || useVideo || useSequence;
+  const posterSrc = doorSequence
+    ? frameUrl(doorSequence, 0)
+    : isLandscape
+      ? "/images/door/door-desktop.webp"
+      : "/images/door/door-mobile.webp";
   // The still is the opening shot only. If the visitor is already moving
   // through the sequence before the scene is up, it gets out of the way.
-  // On low-tier devices the poster stays for the whole pin.
   const posterScrollFade = useTransform(scrollYProgress, [0, 0.04], [1, 0]);
+
+  useEffect(() => {
+    if (!useSequence || !doorSequence) return;
+    prefetchSequence(doorSequence);
+  }, [useSequence, doorSequence]);
 
   return (
     <>
@@ -336,33 +380,29 @@ export function ScrollDoorSequence() {
             <motion.div
               className="pointer-events-none absolute inset-0"
               style={{
-                opacity: !live3d ? 1 : posterScrollFade,
+                opacity: !showMotion ? 1 : posterScrollFade,
               }}
               aria-hidden
             >
               <div
                 className="absolute inset-0 transition-opacity duration-300 ease-out"
                 style={{
-                  opacity: live3d && sceneReady ? 0 : 1,
-                  transitionDelay: live3d && sceneReady ? "200ms" : "0ms",
+                  opacity: showMotion && productReady ? 0 : 1,
+                  transitionDelay:
+                    showMotion && productReady ? "200ms" : "0ms",
                 }}
                 onTransitionEnd={() => {
-                  if (live3d && sceneReady) setPosterDone(true);
+                  if (showMotion && productReady) setPosterDone(true);
                 }}
               >
                 <Image
-                  src="/images/door/door-mobile.webp"
+                  key={posterSrc}
+                  src={posterSrc}
                   alt=""
                   fill
-                  sizes="160vh"
-                  className="object-cover lg:hidden"
-                />
-                <Image
-                  src="/images/door/door-desktop.webp"
-                  alt=""
-                  fill
-                  sizes="260vh"
-                  className="hidden object-cover lg:block"
+                  loading="eager"
+                  sizes="100vw"
+                  className="object-cover"
                 />
               </div>
             </motion.div>
@@ -371,19 +411,47 @@ export function ScrollDoorSequence() {
           {live3d ? (
             <ApproachedMount
               className="pointer-events-none absolute inset-0"
-              rootMargin="160% 0px"
+              // Tight enough that the hero keeps its live open/close while
+              // the visitor is still in the carousel — 160% was claiming the
+              // WebGL slot on first paint and freezing the hero on a poster.
+              rootMargin="40% 0px"
             >
-              <LazyUpvcScrollScene
-                progressRef={progressRef}
-                shots={isDesktop ? DESKTOP_SHOTS : MOBILE_SHOTS}
-                openingType="hinged"
-                category="doors"
-                hardwareSlug="brushed"
-                className="h-full w-full"
-                fallback={null}
-                onReady={handleSceneReady}
-              />
+              <ClaimDoorCanvas>
+                <LazyUpvcScrollScene
+                  progressRef={progressRef}
+                  shots={isDesktop ? DESKTOP_SHOTS : MOBILE_SHOTS}
+                  openingType="hinged"
+                  category="doors"
+                  hardwareSlug="brushed"
+                  className="h-full w-full"
+                  fallback={null}
+                  onReady={handleSceneReady}
+                />
+              </ClaimDoorCanvas>
             </ApproachedMount>
+          ) : null}
+
+          {useVideo && doorVideo ? (
+            <SequenceVideo
+              src={doorVideo}
+              poster={posterSrc}
+              progress={scrollYProgress}
+              smoothing={18}
+              onReady={handleOfflineReady}
+              className="pointer-events-none absolute inset-0 h-full w-full object-cover"
+            />
+          ) : null}
+
+          {useSequence && doorSequence ? (
+            <SequenceCanvas
+              sequence={doorSequence}
+              progress={scrollYProgress}
+              fit="cover"
+              smoothing={18}
+              load={nearPin}
+              onFirstPaint={handleOfflineReady}
+              className="pointer-events-none absolute inset-0 h-full w-full"
+            />
           ) : null}
 
           <div className="pointer-events-none absolute inset-0">

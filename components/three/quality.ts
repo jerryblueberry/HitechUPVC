@@ -58,8 +58,13 @@ export function useDeviceTier(): DeviceTier {
   return useSyncExternalStore(noopSubscribe, probeDeviceTier, () => "mid");
 }
 
+/**
+ * High-tier (hover desktops) get the full 1.5 MB studio map. Mid phones and
+ * low / metered connections share the 400 KB 512px map — same lighting, far
+ * less transfer before the first product frame.
+ */
 export function hdriFor(tier: DeviceTier): string {
-  return tier === "low" ? HDRI_PATH_SMALL : HDRI_PATH;
+  return tier === "high" ? HDRI_PATH : HDRI_PATH_SMALL;
 }
 
 export interface ViewerQuality {
@@ -133,11 +138,26 @@ export function sceneQuality(tier: DeviceTier): SceneQuality {
 }
 
 /**
- * Primary surfaces: hero carousel and the scroll-door pin.
- * Low tier (and no-WebGL callers) stay on posters.
+ * Hero carousel live WebGL. Mid phones and high desktops share the same live
+ * unit + damping so the open/close finish matches. Low stays on posters /
+ * sequences. Mid never stacks this with the scroll door — see homeCanvasBudget.
  */
 export function allowsPrimaryLive3d(tier: DeviceTier): boolean {
   return tier !== "low";
+}
+
+/**
+ * Full-screen scroll-door live WebGL for mid + high. Mid claims the single
+ * home canvas budget (hero pauses) so phones get the same camera/leaf motion
+ * as laptops. Low scrubs published DOOR_SEQUENCES instead.
+ */
+export function allowsScrollSceneLive3d(tier: DeviceTier): boolean {
+  return tier !== "low";
+}
+
+/** Low-tier only — Save-Data / 2g / low memory. Sequences mirror live motion. */
+export function prefersHomeSequences(tier: DeviceTier): boolean {
+  return tier === "low";
 }
 
 /**

@@ -36,14 +36,17 @@ import {
   usePrefersReducedMotion,
   useWebGLSupported,
 } from "./hooks";
+import { prefetchHdri } from "./prefetchHdri";
 import { hdriFor, probeDeviceTier, useDeviceTier } from "./quality";
 
 export { HDRI_PATH, HDRI_PATH_SMALL } from "./quality";
 
-// Decode the HDRI into the shared loader cache while this chunk is still
-// arriving, so every canvas finds its lighting ready instead of suspending.
+// Shared HTTP prefetch + one drei decode of the same URL. warmHome may have
+// already started the fetch; prefetchHdri coalesces so we never download twice.
 if (typeof window !== "undefined") {
-  useEnvironment.preload({ files: hdriFor(probeDeviceTier()) });
+  const url = hdriFor(probeDeviceTier());
+  void prefetchHdri(url);
+  useEnvironment.preload({ files: url });
 }
 
 export interface UpvcStageProps {
@@ -74,6 +77,11 @@ export interface UpvcStageProps {
   fadeMs?: number;
   /** Fires after compileAsync + first painted frame */
   onReady?: () => void;
+  /**
+   * Keep the drawing buffer after present — required for offline frame
+   * capture (`/dev/capture`). Never enable on production canvases.
+   */
+  preserveDrawingBuffer?: boolean;
 }
 
 /** Compiles every material before the first visible frame, then reports ready. */
@@ -125,6 +133,7 @@ export function UpvcStage({
   antialias = true,
   fadeMs = 500,
   onReady,
+  preserveDrawingBuffer = false,
 }: UpvcStageProps) {
   const hostRef = useRef<HTMLDivElement>(null);
   const approached = useHasApproached(hostRef);
@@ -206,6 +215,7 @@ export function UpvcStage({
               // which stalls the page and drains the battery for no visible gain.
               powerPreference: "default",
               stencil: false,
+              preserveDrawingBuffer,
             }}
             camera={{ position: cameraPosition, fov, near: 0.05, far: 60 }}
             onCreated={({ gl }) => {

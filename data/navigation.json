@@ -19,10 +19,6 @@
       { "label": "Folding Doors", "href": "/products/doors?type=folding" },
       { "label": "All Doors", "href": "/products/doors" }
     ],
-    "panels": [
-      { "label": "Cladding Panels", "href": "/products/panels" },
-      { "label": "All Panels", "href": "/products/panels" }
-    ],
     "featured": {
       "title": "New: Anthracite Grey Finish",
       "description": "Modern matte finish for contemporary architecture.",

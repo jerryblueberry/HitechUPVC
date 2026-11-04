@@ -6,9 +6,9 @@ Last reviewed: 2026-09-29
 
 ## Purpose
 
-Pinned, scroll-driven 3D door sequence on the home page. The camera starts tight on
-the hardware, pulls back as the leaf swings, crosses to the hinge side, then settles
-on a clean elevation — the product-page choreography Apple uses.
+Pinned, scroll-driven door sequence on the home page. High tier: live WebGL camera
+path. Mid/low: the same choreography as a pre-rendered WebP sequence scrubbed on
+`SequenceCanvas` (ADR 007) — poster until the first frame paints.
 
 Replaces `CurtainWindowReveal` in the home composition. That component still exists
 but is no longer mounted.
@@ -43,8 +43,10 @@ but is no longer mounted.
 - **All screen sizes.** Phones get a portrait composition (`MOBILE_SHOTS`) with the
   subject high and captions low; shorter `bodyMobile` copy + tighter type so the
   product stays visible. Shot set swaps at `(min-width: 1024px)`.
-- **Warm ahead.** Prefetch + `ApproachedMount` rootMargin `45%` so the canvas is
-  compiling before the pin locks.
+- **Warm ahead.** High: `ApproachedMount` so WebGL compiles before the pin.
+  Mid/low: `prefetchSequence` + `nearPin` so frames load before the pin sticks.
+- **Capture.** `/dev/capture?job=door-landscape,door-portrait` writes
+  `public/images/sequences/door-*`. Re-run after shot or model changes.
 
 ## Props / Data
 

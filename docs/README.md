@@ -20,6 +20,7 @@ Documentation-first workflow for the Hi-Tech uPVC Profile Industries ecommerce w
 | [DESIGN-SYSTEM.md](./DESIGN-SYSTEM.md) | Colors, fonts, spacing, layout rhythm |
 | [DATA-MODEL.md](./DATA-MODEL.md) | JSON shapes, CMS migration, Zod validation |
 | [ANIMATION-SPEC.md](./ANIMATION-SPEC.md) | Framer Motion patterns, UPVC opening demos |
+| [PERFORMANCE.md](./PERFORMANCE.md) | Home load order, sequence capture, LCP budgets |
 | [components/three/README.md](./components/three/README.md) | Real-time 3D system — geometry, materials, opening rigs |
 | [CONTENT-CHECKLIST.md](./CONTENT-CHECKLIST.md) | Assets and copy still needed |
 | [TRACKING.md](./TRACKING.md) | Todo / in-progress / review / done board |

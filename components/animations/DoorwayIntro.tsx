@@ -22,7 +22,6 @@ import {
 /** Fail open — never hold the page behind a stuck loader */
 const LOAD_TIMEOUT_MS = 2400;
 const EXIT_MS = 240;
-const HERO_HDRI = "/hdri/studio_small_09_1k.hdr";
 const ease = [0.22, 1, 0.36, 1] as const;
 
 const noopSubscribe = () => () => {};
@@ -119,11 +118,6 @@ export function DoorwayIntro({ brand, logo, onReveal, onComplete }: DoorwayIntro
     const timer = window.setTimeout(finish, LOAD_TIMEOUT_MS);
     return () => window.clearTimeout(timer);
   }, [visible, ready, exiting, finish]);
-
-  useEffect(() => {
-    if (!finished) return;
-    void fetch(HERO_HDRI, { cache: "force-cache" });
-  }, [finished]);
 
   useEffect(() => {
     if (!visible || exiting) return;

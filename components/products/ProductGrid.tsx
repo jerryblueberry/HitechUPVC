@@ -7,7 +7,7 @@ import { CATEGORY_LABELS, OPENING_TYPE_LABELS } from "@/lib/constants";
 import type { ColorSwatch, OpeningType, ProductCategory, ProductIndexEntry } from "@/lib/types";
 import { ProductCard } from "./ProductCard";
 
-const CATEGORIES: Array<"all" | ProductCategory> = ["all", "windows", "doors", "panels"];
+const CATEGORIES: Array<"all" | ProductCategory> = ["all", "windows", "doors"];
 const ease = [0.22, 1, 0.36, 1] as const;
 
 interface ProductGridProps {
@@ -85,6 +85,8 @@ export function ProductGrid({ products, colors, lockedCategory }: ProductGridPro
 
   const visible = useMemo(() => {
     return products.filter((product) => {
+      // Panels are no longer shown in the public catalogue.
+      if (product.category === "panels") return false;
       if (category !== "all" && product.category !== category) return false;
       if (opening && product.openingType !== opening) return false;
       if (finish && !product.colors.includes(finish)) return false;

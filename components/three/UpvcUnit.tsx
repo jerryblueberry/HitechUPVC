@@ -352,10 +352,10 @@ export function UpvcUnit({
       damping,
       Math.min(delta, 0.1)
     );
-    if (Math.abs(target - progress.current) < SETTLE_EPSILON) {
+    const settling =
+      Math.abs(target - progress.current) < SETTLE_EPSILON;
+    if (settling) {
       progress.current = target;
-    } else {
-      state.invalidate();
     }
 
     const p = progress.current;
@@ -368,12 +368,18 @@ export function UpvcUnit({
     }
 
     const sashP = smooth(clamp01((p - 0.12) / 0.88));
+    // Keep demanding frames until every leaf pivot exists — otherwise progress
+    // can settle while refs are still null and the unit stays shut forever.
+    let pivotsReady = true;
 
     switch (rig.kind) {
       case "swing": {
         for (let i = 0; i < spec.leaves; i++) {
           const group = pivots.current[i];
-          if (!group) continue;
+          if (!group) {
+            pivotsReady = false;
+            continue;
+          }
           const hinge = rig.hinges[i % rig.hinges.length];
           group.rotation.y = (hinge === "left" ? -1 : 1) * rig.maxAngle * sashP;
         }
@@ -382,7 +388,9 @@ export function UpvcUnit({
 
       case "slide": {
         const group = pivots.current[1];
-        if (group) {
+        if (!group) {
+          pivotsReady = false;
+        } else {
           group.position.x =
             layout.centres[1] - rig.travel * layout.leafW * sashP;
         }
@@ -396,9 +404,13 @@ export function UpvcUnit({
         const turn = smooth(clamp01((p - 0.58) / 0.42));
 
         if (tiltPivot.current) tiltPivot.current.rotation.x = rig.tiltAngle * tilt;
+        else pivotsReady = false;
         const group = pivots.current[0];
-        if (group) {
-          group.rotation.y = (rig.hinge === "left" ? -1 : 1) * rig.turnAngle * turn;
+        if (!group) {
+          pivotsReady = false;
+        } else {
+          group.rotation.y =
+            (rig.hinge === "left" ? -1 : 1) * rig.turnAngle * turn;
         }
         break;
       }
@@ -407,12 +419,17 @@ export function UpvcUnit({
         const a = rig.maxAngle * sashP;
         for (let i = 0; i < spec.leaves; i++) {
           const group = pivots.current[i];
-          if (!group) continue;
+          if (!group) {
+            pivotsReady = false;
+            continue;
+          }
           group.rotation.y = i === 0 ? -a : i % 2 === 1 ? 2 * a : -2 * a;
         }
         break;
       }
     }
+
+    if (!settling || !pivotsReady) state.invalidate();
   });
 
   const leafCommon = {
@@ -426,9 +443,18 @@ export function UpvcUnit({
     isDoor,
   };
 
-  const setPivot = (i: number) => (el: THREE.Group | null) => {
-    pivots.current[i] = el;
-  };
+  // Stable ref callbacks — a fresh closure each render would call the old one
+  // with `null` and clear pivots mid-animation on every open/shut update.
+  const setPivot = useMemo(
+    () =>
+      Array.from(
+        { length: 8 },
+        (_, i) => (el: THREE.Group | null) => {
+          pivots.current[i] = el;
+        }
+      ),
+    []
+  );
 
   function renderLeaves() {
     const rig = spec.rig;
@@ -446,7 +472,7 @@ export function UpvcUnit({
       return centres.map((cx, i) => (
         <group
           key={i}
-          ref={setPivot(i)}
+          ref={setPivot[i]}
           position={[cx, 0, sashZ - (i === 0 ? trackGap : 0)]}
         >
           <Leaf
@@ -466,7 +492,7 @@ export function UpvcUnit({
       const innerX = hinge === "left" ? leafW / 2 : -leafW / 2;
 
       return (
-        <group ref={setPivot(0)} position={[pivotX, 0, sashZ]}>
+        <group ref={setPivot[0]} position={[pivotX, 0, sashZ]}>
           <group position={[innerX, 0, 0]}>
             <group ref={tiltPivot} position={[0, -leafH / 2, 0]}>
               <group position={[0, leafH / 2, 0]}>
@@ -492,7 +518,7 @@ export function UpvcUnit({
         return (
           <group
             key={i}
-            ref={setPivot(i)}
+            ref={setPivot[i]}
             position={i === 0 ? [-innerW / 2, 0, sashZ] : [leafW / 2, 0, 0]}
           >
             <group position={[leafW / 2, 0, 0]}>
@@ -517,7 +543,7 @@ export function UpvcUnit({
       const innerX = hinge === "left" ? leafW / 2 : -leafW / 2;
 
       return (
-        <group key={i} ref={setPivot(i)} position={[pivotX, 0, sashZ]}>
+        <group key={i} ref={setPivot[i]} position={[pivotX, 0, sashZ]}>
           <group position={[innerX, 0, 0]}>
             <Leaf
               {...leafCommon}

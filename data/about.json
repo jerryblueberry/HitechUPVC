@@ -19,7 +19,7 @@
     "eyebrow": "About us",
     "title": "Made in Kathmandu, for the way Nepal lives.",
     "body": "Hi-Tech uPVC Profile Industries designs, fabricates, and installs uPVC windows, doors, and panels from our own sites in the Kathmandu valley — built for valley dust, monsoon rain, and cold winter mornings.",
-    "image": "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1600&q=80",
+    "image": "/images/stock/modern-home-exterior.webp",
     "imageAlt": "Modern home at dusk with large dark-framed glazed doors and windows glowing with warm interior light",
     "imageCaption": "Large-format glazing, slim dark frames — the kind of openings we build."
   },
@@ -45,11 +45,6 @@
         "title": "uPVC doors",
         "body": "Sliding patio, French, folding, and entrance doors with multi-point locking and weather-tight gaskets.",
         "href": "/products/doors"
-      },
-      {
-        "title": "Panels & partitions",
-        "body": "uPVC panels for partitions, cladding, and interiors — moisture-proof, termite-proof, and easy to clean.",
-        "href": "/products/panels"
       },
       {
         "title": "Glass processing",

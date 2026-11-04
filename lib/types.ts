@@ -54,7 +54,6 @@ export interface Navigation {
   products: {
     windows: NavItem[];
     doors: NavItem[];
-    panels: NavItem[];
     featured?: {
       title: string;
       description: string;

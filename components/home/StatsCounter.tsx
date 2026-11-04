@@ -58,7 +58,7 @@ function StatPoint({
     return (
       <>
         <StatFigure item={item} />
-        <p className="mt-3 max-w-[14ch] text-sm leading-snug text-charcoal/70 sm:mt-4">
+        <p className="mt-3 whitespace-nowrap text-[0.8125rem] leading-snug text-charcoal/70 sm:mt-4 sm:text-sm">
           {item.label}
         </p>
       </>
@@ -68,12 +68,12 @@ function StatPoint({
   return (
     <>
       <div
-        className={`flex min-h-[3.5rem] items-end ${col} lg:row-start-1 lg:px-10 lg:pt-10 ${rule}`}
+        className={`flex min-h-[3.5rem] items-end ${col} lg:row-start-1 lg:px-6 lg:pt-10 xl:px-10 ${rule}`}
       >
         <StatFigure item={item} />
       </div>
       <p
-        className={`max-w-[14ch] text-sm leading-snug text-charcoal/70 ${col} lg:row-start-2 lg:px-10 lg:pt-4 lg:pb-10 ${rule}`}
+        className={`whitespace-nowrap text-sm leading-snug text-charcoal/70 ${col} lg:row-start-2 lg:px-6 lg:pt-4 lg:pb-10 xl:px-10 ${rule}`}
       >
         {item.label}
       </p>

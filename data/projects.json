@@ -66,7 +66,7 @@
     "orientation": "square",
     "images": [
       {
-        "src": "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80",
+        "src": "/images/stock/modern-home-exterior.webp",
         "alt": "Apartment with white tilt and turn windows",
         "orientation": "square"
       }
@@ -82,7 +82,7 @@
     "featured": true,
     "images": [
       {
-        "src": "https://images.unsplash.com/photo-1581094794329-c8112a89af12?auto=format&fit=crop&w=1600&q=80",
+        "src": "/images/stock/factory-workshop.webp",
         "alt": "Manufacturing floor extrusion line",
         "orientation": "landscape"
       }
@@ -97,7 +97,7 @@
     "orientation": "portrait",
     "images": [
       {
-        "src": "https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?auto=format&fit=crop&w=1200&q=80",
+        "src": "/images/stock/workshop-tools.webp",
         "alt": "Factory assembly bay with fabricated frames",
         "orientation": "portrait"
       }
@@ -112,7 +112,7 @@
     "orientation": "square",
     "images": [
       {
-        "src": "https://images.unsplash.com/photo-1565043589221-1a6fd9ae45c7?auto=format&fit=crop&w=1200&q=80",
+        "src": "/images/stock/factory-floor.webp",
         "alt": "Quality inspection of finished window units",
         "orientation": "square"
       }
@@ -129,7 +129,7 @@
     "orientation": "portrait",
     "images": [
       {
-        "src": "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=1200&q=80",
+        "src": "/images/stock/patio-doors.webp",
         "alt": "White French uPVC doors in studio light",
         "orientation": "portrait"
       }
@@ -145,7 +145,7 @@
     "orientation": "landscape",
     "images": [
       {
-        "src": "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1600&q=80",
+        "src": "/images/stock/living-interior.webp",
         "alt": "Sliding uPVC window system detail",
         "orientation": "landscape"
       }
@@ -161,7 +161,7 @@
     "orientation": "square",
     "images": [
       {
-        "src": "https://images.unsplash.com/photo-1615874959474-d609969a20ed?auto=format&fit=crop&w=1200&q=80",
+        "src": "/images/stock/bedroom-interior.webp",
         "alt": "Fluted woodgrain uPVC wall panel detail",
         "orientation": "square"
       }
@@ -177,7 +177,7 @@
     "orientation": "landscape",
     "images": [
       {
-        "src": "https://images.unsplash.com/photo-1600047509807-ba8f99d367e7?auto=format&fit=crop&w=1600&q=80",
+        "src": "/images/stock/modern-facade.webp",
         "alt": "Casement windows on a residential facade",
         "orientation": "landscape"
       }
@@ -192,7 +192,7 @@
     "orientation": "portrait",
     "images": [
       {
-        "src": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=1200&q=80",
+        "src": "/images/stock/glass-detail.webp",
         "alt": "Close-up of brushed door hardware on a uPVC leaf",
         "orientation": "portrait"
       }

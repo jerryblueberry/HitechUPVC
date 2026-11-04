@@ -281,6 +281,8 @@ export interface UpvcScrollSceneProps {
   fallback?: ReactNode;
   /** Fires once the first compiled frame is on screen */
   onReady?: () => void;
+  /** Offline capture: keep buffer, still-render, sharper DPR */
+  capture?: boolean;
 }
 
 export function UpvcScrollScene({
@@ -297,6 +299,7 @@ export function UpvcScrollScene({
   className,
   fallback,
   onReady,
+  capture = false,
 }: UpvcScrollSceneProps) {
   const quality = sceneQuality(useDeviceTier());
   const canHover = useCanHover();
@@ -335,21 +338,22 @@ export function UpvcScrollScene({
       fov={fov}
       groundY={-spec.height / 2 - 0.03}
       cameraPosition={shots[0].position}
-      maxDpr={quality.dpr}
+      maxDpr={capture ? 2 : quality.dpr}
       antialias={quality.antialias}
       contactShadow={quality.contactShadow}
       fadeMs={200}
       onReady={onReady}
       immediate
-      renderWhenReduced={false}
+      renderWhenReduced={capture}
+      preserveDrawingBuffer={capture}
       environmentIntensity={1.05}
     >
       <CameraRig
         progressRef={progressRef}
         smoothProgressRef={smoothProgressRef}
         shots={shots}
-        reducedDpr={quality.reducedDpr}
-        parallax={canHover}
+        reducedDpr={capture ? 2 : quality.reducedDpr}
+        parallax={canHover && !capture}
       />
       <UpvcUnit
         spec={spec}

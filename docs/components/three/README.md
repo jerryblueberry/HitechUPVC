@@ -26,7 +26,8 @@ are no downloaded models.
 | `Lazy*.tsx` | `next/dynamic` `ssr: false` entry points |
 | `hooks.ts` | Reduced motion, WebGL support, hover capability, viewport pausing, lazy canvas creation (safe to import anywhere) |
 | `quality.ts` | Device tier + the DPR / MSAA / shadow / glass / HDRI budget every surface reads |
-| `warmHome.ts` | Starts the HDRI download (tier-matched), the home viewer chunk and the scroll-door chunk at module load |
+| `warmHome.ts` | High: shared HDRI + idle Three.js chunks. Mid/low: idle-prefetch frame sequences only |
+| `prefetchHdri.ts` | Single in-flight HDRI fetch shared by every canvas |
 | `ApproachedMount.tsx` | Unmounts 3D until near the viewport and the doorway intro has unlocked |
 | `demand.ts` | On-demand rendering helpers: `SETTLE_EPSILON`, `useInvalidateOn`, `useAutoPlayWake` (canvas-only) |
 | `patchClock.ts` | Suppresses R3F 9’s deprecated `THREE.Clock` constructor warning (Clock is a read-only export) |
@@ -82,10 +83,11 @@ assume it.
 - `powerPreference: "default"`: "high-performance" wakes the discrete GPU on
   dual-GPU laptops, stalling the page
 - `quality.ts` holds the single render policy: a device tier (`high` hover /
-  `mid` touch / `low`) picks DPR, MSAA, contact shadow, glass and HDRI. A touch
-  screen alone no longer costs quality — only Save-Data, `deviceMemory < 4` or a
-  2g connection demote to `low`. Phones therefore run the same pipeline as a
-  laptop with 4× MSAA, the contact shadow and the 1k HDRI.
+  `mid` touch / `low`) picks DPR, MSAA, contact shadow, glass and HDRI. Home
+  hero + scroll door use **live WebGL on high only**; mid/low scrub pre-rendered
+  sequences ([ADR 007](../../decisions/007-home-sequences-over-live-webgl.md),
+  [PERFORMANCE.md](../../PERFORMANCE.md)). Save-Data / `deviceMemory < 4` / 2g
+  demote to `low`.
 - Viewers: DPR 1.9–2 with refractive glass while the unit holds a pose, 1.4–1.75
   with the blended pane while it loops open and shut. Orbiting keeps the sharp
   buffer; it only draws while the finger moves.

@@ -74,9 +74,19 @@ Static rendered frame — no auto-play. Without WebGL, the static product image 
 by `useMotionValueEvent` and read inside `useFrame` — scrolling must never trigger a
 React render. Raw progress is exponentially smoothed (λ = 18); the camera rides a
 Catmull-Rom spline with glide easing. Captions use timed `AnimatePresence` beats
-(not scrubbed opacity). Live 3D mounts only when `allowsPrimaryLive3d(tier)` —
-low tier stays on posters. Secondary home viewers (category, opening types) use
-`allowsSecondaryLive3d` (high tier only). See `docs/HOME-REDESIGN-PLAN.md`.
+(not scrubbed opacity).
+
+**Home motion tiers** ([ADR 007](./decisions/007-home-sequences-over-live-webgl.md)):
+
+| Surface | High + mid | Low |
+|---------|------------|-----|
+| Hero | Live WebGL (same damping / materials) | Sequence or poster |
+| Scroll door | Live WebGL — mid claims the single home canvas (hero pauses) | Sequence or poster |
+| Secondary | Live on hover (high) | Posters |
+
+One live product canvas at a time on phones (`homeCanvasBudget`). HDRI: 1k high,
+512 mid, shared prefetch. Sequences remain the low-tier / offline path. See
+[PERFORMANCE.md](./PERFORMANCE.md).
 
 ## Shared Utilities
 

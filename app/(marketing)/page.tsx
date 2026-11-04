@@ -10,7 +10,6 @@ import { whatsappHref } from "@/lib/constants";
 import {
   getCompany,
   getDoors,
-  getPanels,
   getProjects,
   getTestimonials,
   getWindows,
@@ -30,7 +29,6 @@ export default function HomePage() {
         counts={{
           windows: getWindows().length,
           doors: getDoors().length,
-          panels: getPanels().length,
         }}
       />
       <OpeningTypesExplainer />

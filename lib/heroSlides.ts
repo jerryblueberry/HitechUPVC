@@ -1,4 +1,5 @@
 import { UPVC_PNG, UPVC_SEQUENCES } from "./upvcAssets";
+import { frameUrl, heroSequenceOrNull } from "./sequences";
 import type { OpeningType, ProductCategory } from "./types";
 
 export interface Hero3DSlide {
@@ -19,6 +20,9 @@ export interface Hero3DSlide {
  * Re-capture if the model, lighting or `FitCamera` framing changes.
  */
 export function heroPoster(slide: Hero3DSlide): string {
+  // Prefer sequence frame 0 so the LCP poster matches the mobile canvas exactly.
+  const sequence = heroSequenceOrNull(slide.id);
+  if (sequence) return frameUrl(sequence, 0);
   return `/images/hero/${slide.id}.webp`;
 }
 

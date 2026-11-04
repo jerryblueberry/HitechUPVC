@@ -47,6 +47,9 @@ export function GalleryTeaser({
                   src={image}
                   alt={cover.alt || project.title}
                   fill
+                  // First tile often becomes LCP once the hero canvas takes over —
+                  // priority sets loading=eager so Next doesn't warn.
+                  priority={i === 0}
                   className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
                   sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
                 />

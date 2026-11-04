@@ -64,6 +64,10 @@ export interface UpvcViewerProps {
   antialias?: boolean;
   fadeMs?: number;
   onReady?: () => void;
+  /** Leaf damping override — capture studio uses a high value to settle fast */
+  damping?: number;
+  /** Offline capture mode: keep the buffer and still-render under reduced motion */
+  capture?: boolean;
 }
 
 export function UpvcViewer({
@@ -87,6 +91,8 @@ export function UpvcViewer({
   antialias,
   fadeMs,
   onReady,
+  damping,
+  capture = false,
 }: UpvcViewerProps) {
   const spec = useMemo(
     () => getUpvcModel(openingType, category),
@@ -136,13 +142,14 @@ export function UpvcViewer({
       fov={30}
       groundY={-spec.height / 2 - (spec.hasSill ? 0.06 : 0.04)}
       cameraPosition={[1.1, 0.35, 3.4]}
-      renderWhenReduced={!autoPlay}
+      renderWhenReduced={!autoPlay || capture}
       eager={eager}
       maxDpr={effectiveDpr}
       contactShadow={effectiveShadow}
       antialias={effectiveAntialias}
       fadeMs={fadeMs ?? (eager ? 400 : 500)}
       onReady={onReady}
+      preserveDrawingBuffer={capture}
     >
       <AutoPlayWake enabled={autoPlay} cycle={cycle} />
 
@@ -166,7 +173,7 @@ export function UpvcViewer({
           isDoor={isDoor}
           open={open}
           openSource={openSource}
-          damping={autoPlay ? 2.1 : 3.6}
+          damping={damping ?? (autoPlay ? 2.1 : 3.6)}
         />
       </PointerFollow>
 

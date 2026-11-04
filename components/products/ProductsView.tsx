@@ -7,16 +7,15 @@ import { MagneticButton } from "@/components/ui/MagneticButton";
 import { RevealOnScroll } from "@/components/ui/RevealOnScroll";
 import { WhyStudioViewer } from "@/components/why/WhyStudioViewer";
 import { CATEGORY_BLURBS, CATEGORY_LABELS, CATEGORY_PATHS, quoteHref, whatsappHref } from "@/lib/constants";
-import { UPVC_PNG } from "@/lib/upvcAssets";
-import type { ColorSwatch, Company, ProductCategory, ProductIndexEntry } from "@/lib/types";
+import { CATEGORY_PNG } from "@/lib/upvcAssets";
+import type { ColorSwatch, Company, ProductIndexEntry } from "@/lib/types";
 
 const JUMPS: Array<{
-  category: ProductCategory;
+  category: "windows" | "doors";
   image: string | null;
 }> = [
-  { category: "windows", image: UPVC_PNG.windowModern },
-  { category: "doors", image: UPVC_PNG.doorFrench },
-  { category: "panels", image: null },
+  { category: "windows", image: CATEGORY_PNG.windows },
+  { category: "doors", image: CATEGORY_PNG.doors },
 ];
 
 interface ProductsViewProps {
@@ -29,7 +28,6 @@ export function ProductsView({ company, products, colors }: ProductsViewProps) {
   const counts = {
     windows: products.filter((product) => product.category === "windows").length,
     doors: products.filter((product) => product.category === "doors").length,
-    panels: products.filter((product) => product.category === "panels").length,
   };
 
   return (
@@ -73,11 +71,11 @@ export function ProductsView({ company, products, colors }: ProductsViewProps) {
           <RevealOnScroll className="mb-10 max-w-2xl">
             <p className="eyebrow mb-4 text-gold">Browse by family</p>
             <h2 className="font-display text-[clamp(2rem,3.6vw,3.25rem)] leading-[1.05] tracking-tight text-charcoal text-balance">
-              Three systems. One workshop in Kathmandu.
+              Two systems. One workshop in Kathmandu.
             </h2>
           </RevealOnScroll>
 
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-3 sm:gap-8">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-8">
             {JUMPS.map((jump, index) => {
               const count = counts[jump.category];
               return (

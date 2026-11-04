@@ -26,12 +26,13 @@ export const UPVC_SEQUENCES = {
   tiltTurn: seq("tilt-turn", 3),
 } as const;
 
+/** Prefer owned studio stills — Vecteezy PNGs under /images/upvc/*.png are watermarked. */
 export const UPVC_PNG = {
-  windowCasement: "/images/upvc/window-casement.png",
-  windowSliding: "/images/upvc/window-sliding.png",
-  windowModern: "/images/upvc/window-modern.png",
-  windowOpen: "/images/upvc/window-open.png",
-  doorFrench: "/images/upvc/door-french.png",
+  windowCasement: "/images/hero/casement.webp",
+  windowSliding: "/images/hero/sliding.webp",
+  windowModern: "/images/hero/casement.webp",
+  windowOpen: "/images/hero/tilt-turn.webp",
+  doorFrench: "/images/hero/french.webp",
 } as const;
 
 /** Frame sequences for opening/closing animation demos */
@@ -59,7 +60,6 @@ export const OPENING_TYPE_PNG: Record<OpeningType, string> = {
 export const CATEGORY_PNG: Record<ProductCategory, string> = {
   windows: "/images/hero/casement.webp",
   doors: "/images/hero/french.webp",
-  /** No dedicated still yet — showcase mounts live 3D / studio wash instead. */
   panels: "/images/hero/casement.webp",
 };
 
@@ -67,8 +67,8 @@ export const CATEGORY_PNG: Record<ProductCategory, string> = {
 export function categoryShowcasePoster(
   category: ProductCategory
 ): string | null {
-  if (category === "windows") return "/images/hero/casement.webp";
-  if (category === "doors") return "/images/hero/french.webp";
+  if (category === "windows") return CATEGORY_PNG.windows;
+  if (category === "doors") return CATEGORY_PNG.doors;
   return null;
 }
 

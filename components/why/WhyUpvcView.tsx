@@ -9,13 +9,13 @@ import { WhyHero } from "@/components/why/WhyHero";
 import { WhyStudioViewer } from "@/components/why/WhyStudioViewer";
 import { quoteHref, whatsappHref } from "@/lib/constants";
 import { IMAGES } from "@/lib/images";
-import type { Company, FAQ, ProductCategory, Project } from "@/lib/types";
+import type { Company, FAQ, Project } from "@/lib/types";
 
 interface WhyUpvcViewProps {
   company: Company;
   faqs: FAQ[];
   projects: Project[];
-  counts: Record<ProductCategory, number>;
+  counts: Record<"windows" | "doors", number>;
 }
 
 const COMPARISONS = [

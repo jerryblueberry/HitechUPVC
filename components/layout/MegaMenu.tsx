@@ -15,7 +15,6 @@ interface MegaMenuProps {
 const COLUMNS = [
   { key: "windows", label: "Windows" },
   { key: "doors", label: "Doors" },
-  { key: "panels", label: "Panels" },
 ] as const;
 
 function ProductColumns({
@@ -28,9 +27,9 @@ function ProductColumns({
   const { products } = navigation;
 
   return (
-    <div className="grid grid-cols-1 gap-8 sm:grid-cols-3 sm:gap-6 lg:grid-cols-12 lg:gap-x-10">
+    <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 sm:gap-6 lg:grid-cols-12 lg:gap-x-10">
       {COLUMNS.map(({ key, label }) => (
-        <div key={key} className="sm:col-span-1 lg:col-span-2">
+        <div key={key} className="sm:col-span-1 lg:col-span-3">
           <p className="eyebrow mb-3 text-gold sm:mb-4">{label}</p>
           <ul className="space-y-2.5">
             {products[key].map((item) => (

@@ -4,18 +4,17 @@ Owner: agent
 Last reviewed: 2026-09-29
 
 ## Purpose
-First home section — Apple-style 3D product carousel. The visitor enters through
-a 3D doorway intro and lands on a two-column carousel: copy on the left, the live
-3D unit on the right, using the same parametric uPVC assets as the rest of the
-site (ADR 006).
+First home section — Apple-style product carousel. The visitor enters through a
+doorway intro and lands on copy + product stage. High-tier devices use live
+parametric WebGL (ADR 006); mid/low scrub pre-rendered frames (ADR 007).
 
 ## Implementation
 - File: `components/home/Hero.tsx` (client)
 - Intro: `components/animations/DoorwayIntro.tsx` → `components/three/UpvcDoorwayScene.tsx` (lazy)
-- Stage: a single `LazyUpvcViewer` (one WebGL context) whose opening type changes per slide
+- High: `LazyUpvcViewer`. Mid/low: `SequenceCanvas` + `heroSequence(slide.id)`
 - Slides: `HERO_3D_SLIDES` in `lib/heroSlides.ts` (French, Sliding, Tilt & Turn, Casement, Bi-Fold)
-- CTA: `company.hero.primaryCta`; `company.hero.headline` is the (visually hidden) `h1`
-- Replaces `HeroCarousel.tsx` (still in repo, unmounted — delete after sign-off)
+- CTA: `company.hero.primaryCta`
+- Capture frames: `/dev/capture?job=all` — see [PERFORMANCE.md](../../PERFORMANCE.md)
 
 ## Doorway intro (replaces the fabric curtain)
 - White French doors set into a wall the exact colour of `--color-surface`
@@ -27,7 +26,7 @@ site (ADR 006).
 - Hero copy rises as the camera starts walking through (`onReveal`) — 0.55s ease, tight stagger
 - `prefetchUpvcViewer()` warms the hero chunk during the walk
 - Hero 3D stage mounts when the overlay completes (`onComplete`), after the intro canvas has dropped
-- Stage uses `eager` and does not wait for the page-idle gate. `warmHomeScene()` starts the viewer chunk, the door-section chunk and the studio HDRI as soon as this module loads. On a phone or a return visit the canvas mounts on the first client render; a desktop first visit waits only for the intro to finish
+- `warmHomeScene()`: high idle-warms Three.js + HDRI; mid/low idle-prefetch sequence frames. Poster always wins first paint.
 - **Poster first.** `public/images/hero/<slide id>.webp` is a still of the live
   unit (closed pose, transparent, same HDRI), rendered by the stage itself and
   cropped to the `FitCamera` fit box (width = height × projected width / unit

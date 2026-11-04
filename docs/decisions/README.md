@@ -8,3 +8,4 @@
 | [004](./004-font-pairing-fraunces-inter.md) | Font pairing Fraunces + Inter | Accepted |
 | [005](./005-no-dark-mode.md) | No dark mode | Accepted |
 | [006](./006-parametric-3d-over-downloaded-models.md) | Parametric 3D geometry instead of downloaded models | Accepted |
+| [007](./007-home-sequences-over-live-webgl.md) | Pre-rendered home sequences for mid/low tiers | Accepted |

@@ -1,33 +1,33 @@
 /**
- * Curated free stock images (Unsplash) for Hi-Tech uPVC Profile Industries.
+ * Local stock photography under `public/images/stock/`.
+ * Mirrored from Unsplash so the browser never hits a remote CDN on load.
  * Replace with owned photography before launch — see docs/CONTENT-CHECKLIST.md
  */
 
-const unsplash = (id: string, w = 1200) =>
-  `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&q=80`;
+const stock = (name: string) => `/images/stock/${name}.webp`;
 
 export const IMAGES = {
-  hero: unsplash("photo-1600585154340-be6161a56a0c", 1920),
+  hero: stock("modern-home-exterior"),
 
   /** Curtain + window interior shots for reveal animations */
   curtains: {
-    sheer: unsplash("photo-1761824615207-ae7cdaddbca4", 1600),
-    beige: unsplash("photo-1771039621924-562a5df5c68f", 1600),
-    openLight: unsplash("photo-1761824615063-52a426692aab", 1600),
-    modern: unsplash("photo-1771970777748-e1042cd7a0e7", 1600),
+    sheer: stock("curtain-sheer"),
+    beige: stock("curtain-beige"),
+    openLight: stock("curtain-open-light"),
+    modern: stock("modern-interior"),
   },
 
   categories: {
     windows: "/images/hero/casement.webp",
-    doors: "/images/hero/french.webp",
+    doors: "/images/hero/folding.webp",
     /** Placeholder until owned panel photography ships */
     panels: "/images/hero/casement.webp",
   },
 
   scrollStory: {
-    window: unsplash("photo-1761824615207-ae7cdaddbca4", 1400),
-    door: unsplash("photo-1600566753190-17f0baa2a6c3", 1400),
-    interior: unsplash("photo-1761824615063-52a426692aab", 1400),
+    window: stock("curtain-sheer"),
+    door: stock("patio-doors"),
+    interior: stock("curtain-open-light"),
   },
 
   openingTypes: {
@@ -35,18 +35,18 @@ export const IMAGES = {
     casement: "/images/hero/casement.webp",
     "tilt-turn": "/images/hero/tilt-turn.webp",
     folding: "/images/hero/folding.webp",
-    french: "/images/hero/french.webp",
+    french: "/images/hero/folding.webp",
   },
 
   gallery: [
-    unsplash("photo-1600596542815-ffad4c1539a9", 800),
-    unsplash("photo-1600607687644-c7171b42498f", 800),
-    unsplash("photo-1771970777748-e1042cd7a0e7", 800),
+    stock("gallery-home-1"),
+    stock("gallery-home-2"),
+    stock("modern-interior"),
   ],
 
   beforeAfter: {
-    before: unsplash("photo-1564013799919-ab600027ffc6", 1400),
-    after: unsplash("photo-1600585154340-be6161a56a0c", 1400),
+    before: stock("before-house"),
+    after: stock("modern-home-exterior"),
   },
 } as const;
 
