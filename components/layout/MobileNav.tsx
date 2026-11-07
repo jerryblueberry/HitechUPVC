@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { BrandLogo } from "@/components/ui/BrandLogo";
+import { trackQuoteClick, trackWhatsAppClick } from "@/lib/analytics";
 import { whatsappHref } from "@/lib/constants";
 import type { NavItem, Navigation } from "@/lib/types";
 import { ChevronDown, MegaMenu } from "./MegaMenu";
@@ -160,7 +161,10 @@ export function MobileNav({
                   href={whatsappHref(whatsapp)}
                   target="_blank"
                   rel="noopener noreferrer"
-                  onClick={onClose}
+                  onClick={() => {
+                    trackWhatsAppClick("mobile_nav");
+                    onClose();
+                  }}
                   className="flex min-h-11 items-center justify-center gap-2 rounded-full bg-white px-4 py-2.5 text-sm font-medium text-charcoal ring-1 ring-charcoal/10"
                 >
                   <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#25D366] text-white" aria-hidden>
@@ -173,7 +177,10 @@ export function MobileNav({
                 <Link
                   href="/get-quote"
                   className="inline-flex min-h-11 items-center justify-center rounded-full bg-navy px-4 py-2.5 text-sm font-medium text-surface"
-                  onClick={onClose}
+                  onClick={() => {
+                    trackQuoteClick("mobile_nav");
+                    onClose();
+                  }}
                 >
                   Get a Quote
                 </Link>

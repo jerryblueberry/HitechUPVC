@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { BrandLogo } from "@/components/ui/BrandLogo";
 import { WhatsAppLink } from "@/components/ui/WhatsAppLink";
+import { trackQuoteClick } from "@/lib/analytics";
 import type { Navigation } from "@/lib/types";
 import { ChevronDown, MegaMenu } from "./MegaMenu";
 import { MobileNav } from "./MobileNav";
@@ -136,6 +137,7 @@ export function Header({ navigation, companyName, logo, whatsapp, tagline }: Hea
               href="/get-quote"
               className={`px-5 py-2.5 rounded-full text-sm font-medium transition-colors duration-300 ${ctaClass}`}
               onMouseEnter={() => setMegaOpen(false)}
+              onClick={() => trackQuoteClick("header")}
             >
               Get a Quote
             </Link>

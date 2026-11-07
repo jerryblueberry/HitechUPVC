@@ -1,3 +1,6 @@
+"use client";
+
+import { trackWhatsAppClick } from "@/lib/analytics";
 import { whatsappHref } from "@/lib/constants";
 
 interface WhatsAppIconProps {
@@ -27,6 +30,8 @@ interface WhatsAppLinkProps {
   /** Extra classes for the circular button (size, colour). */
   buttonClassName?: string;
   label?: string;
+  /** Analytics location label (header, contact, cta, …). */
+  location?: string;
 }
 
 export function WhatsAppLink({
@@ -34,6 +39,7 @@ export function WhatsAppLink({
   className = "",
   buttonClassName = "",
   label = "Chat on WhatsApp",
+  location = "header",
 }: WhatsAppLinkProps) {
   return (
     <a
@@ -42,6 +48,7 @@ export function WhatsAppLink({
       rel="noopener noreferrer"
       aria-label={label}
       className={`inline-flex items-center justify-center ${className}`}
+      onClick={() => trackWhatsAppClick(location)}
     >
       <span
         className={`flex items-center justify-center rounded-full bg-[#25D366] text-white shadow-[0_1px_2px_rgba(18,43,24,0.18)] transition-[background-color,box-shadow,transform] duration-300 ease-[var(--ease-premium)] hover:bg-[#1ebe5d] hover:shadow-[0_8px_20px_-8px_rgba(18,43,24,0.45)] active:scale-[0.97] active:duration-100 motion-reduce:active:scale-100 ${buttonClassName}`}

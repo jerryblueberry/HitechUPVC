@@ -3,6 +3,7 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { QuotePreview } from "@/components/quote/QuotePreview";
 import { WhatsAppIcon } from "@/components/ui/WhatsAppLink";
+import { trackQuoteLead } from "@/lib/analytics";
 import { whatsappHref } from "@/lib/constants";
 import type { ColorSwatch, QuoteContent, QuoteProductId } from "@/lib/types";
 
@@ -891,6 +892,13 @@ export function QuoteBuilder({ content, colors, whatsapp }: QuoteBuilderProps) {
                   href={whatsappHref(whatsapp, message)}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() =>
+                    trackQuoteLead({
+                      openings: draft.openings.length,
+                      projectType: draft.details.projectType,
+                      timeline: draft.details.timeline,
+                    })
+                  }
                   className="inline-flex items-center justify-center gap-2 rounded-full bg-[#25D366] px-6 py-3 text-sm font-medium text-white transition-[background-color,box-shadow] duration-300 hover:bg-[#1ebe5d] hover:shadow-[0_8px_20px_-8px_rgba(18,43,24,0.6)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-navy"
                 >
                   <WhatsAppIcon size={18} />
