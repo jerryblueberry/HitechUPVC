@@ -268,3 +268,21 @@ export interface ProductIndexEntry {
   priceFrom?: string;
   badges?: string[];
 }
+
+export interface ServiceAreaFaq {
+  question: string;
+  answer: string;
+}
+
+export interface ServiceArea {
+  slug: string;
+  name: string;
+  title: string;
+  description: string;
+  keywords: string[];
+  eyebrow: string;
+  headline: string;
+  body: string;
+  bullets: string[];
+  faqs: ServiceAreaFaq[];
+}

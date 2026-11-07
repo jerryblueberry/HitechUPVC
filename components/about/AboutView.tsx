@@ -424,24 +424,42 @@ export function AboutView({ about, company }: AboutViewProps) {
                     )}
 
                     <ul className="mt-5 flex flex-wrap gap-2.5">
-                      {region.areas.map((area) => (
-                        <li
-                          key={area}
-                          className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm ring-1 transition-colors duration-300 ${
-                            featured
-                              ? "bg-surface text-charcoal/85 ring-charcoal/[0.08] hover:ring-gold/50"
-                              : "bg-white text-charcoal/85 shadow-[0_1px_2px_rgba(27,27,29,0.05)] ring-gold/20 hover:ring-gold/50"
-                          }`}
-                        >
+                      {region.areas.map((area) => {
+                        const areaHref =
+                          area === "Kathmandu"
+                            ? "/service-areas/kathmandu"
+                            : area === "Pokhara"
+                              ? "/service-areas/pokhara"
+                              : null;
+                        const chipClass = `inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm ring-1 transition-colors duration-300 ${
+                          featured
+                            ? "bg-surface text-charcoal/85 ring-charcoal/[0.08] hover:ring-gold/50"
+                            : "bg-white text-charcoal/85 shadow-[0_1px_2px_rgba(27,27,29,0.05)] ring-gold/20 hover:ring-gold/50"
+                        }`;
+                        const dot = (
                           <span
                             aria-hidden
                             className={`h-1.5 w-1.5 rounded-full ${
                               featured ? "bg-gold" : "bg-white ring-[1.5px] ring-gold"
                             }`}
                           />
-                          {area}
-                        </li>
-                      ))}
+                        );
+                        return (
+                          <li key={area}>
+                            {areaHref ? (
+                              <Link href={areaHref} className={chipClass}>
+                                {dot}
+                                {area}
+                              </Link>
+                            ) : (
+                              <span className={chipClass}>
+                                {dot}
+                                {area}
+                              </span>
+                            )}
+                          </li>
+                        );
+                      })}
                       {region.moreLabel && (
                         <li>
                           <Link

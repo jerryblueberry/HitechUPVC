@@ -122,7 +122,7 @@ function SceneLayers({ priority = false }: { priority?: boolean }) {
       <div className="scene-interior absolute inset-0">
         <Image
           src={IMAGES.curtains.openLight}
-          alt="Sunlit interior with window"
+          alt="Sunlit living room framed by Hi-Tech uPVC windows"
           fill
           className="object-cover"
           sizes="100vw"
@@ -157,7 +157,7 @@ function ReducedFallback() {
         <div className="relative aspect-[3/4] sm:aspect-[4/3] rounded-2xl overflow-hidden border border-surface/10 mb-10">
           <Image
             src={UPVC_SEQUENCES.hero}
-            alt="Hi-Tech uPVC doors with view"
+            alt="Hi-Tech uPVC sliding doors opening to a bright outdoor view"
             fill
             className="object-cover"
             sizes="100vw"

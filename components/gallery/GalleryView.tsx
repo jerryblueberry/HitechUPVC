@@ -114,6 +114,8 @@ export function GalleryView({ projects }: GalleryViewProps) {
         </div>
       </header>
 
+      <h2 className="sr-only">Project gallery</h2>
+
       <div className="mt-10 sm:mt-12 lg:mt-14">
         <AnimatePresence mode="wait" initial={false}>
           <motion.div

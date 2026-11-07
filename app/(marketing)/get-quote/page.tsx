@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import { QuoteBuilder } from "@/components/quote/QuoteBuilder";
+import { JsonLd } from "@/components/ui/JsonLd";
 import { RevealOnScroll } from "@/components/ui/RevealOnScroll";
 import { WhatsAppIcon } from "@/components/ui/WhatsAppLink";
 import { telHref, whatsappHref } from "@/lib/constants";
 import { getColors, getCompany, getQuote } from "@/lib/getData";
+import { buildQuotePageJsonLd } from "@/lib/schema";
 import { pageMetadata } from "@/lib/seo";
 
 const quote = getQuote();
@@ -22,6 +24,7 @@ export default function GetQuotePage() {
 
   return (
     <article className="bg-surface">
+      <JsonLd data={buildQuotePageJsonLd(company)} />
       <section className="section-padding page-top" aria-labelledby="quote-title">
         <div className="container-content max-[399px]:px-4">
           <RevealOnScroll priority className="mb-8 max-w-2xl sm:mb-10 lg:mb-14">

@@ -92,7 +92,7 @@ export function ProductsView({ company, products, colors }: ProductsViewProps) {
                       {jump.image ? (
                         <Image
                           src={jump.image}
-                          alt=""
+                          alt={`Hi-Tech uPVC ${CATEGORY_LABELS[jump.category]} — made to measure in Nepal`}
                           fill
                           sizes="(max-width: 640px) 100vw, 33vw"
                           className="object-contain p-8 transition-transform duration-700 ease-[var(--ease-premium)] group-hover:scale-[1.04]"

@@ -9,6 +9,7 @@ import type {
   ProductIndexEntry,
   Project,
   QuoteContent,
+  ServiceArea,
   TeamMember,
   Testimonial,
 } from "./types";
@@ -23,6 +24,7 @@ import panelsData from "@/data/panels.json";
 import productsData from "@/data/products.json";
 import projectsData from "@/data/projects.json";
 import quoteData from "@/data/quote.json";
+import serviceAreasData from "@/data/serviceAreas.json";
 import teamData from "@/data/team.json";
 import testimonialsData from "@/data/testimonials.json";
 import windowsData from "@/data/windows.json";
@@ -108,4 +110,12 @@ export function getAllProducts(): Product[] {
     ...categoryData.doors,
     ...categoryData.panels,
   ];
+}
+
+export function getServiceAreas(): ServiceArea[] {
+  return serviceAreasData as ServiceArea[];
+}
+
+export function getServiceAreaBySlug(slug: string): ServiceArea | undefined {
+  return getServiceAreas().find((area) => area.slug === slug);
 }

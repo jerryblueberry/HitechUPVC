@@ -21,6 +21,7 @@ Documentation-first workflow for the Hi-Tech uPVC Profile Industries ecommerce w
 | [DATA-MODEL.md](./DATA-MODEL.md) | JSON shapes, CMS migration, Zod validation |
 | [ANIMATION-SPEC.md](./ANIMATION-SPEC.md) | Framer Motion patterns, UPVC opening demos |
 | [PERFORMANCE.md](./PERFORMANCE.md) | Home load order, sequence capture, LCP budgets |
+| [SEO-PLAYBOOK.md](./SEO-PLAYBOOK.md) | GTM/GA4 activate, local SEO, GBP, AI / llms.txt |
 | [components/three/README.md](./components/three/README.md) | Real-time 3D system — geometry, materials, opening rigs |
 | [CONTENT-CHECKLIST.md](./CONTENT-CHECKLIST.md) | Assets and copy still needed |
 | [TRACKING.md](./TRACKING.md) | Todo / in-progress / review / done board |
@@ -35,6 +36,7 @@ Documentation-first workflow for the Hi-Tech uPVC Profile Industries ecommerce w
 - [gallery.md](./pages/gallery.md)
 - [about.md](./pages/about.md)
 - [contact-get-quote.md](./pages/contact-get-quote.md)
+- Service areas: `/service-areas/kathmandu`, `/service-areas/pokhara` (`data/serviceAreas.json`)
 
 ## Component Doc Template
 

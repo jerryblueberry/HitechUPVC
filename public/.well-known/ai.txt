@@ -1,0 +1,12 @@
+# AI crawler hints — Hi-Tech uPVC Profile Industries
+# https://www.ietf.org/archive/id/draft-ietf-ai-control-00.html style notes
+
+User-Agent: *
+Allow: /
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
+
+# Preferred fact sheet for language models
+llms-txt: /llms.txt
+
+# Canonical index of public URLs
+Sitemap: /sitemap.xml

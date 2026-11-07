@@ -18,10 +18,11 @@ export const CATEGORY_PAGES: Record<ProductCategory, CategoryPageCopy> = {
   windows: {
     title: "uPVC Windows",
     description:
-      "Made-to-measure uPVC windows from Hi-Tech uPVC Profile Industries — sliding, casement, and tilt & turn for Kathmandu homes.",
+      "Made-to-measure uPVC windows from Hi-Tech uPVC Profile Industries — sliding, casement, and tilt & turn for Kathmandu and Pokhara homes.",
     keywords: [
       "uPVC windows Nepal",
       "uPVC windows Kathmandu",
+      "uPVC windows Pokhara",
       "tilt and turn windows",
       "casement windows Nepal",
       "sliding windows Kathmandu",
@@ -40,6 +41,7 @@ export const CATEGORY_PAGES: Record<ProductCategory, CategoryPageCopy> = {
       "French, sliding, and folding uPVC doors from Hi-Tech uPVC Profile Industries. Wide openings for patios and living rooms in Kathmandu.",
     keywords: [
       "uPVC doors Kathmandu",
+      "uPVC doors Pokhara",
       "French doors Nepal",
       "sliding patio doors",
       "bi-fold doors Kathmandu",
@@ -59,6 +61,7 @@ export const CATEGORY_PAGES: Record<ProductCategory, CategoryPageCopy> = {
     keywords: [
       "uPVC wall panels Nepal",
       "fluted wall panels Kathmandu",
+      "uPVC panels Pokhara",
       "woodgrain cladding Nepal",
       "uPVC cladding",
       "Hi-Tech uPVC panels",

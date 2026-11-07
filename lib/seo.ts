@@ -3,6 +3,19 @@ import { getCompany } from "./getData";
 
 export const OG_IMAGE = "/images/upvc/sequences/hero-lifestyle.webp";
 
+export const CORE_KEYWORDS = [
+  "Hi-Tech uPVC",
+  "Hi-Tech uPVC Profile Industries",
+  "uPVC windows Nepal",
+  "uPVC doors Kathmandu",
+  "uPVC panels Nepal",
+  "uPVC manufacturer Nepal",
+  "uPVC windows Kathmandu",
+  "uPVC Pokhara",
+  "uPVC profiles Tarakeshwar",
+  "Hi-Tech Group Nepal",
+] as const;
+
 export function getSiteUrl(): string {
   const explicit = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "");
   if (explicit) return explicit;
@@ -21,7 +34,10 @@ export function defaultMetadata(): Metadata {
   const company = getCompany();
   const title = `${company.companyName} | uPVC Windows, Doors & Panels in Nepal`;
   const description =
-    "Hi-Tech uPVC Profile Industries makes energy-efficient uPVC windows, doors, and panels in Nepal. Visit Tarakeshwar, Lambagar, or Tokha — or write to us on WhatsApp.";
+    "Hi-Tech uPVC Profile Industries manufactures energy-efficient uPVC windows, doors, and panels in Nepal. Factory in Tarakeshwar — serving Kathmandu, Pokhara, and nationwide. Free quote on WhatsApp.";
+
+  const verificationToken =
+    process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION?.trim();
 
   return {
     metadataBase: new URL(getSiteUrl()),
@@ -31,18 +47,20 @@ export function defaultMetadata(): Metadata {
     },
     description,
     applicationName: company.companyName,
-    keywords: [
-      "Hi-Tech uPVC",
-      "uPVC windows Nepal",
-      "uPVC doors Kathmandu",
-      "uPVC profiles Tarakeshwar",
-      "Hi-Tech Group Nepal",
+    keywords: [...CORE_KEYWORDS],
+    authors: [
+      {
+        name: company.companyName,
+        url: "https://www.instagram.com/hitechgroupnepal/",
+      },
     ],
-    authors: [{ name: company.companyName, url: "https://www.instagram.com/hitechgroupnepal/" }],
     creator: company.companyName,
     publisher: company.companyName,
     alternates: { canonical: "/" },
     robots: { index: true, follow: true },
+    ...(verificationToken
+      ? { verification: { google: verificationToken } }
+      : {}),
     openGraph: {
       type: "website",
       locale: "en_NP",
@@ -55,7 +73,7 @@ export function defaultMetadata(): Metadata {
           url: OG_IMAGE,
           width: 1200,
           height: 630,
-          alt: "Hi-Tech uPVC windows and doors",
+          alt: "Hi-Tech uPVC windows and doors in Nepal",
         },
       ],
     },

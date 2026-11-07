@@ -1,5 +1,10 @@
 import type { MetadataRoute } from "next";
-import { getDoors, getPanels, getWindows } from "@/lib/getData";
+import {
+  getDoors,
+  getPanels,
+  getServiceAreas,
+  getWindows,
+} from "@/lib/getData";
 import { absoluteUrl } from "@/lib/seo";
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -9,6 +14,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...getDoors().map((product) => `/products/doors/${product.slug}`),
     ...getPanels().map((product) => `/products/panels/${product.slug}`),
   ];
+  const serviceAreas = getServiceAreas().map(
+    (area) => `/service-areas/${area.slug}`
+  );
 
   return [
     { url: absoluteUrl("/"), lastModified: now, changeFrequency: "weekly", priority: 1 },
@@ -17,9 +25,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: absoluteUrl("/products/windows"), lastModified: now, changeFrequency: "weekly", priority: 0.85 },
     { url: absoluteUrl("/products/doors"), lastModified: now, changeFrequency: "weekly", priority: 0.85 },
     { url: absoluteUrl("/products/panels"), lastModified: now, changeFrequency: "weekly", priority: 0.85 },
+    { url: absoluteUrl("/gallery"), lastModified: now, changeFrequency: "weekly", priority: 0.8 },
     { url: absoluteUrl("/about"), lastModified: now, changeFrequency: "monthly", priority: 0.8 },
     { url: absoluteUrl("/contact"), lastModified: now, changeFrequency: "monthly", priority: 0.8 },
     { url: absoluteUrl("/get-quote"), lastModified: now, changeFrequency: "monthly", priority: 0.85 },
+    ...serviceAreas.map((path) => ({
+      url: absoluteUrl(path),
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.85,
+    })),
     ...products.map((path) => ({
       url: absoluteUrl(path),
       lastModified: now,

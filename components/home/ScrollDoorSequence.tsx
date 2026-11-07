@@ -398,7 +398,7 @@ export function ScrollDoorSequence() {
                 <Image
                   key={posterSrc}
                   src={posterSrc}
-                  alt=""
+                  alt="Hi-Tech uPVC French door — closed pose before scroll animation"
                   fill
                   loading="eager"
                   sizes="100vw"

@@ -1,7 +1,7 @@
 {
   "main": [
     { "label": "Products", "href": "/products" },
-    { "label": "Why UPVC", "href": "/why-upvc" },
+    { "label": "Why uPVC", "href": "/why-upvc" },
     { "label": "Gallery", "href": "/gallery" },
     { "label": "About", "href": "/about" },
     { "label": "Contact", "href": "/contact" }
@@ -29,8 +29,10 @@
   "footer": [
     { "label": "Products", "href": "/products" },
     { "label": "Get a Quote", "href": "/get-quote" },
-    { "label": "Why UPVC", "href": "/why-upvc" },
+    { "label": "Why uPVC", "href": "/why-upvc" },
     { "label": "Gallery", "href": "/gallery" },
+    { "label": "uPVC in Kathmandu", "href": "/service-areas/kathmandu" },
+    { "label": "uPVC in Pokhara", "href": "/service-areas/pokhara" },
     { "label": "About", "href": "/about" },
     { "label": "Contact", "href": "/contact" }
   ]

@@ -25,6 +25,7 @@ Single source for backlog, in-progress, review, and done. Update on every task.
 - [ ] Accessibility pass (focus states audit)
 - [ ] Performance pass (next/image sizes, Lighthouse)
 - [x] SEO metadata — Open Graph, Twitter, sitemap, robots, Organization JSON-LD + Instagram sameAs
+- [x] SEO / AI visibility pass — LocalBusiness schema, Product JSON-LD, llms.txt, Kathmandu/Pokhara landings (see SEO-PLAYBOOK.md)
 
 ### Content (see CONTENT-CHECKLIST.md)
 - [x] Placeholder web images (Unsplash) wired via lib/images.ts

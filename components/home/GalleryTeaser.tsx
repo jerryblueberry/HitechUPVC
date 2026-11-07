@@ -68,9 +68,9 @@ export function GalleryTeaser({
     return (
       <div className="container-content" aria-label="Completed projects">
         <div className="mb-8 flex flex-col gap-4 sm:mb-10 sm:flex-row sm:items-end sm:justify-between">
-          <h3 className="font-display text-[clamp(1.35rem,2.5vw,1.75rem)] tracking-tight text-charcoal">
+          <h2 className="font-display text-[clamp(1.35rem,2.5vw,1.75rem)] tracking-tight text-charcoal">
             Completed projects
-          </h3>
+          </h2>
           <Link
             href="/gallery"
             className="group/link shrink-0 text-sm font-medium text-gold transition-colors duration-300 hover:text-navy focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-4 focus-visible:ring-offset-surface-muted"

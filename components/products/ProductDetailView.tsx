@@ -128,6 +128,33 @@ export function ProductDetailView({ product }: { product: Product }) {
             >
               Get a quote for {product.name}
             </Link>
+
+            <p className="mt-8 flex flex-wrap gap-x-4 gap-y-2 text-sm text-charcoal/55">
+              <Link
+                href="/why-upvc"
+                className="text-navy underline-offset-4 hover:underline"
+              >
+                Why uPVC
+              </Link>
+              <Link
+                href="/service-areas/kathmandu"
+                className="text-navy underline-offset-4 hover:underline"
+              >
+                Kathmandu installs
+              </Link>
+              <Link
+                href="/service-areas/pokhara"
+                className="text-navy underline-offset-4 hover:underline"
+              >
+                Pokhara installs
+              </Link>
+              <Link
+                href="/gallery"
+                className="text-navy underline-offset-4 hover:underline"
+              >
+                Project gallery
+              </Link>
+            </p>
           </div>
         </div>
       </section>

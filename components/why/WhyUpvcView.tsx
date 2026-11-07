@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { BeforeAfterSlider } from "@/components/home/BeforeAfterSlider";
 import { CTASection } from "@/components/home/CTASection";
 import { GalleryTeaser } from "@/components/home/GalleryTeaser";
@@ -232,7 +233,21 @@ export function WhyUpvcView({
                 Living in Kathmandu means heavy dust and pollution, loud traffic
                 and construction, cold winters, hot summers, and monsoon humidity.
                 uPVC doors and windows are designed to handle exactly these
-                conditions.
+                conditions. See how we install across the{" "}
+                <Link
+                  href="/service-areas/kathmandu"
+                  className="font-medium text-navy underline-offset-4 hover:underline"
+                >
+                  Kathmandu valley
+                </Link>{" "}
+                and{" "}
+                <Link
+                  href="/service-areas/pokhara"
+                  className="font-medium text-navy underline-offset-4 hover:underline"
+                >
+                  Pokhara
+                </Link>
+                .
               </p>
             </RevealOnScroll>
             <RevealOnScroll delay={0.1}>
