@@ -45,6 +45,11 @@ export function Footer({ navigation, company }: FooterProps) {
             <p className="text-surface/70 text-sm leading-relaxed">
               {company.tagline}
             </p>
+            <p className="mt-4 text-xs leading-relaxed text-surface/50">
+              Hi-Tech uPVC (Hitech uPVC) is part of Hi-Tech Group Nepal —
+              uPVC windows, doors, and panels manufactured in Tarakeshwar,
+              Kathmandu.
+            </p>
           </div>
 
           <div>

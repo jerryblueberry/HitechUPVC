@@ -13,7 +13,7 @@
       "double glazed windows Kathmandu",
       "uPVC panels Nepal"
     ],
-    "eyebrow": "Kathmandu valley",
+    "eyebrow": "uPVC windows & doors · Kathmandu",
     "headline": "uPVC built for Kathmandu light, dust, and monsoon.",
     "body": "From Budhanilkantha to Patan, Baneshwor to Tarakeshwar — we measure on site, extrude and assemble at our own factory, and fit with valley crews who know local openings.",
     "bullets": [
@@ -46,7 +46,7 @@
       "double glazed windows Pokhara",
       "uPVC manufacturer Nepal"
     ],
-    "eyebrow": "Pokhara & beyond",
+    "eyebrow": "uPVC windows & doors · Pokhara",
     "headline": "Valley-made uPVC for lakeside homes and hill projects.",
     "body": "Pokhara’s humidity, lake-side glare, and cool winters ask for sealed multi-chamber frames. We fabricate in Tarakeshwar and schedule measurement and installation for Pokhara and nearby districts.",
     "bullets": [
@@ -63,6 +63,71 @@
       {
         "question": "Are Pokhara orders made in Kathmandu?",
         "answer": "All frames are fabricated at our Tarakeshwar factory in the Kathmandu valley, then installed on site in Pokhara by our fitting team."
+      }
+    ]
+  },
+  {
+    "slug": "lalitpur",
+    "name": "Lalitpur",
+    "title": "uPVC Windows & Doors in Lalitpur (Patan)",
+    "description": "Made-to-measure uPVC windows, doors, and panels for Lalitpur and Patan homes — fabricated at the Hi-Tech uPVC factory in Tarakeshwar and installed by our valley team.",
+    "keywords": [
+      "uPVC windows Lalitpur",
+      "uPVC doors Lalitpur",
+      "uPVC windows Patan",
+      "uPVC Lalitpur",
+      "double glazed windows Lalitpur",
+      "Hi-Tech uPVC Lalitpur"
+    ],
+    "eyebrow": "uPVC in Lalitpur & Patan",
+    "headline": "Quiet, sealed uPVC for Lalitpur homes and apartments.",
+    "body": "From Jhamsikhel and Sanepa to Imadol and Satdobato — Lalitpur’s busy roads and tight plots need windows that seal out noise and dust without bulky frames. We measure on site, fabricate in Tarakeshwar, and install with the same valley crew.",
+    "bullets": [
+      "Free site measurement across Lalitpur and Patan",
+      "Double-glazed options to cut traffic noise on Ring Road sites",
+      "Slim sliding and casement profiles for apartment openings",
+      "Factory-made in Tarakeshwar — one Hi-Tech quality standard"
+    ],
+    "faqs": [
+      {
+        "question": "Do you install uPVC windows in Lalitpur and Patan?",
+        "answer": "Yes. Hi-Tech uPVC measures, manufactures, and installs across Lalitpur — including Patan, Jhamsikhel, Sanepa, Imadol, Satdobato, and nearby areas."
+      },
+      {
+        "question": "Can uPVC windows reduce road noise in Lalitpur apartments?",
+        "answer": "Double-glazed uPVC windows with multi-point sealing noticeably reduce traffic and street noise compared with single-glazed aluminium or timber frames."
+      }
+    ]
+  },
+  {
+    "slug": "bhaktapur",
+    "name": "Bhaktapur",
+    "title": "uPVC Windows & Doors in Bhaktapur",
+    "description": "Made-to-measure uPVC windows, doors, and panels for Bhaktapur homes and new builds — fabricated by Hi-Tech uPVC in Tarakeshwar and installed across Bhaktapur district.",
+    "keywords": [
+      "uPVC windows Bhaktapur",
+      "uPVC doors Bhaktapur",
+      "uPVC Bhaktapur",
+      "double glazed windows Bhaktapur",
+      "Hi-Tech uPVC Bhaktapur"
+    ],
+    "eyebrow": "uPVC in Bhaktapur",
+    "headline": "Warm, low-maintenance uPVC for Bhaktapur builds.",
+    "body": "Bhaktapur’s cold winter mornings and dusty dry season are hard on timber and single glass. Our multi-chamber uPVC frames hold warmth, never need varnish, and suit both new houses in Suryabinayak and Thimi and renovations nearby.",
+    "bullets": [
+      "Free site measurement across Bhaktapur district",
+      "Multi-chamber frames that keep winter rooms warmer",
+      "Woodgrain finishes that suit traditional-style facades",
+      "No termites, rot, or annual painting"
+    ],
+    "faqs": [
+      {
+        "question": "Do you serve Bhaktapur for uPVC windows and doors?",
+        "answer": "Yes. We measure and install across Bhaktapur — including Suryabinayak, Thimi, Kausaltar, and nearby areas — with frames made at our Tarakeshwar factory."
+      },
+      {
+        "question": "Do you have woodgrain uPVC for traditional-style homes?",
+        "answer": "Yes. Woodgrain foil finishes such as golden oak give a timber look without the termite, warping, or repainting problems of real wood."
       }
     ]
   }

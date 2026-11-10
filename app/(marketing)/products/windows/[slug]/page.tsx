@@ -4,7 +4,7 @@ import { ProductDetailView } from "@/components/products/ProductDetailView";
 import { JsonLd } from "@/components/ui/JsonLd";
 import { getProductBySlug, getProductsByCategory } from "@/lib/getData";
 import { buildProductJsonLd } from "@/lib/schema";
-import { pageMetadata } from "@/lib/seo";
+import { pageMetadata, productSeoKeywords, productSeoTitle } from "@/lib/seo";
 
 type Params = { params: Promise<{ slug: string }> };
 
@@ -24,18 +24,11 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   }
 
   return pageMetadata(
-    product.name,
-    product.shortDescription,
+    productSeoTitle(product.name, "windows"),
+    `${product.shortDescription} Made to measure by Hi-Tech uPVC in Tarakeshwar, Kathmandu.`,
     `/products/windows/${slug}`,
     product.heroImage,
-    {
-      keywords: [
-        product.name,
-        "uPVC windows Nepal",
-        "uPVC windows Kathmandu",
-        "Hi-Tech uPVC",
-      ],
-    }
+    { keywords: productSeoKeywords(product.name, "windows") }
   );
 }
 

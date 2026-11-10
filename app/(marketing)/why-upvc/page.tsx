@@ -8,7 +8,7 @@ import {
   getProjects,
   getWindows,
 } from "@/lib/getData";
-import { absoluteUrl, pageMetadata } from "@/lib/seo";
+import { absoluteUrl, getSiteUrl, pageMetadata } from "@/lib/seo";
 
 const TITLE = "Why uPVC Doors & Windows Are Better in Kathmandu";
 const DESCRIPTION =
@@ -16,18 +16,17 @@ const DESCRIPTION =
 
 export const metadata: Metadata = pageMetadata(TITLE, DESCRIPTION, "/why-upvc", undefined, {
   keywords: [
-    "uPVC Kathmandu",
-    "uPVC windows Nepal",
-    "uPVC doors Kathmandu",
-    "why uPVC",
-    "uPVC vs wood",
-    "uPVC vs aluminium",
+    "why uPVC windows",
+    "uPVC vs wood Nepal",
+    "uPVC vs aluminium Nepal",
     "uPVC windows Kathmandu",
-    "maintenance free windows Nepal",
+    "uPVC doors Kathmandu",
+    "uPVC windows benefits",
+    "best windows for Kathmandu",
+    "soundproof windows Kathmandu",
     "double glazed windows Kathmandu",
-    "uPVC manufacturer Nepal",
-    "Hi-Tech uPVC",
-    "uPVC profiles Tarakeshwar",
+    "maintenance free windows Nepal",
+    "termite proof doors Nepal",
   ],
 });
 
@@ -42,7 +41,8 @@ function WhyPageJsonLd() {
         url: absoluteUrl("/why-upvc"),
         name: TITLE,
         description: DESCRIPTION,
-        isPartOf: { "@type": "WebSite", name: company.companyName, url: absoluteUrl("/") },
+        isPartOf: { "@id": `${getSiteUrl()}/#website` },
+        publisher: { "@id": `${getSiteUrl()}/#organization` },
         about: {
           "@type": "Thing",
           name: "uPVC doors and windows in Kathmandu",

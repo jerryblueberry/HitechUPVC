@@ -2,6 +2,7 @@
   "main": [
     { "label": "Products", "href": "/products" },
     { "label": "Why uPVC", "href": "/why-upvc" },
+    { "label": "Guides", "href": "/guides" },
     { "label": "Gallery", "href": "/gallery" },
     { "label": "About", "href": "/about" },
     { "label": "Contact", "href": "/contact" }
@@ -30,8 +31,11 @@
     { "label": "Products", "href": "/products" },
     { "label": "Get a Quote", "href": "/get-quote" },
     { "label": "Why uPVC", "href": "/why-upvc" },
+    { "label": "Guides", "href": "/guides" },
     { "label": "Gallery", "href": "/gallery" },
     { "label": "uPVC in Kathmandu", "href": "/service-areas/kathmandu" },
+    { "label": "uPVC in Lalitpur", "href": "/service-areas/lalitpur" },
+    { "label": "uPVC in Bhaktapur", "href": "/service-areas/bhaktapur" },
     { "label": "uPVC in Pokhara", "href": "/service-areas/pokhara" },
     { "label": "About", "href": "/about" },
     { "label": "Contact", "href": "/contact" }

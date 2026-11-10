@@ -8,17 +8,19 @@ import { buildContactPageJsonLd } from "@/lib/schema";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata(
-  "Contact Hi-Tech uPVC in Kathmandu",
-  "Visit Hi-Tech uPVC Profile Industries in Tarakeshwar, Lambagar, or Tokha. WhatsApp or email for a free site measurement across Kathmandu, Pokhara, and Nepal.",
+  "Contact Us — uPVC Factory & Offices in Kathmandu",
+  "Visit Hi-Tech uPVC Profile Industries in Tarakeshwar, Lambagar, or Tokha. Call, WhatsApp, or email for a free uPVC window and door site measurement across Kathmandu, Pokhara, and Nepal.",
   "/contact",
   undefined,
   {
     keywords: [
-      "Hi-Tech uPVC contact",
-      "uPVC Kathmandu contact",
-      "uPVC Tarakeshwar",
-      "uPVC quote Nepal",
-      "Hi-Tech WhatsApp",
+      "Hi-Tech uPVC contact number",
+      "Hitech uPVC phone",
+      "uPVC near me Kathmandu",
+      "uPVC company Tarakeshwar",
+      "uPVC Tokha",
+      "uPVC Lambagar",
+      "Hi-Tech uPVC WhatsApp",
     ],
   }
 );

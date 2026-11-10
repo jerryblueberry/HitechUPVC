@@ -17,6 +17,9 @@ const CARD =
 const H2 =
   "font-display text-[clamp(2rem,3.6vw,3.25rem)] leading-[1.05] tracking-tight text-charcoal text-balance";
 
+/** Area chip labels that have a `/service-areas/<lowercase>` landing page. */
+const AREA_PAGES = new Set(["Kathmandu", "Lalitpur", "Bhaktapur", "Pokhara"]);
+
 const VALUE_ICON_PATHS: Record<AboutValueIcon, string> = {
   mountain: "M3 19 9.5 8l3.5 6 2-3.5L21 19H3Zm6.5-11 1.75 3",
   ruler:
@@ -425,12 +428,9 @@ export function AboutView({ about, company }: AboutViewProps) {
 
                     <ul className="mt-5 flex flex-wrap gap-2.5">
                       {region.areas.map((area) => {
-                        const areaHref =
-                          area === "Kathmandu"
-                            ? "/service-areas/kathmandu"
-                            : area === "Pokhara"
-                              ? "/service-areas/pokhara"
-                              : null;
+                        const areaHref = AREA_PAGES.has(area)
+                          ? `/service-areas/${area.toLowerCase()}`
+                          : null;
                         const chipClass = `inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm ring-1 transition-colors duration-300 ${
                           featured
                             ? "bg-surface text-charcoal/85 ring-charcoal/[0.08] hover:ring-gold/50"

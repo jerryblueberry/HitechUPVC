@@ -1,22 +1,22 @@
 import type { Metadata } from "next";
 import { ProductsView } from "@/components/products/ProductsView";
 import { getColors, getCompany, getProducts } from "@/lib/getData";
-import { absoluteUrl, pageMetadata } from "@/lib/seo";
+import { absoluteUrl, getSiteUrl, pageMetadata } from "@/lib/seo";
 
-const TITLE = "uPVC Windows, Doors & Panels";
+const TITLE = "uPVC Windows, Doors & Panels in Nepal";
 const DESCRIPTION =
-  "Browse Hi-Tech uPVC Profile Industries windows, doors, and fluted wall panels. Sliding, casement, tilt & turn, French, and folding systems made to measure in Kathmandu.";
+  "Browse Hi-Tech uPVC windows, doors, and wall panels — sliding, casement, tilt & turn, French, and folding systems made to measure in Tarakeshwar for Kathmandu and across Nepal.";
 
 export const metadata: Metadata = pageMetadata(TITLE, DESCRIPTION, "/products", undefined, {
   keywords: [
-    "uPVC windows Nepal",
+    "uPVC windows Kathmandu",
     "uPVC doors Kathmandu",
+    "uPVC windows Nepal",
+    "uPVC doors Nepal",
     "uPVC panels Nepal",
-    "tilt and turn windows",
-    "sliding patio doors",
-    "French doors Kathmandu",
-    "Hi-Tech uPVC products",
+    "uPVC products Nepal",
     "made to measure windows Nepal",
+    "Hi-Tech uPVC products",
   ],
 });
 
@@ -32,7 +32,7 @@ function ProductsJsonLd() {
         url: absoluteUrl("/products"),
         name: TITLE,
         description: DESCRIPTION,
-        isPartOf: { "@type": "WebSite", name: company.companyName, url: absoluteUrl("/") },
+        isPartOf: { "@id": `${getSiteUrl()}/#website` },
       },
       {
         "@type": "BreadcrumbList",

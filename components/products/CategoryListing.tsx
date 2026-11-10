@@ -2,7 +2,7 @@ import { CategoryView } from "@/components/products/CategoryView";
 import { CATEGORY_PAGES } from "@/lib/categoryPages";
 import { CATEGORY_LABELS } from "@/lib/constants";
 import { getColors, getCompany, getProducts } from "@/lib/getData";
-import { absoluteUrl } from "@/lib/seo";
+import { absoluteUrl, getSiteUrl } from "@/lib/seo";
 import type { ProductCategory } from "@/lib/types";
 
 function CategoryJsonLd({ category }: { category: ProductCategory }) {
@@ -19,7 +19,7 @@ function CategoryJsonLd({ category }: { category: ProductCategory }) {
         url: absoluteUrl(path),
         name: copy.title,
         description: copy.description,
-        isPartOf: { "@type": "WebSite", name: company.companyName, url: absoluteUrl("/") },
+        isPartOf: { "@id": `${getSiteUrl()}/#website` },
       },
       {
         "@type": "BreadcrumbList",

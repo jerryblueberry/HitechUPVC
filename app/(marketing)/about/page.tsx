@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { AboutView } from "@/components/about/AboutView";
 import { getAbout, getCompany } from "@/lib/getData";
-import { absoluteUrl, pageMetadata } from "@/lib/seo";
+import { absoluteUrl, BRAND_ALIASES, getSiteUrl, pageMetadata } from "@/lib/seo";
 
 const about = getAbout();
 
@@ -25,10 +25,12 @@ function AboutPageJsonLd() {
         name: about.seo.title,
         description: about.seo.description,
         inLanguage: "en-NP",
-        isPartOf: { "@type": "WebSite", name: company.companyName, url: absoluteUrl("/") },
+        isPartOf: { "@id": `${getSiteUrl()}/#website` },
         mainEntity: {
           "@type": "Organization",
+          "@id": `${getSiteUrl()}/#organization`,
           name: company.companyName,
+          alternateName: [...BRAND_ALIASES],
           url: absoluteUrl("/"),
           logo: absoluteUrl(company.logo),
           slogan: company.tagline,

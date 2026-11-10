@@ -9,6 +9,7 @@ import type {
   ProductIndexEntry,
   Project,
   QuoteContent,
+  Guide,
   ServiceArea,
   TeamMember,
   Testimonial,
@@ -19,6 +20,7 @@ import colorsData from "@/data/colors.json";
 import companyData from "@/data/company.json";
 import doorsData from "@/data/doors.json";
 import faqsData from "@/data/faqs.json";
+import guidesData from "@/data/guides.json";
 import navigationData from "@/data/navigation.json";
 import panelsData from "@/data/panels.json";
 import productsData from "@/data/products.json";
@@ -118,4 +120,12 @@ export function getServiceAreas(): ServiceArea[] {
 
 export function getServiceAreaBySlug(slug: string): ServiceArea | undefined {
   return getServiceAreas().find((area) => area.slug === slug);
+}
+
+export function getGuides(): Guide[] {
+  return guidesData as Guide[];
+}
+
+export function getGuideBySlug(slug: string): Guide | undefined {
+  return getGuides().find((guide) => guide.slug === slug);
 }

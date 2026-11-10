@@ -286,3 +286,27 @@ export interface ServiceArea {
   bullets: string[];
   faqs: ServiceAreaFaq[];
 }
+
+export interface GuideLink {
+  href: string;
+  label: string;
+}
+
+export interface GuideSection {
+  heading: string;
+  body: string;
+}
+
+export interface Guide {
+  slug: string;
+  title: string;
+  description: string;
+  keywords: string[];
+  eyebrow: string;
+  headline: string;
+  summary: string;
+  updated: string;
+  relatedHrefs: GuideLink[];
+  sections: GuideSection[];
+  faqs: ServiceAreaFaq[];
+}

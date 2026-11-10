@@ -21,11 +21,11 @@ import {
 import { absoluteUrl, CORE_KEYWORDS, getSiteUrl, pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata(
-  "uPVC Windows, Doors & Panels in Nepal",
-  "Hi-Tech uPVC Profile Industries makes energy-efficient uPVC windows, doors, and panels in Nepal. Tarakeshwar factory — serving Kathmandu, Pokhara, and nationwide.",
+  "uPVC Windows & Doors in Kathmandu, Nepal | Hi-Tech uPVC",
+  "Hi-Tech uPVC (Hitech uPVC) manufactures uPVC windows, doors, and panels at its Tarakeshwar factory — installed across Kathmandu, Lalitpur, Bhaktapur, Pokhara, and Nepal. Free site measurement.",
   "/",
   undefined,
-  { keywords: [...CORE_KEYWORDS] }
+  { keywords: CORE_KEYWORDS, absoluteTitle: true }
 );
 
 function HomePageJsonLd() {
@@ -37,9 +37,9 @@ function HomePageJsonLd() {
         "@type": "WebPage",
         "@id": absoluteUrl("/"),
         url: absoluteUrl("/"),
-        name: `${company.companyName} | uPVC Windows, Doors & Panels in Nepal`,
+        name: `uPVC Windows & Doors in Kathmandu, Nepal | ${company.companyName}`,
         description:
-          "Hi-Tech uPVC Profile Industries manufactures and installs made-to-measure uPVC windows, doors, and panels in Nepal.",
+          "Hi-Tech uPVC Profile Industries (Hitech uPVC) manufactures and installs made-to-measure uPVC windows, doors, and panels in Kathmandu and across Nepal.",
         inLanguage: "en-NP",
         isPartOf: { "@id": `${getSiteUrl()}/#website` },
         about: { "@id": `${getSiteUrl()}/#organization` },
@@ -73,28 +73,42 @@ export default function HomePage() {
         stats={company.stats}
         projects={projects}
       />
-      <section className="pb-4 md:pb-6">
+      <section className="pb-10 pt-2 md:pb-14 md:pt-4" aria-label="Explore Hi-Tech uPVC">
         <div className="container-content">
-          <RevealOnScroll className="flex flex-wrap gap-x-5 gap-y-2 text-sm text-charcoal/55">
-            <span className="font-medium text-charcoal/70">Serving</span>
-            <Link
-              href="/service-areas/kathmandu"
-              className="text-navy underline-offset-4 hover:underline"
-            >
-              Kathmandu valley
-            </Link>
-            <Link
-              href="/service-areas/pokhara"
-              className="text-navy underline-offset-4 hover:underline"
-            >
-              Pokhara
-            </Link>
-            <Link href="/products" className="text-navy underline-offset-4 hover:underline">
-              All products
-            </Link>
-            <Link href="/why-upvc" className="text-navy underline-offset-4 hover:underline">
-              Why uPVC
-            </Link>
+          <RevealOnScroll className="border-t border-charcoal/[0.08] pt-8 md:pt-10">
+            <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between sm:gap-10">
+              <div className="max-w-sm">
+                <p className="eyebrow text-gold">Serving Nepal</p>
+                <p className="mt-2 text-[0.9375rem] leading-relaxed text-charcoal/55 sm:text-base">
+                  uPVC windows and doors made in Tarakeshwar — installed across the valley and beyond.
+                </p>
+              </div>
+              <nav
+                aria-label="Service areas"
+                className="grid grid-cols-2 items-center gap-x-3 gap-y-3 sm:flex sm:flex-wrap sm:justify-end sm:gap-3"
+              >
+                {[
+                  { href: "/service-areas/kathmandu", label: "Kathmandu" },
+                  { href: "/service-areas/lalitpur", label: "Lalitpur" },
+                  { href: "/service-areas/bhaktapur", label: "Bhaktapur" },
+                  { href: "/service-areas/pokhara", label: "Pokhara" },
+                ].map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className="group inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-xl px-4 py-2.5 text-center text-[0.875rem] font-medium text-navy ring-1 ring-charcoal/[0.08] transition-[color,background-color,box-shadow,transform] duration-300 ease-[var(--ease-premium)] hover:-translate-y-0.5 hover:bg-navy hover:text-surface hover:shadow-[0_12px_28px_-18px_rgba(14,42,62,0.55)] hover:ring-navy focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-surface active:translate-y-0 motion-reduce:transition-colors motion-reduce:hover:translate-y-0 sm:min-w-[7.5rem]"
+                  >
+                    {item.label}
+                    <span
+                      aria-hidden
+                      className="translate-x-0 opacity-60 transition-transform duration-300 group-hover:translate-x-0.5"
+                    >
+                      ›
+                    </span>
+                  </Link>
+                ))}
+              </nav>
+            </div>
           </RevealOnScroll>
         </div>
       </section>

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { QuoteBuilder } from "@/components/quote/QuoteBuilder";
 import { JsonLd } from "@/components/ui/JsonLd";
 import { RevealOnScroll } from "@/components/ui/RevealOnScroll";
@@ -89,6 +90,21 @@ export default function GetQuotePage() {
                   )}
                 </div>
               </div>
+
+              <p className="mt-5 text-sm leading-relaxed text-charcoal/55">
+                Not sure on budget yet? Read{" "}
+                <Link
+                  href="/guides/upvc-window-price-nepal"
+                  className="font-medium text-navy underline-offset-4 hover:underline"
+                >
+                  uPVC window price in Nepal
+                </Link>{" "}
+                or browse all{" "}
+                <Link href="/guides" className="font-medium text-navy underline-offset-4 hover:underline">
+                  guides
+                </Link>
+                .
+              </p>
             </aside>
           </div>
         </div>

@@ -16,16 +16,20 @@ export interface CategoryPageCopy {
 
 export const CATEGORY_PAGES: Record<ProductCategory, CategoryPageCopy> = {
   windows: {
-    title: "uPVC Windows",
+    title: "uPVC Windows in Kathmandu & Nepal",
     description:
-      "Made-to-measure uPVC windows from Hi-Tech uPVC Profile Industries — sliding, casement, and tilt & turn for Kathmandu and Pokhara homes.",
+      "Sliding, casement, and tilt & turn uPVC windows made to measure by Hi-Tech uPVC at our Tarakeshwar factory — installed across Kathmandu, Lalitpur, Bhaktapur, and Pokhara.",
     keywords: [
-      "uPVC windows Nepal",
       "uPVC windows Kathmandu",
+      "uPVC windows Nepal",
+      "uPVC window price Nepal",
+      "uPVC windows Lalitpur",
+      "uPVC windows Bhaktapur",
       "uPVC windows Pokhara",
-      "tilt and turn windows",
-      "casement windows Nepal",
       "sliding windows Kathmandu",
+      "casement windows Nepal",
+      "tilt and turn windows Nepal",
+      "double glazed windows Kathmandu",
       "Hi-Tech uPVC windows",
     ],
     headline: "Sliding, casement, and tilt & turn.",
@@ -36,15 +40,19 @@ export const CATEGORY_PAGES: Record<ProductCategory, CategoryPageCopy> = {
     whatsappPrefill: "Hi Hi-Tech — I’d like to see the uPVC window range and request a quote.",
   },
   doors: {
-    title: "uPVC Doors",
+    title: "uPVC Doors in Kathmandu & Nepal",
     description:
-      "French, sliding, and folding uPVC doors from Hi-Tech uPVC Profile Industries. Wide openings for patios and living rooms in Kathmandu.",
+      "French, sliding, and folding uPVC doors made to measure by Hi-Tech uPVC in Tarakeshwar — wide openings for homes and terraces across Kathmandu, Lalitpur, Bhaktapur, and Pokhara.",
     keywords: [
       "uPVC doors Kathmandu",
+      "uPVC doors Nepal",
+      "uPVC door price Nepal",
+      "uPVC doors Lalitpur",
+      "uPVC doors Bhaktapur",
       "uPVC doors Pokhara",
-      "French doors Nepal",
-      "sliding patio doors",
-      "bi-fold doors Kathmandu",
+      "uPVC French doors Nepal",
+      "uPVC sliding doors Kathmandu",
+      "folding doors Kathmandu",
       "Hi-Tech uPVC doors",
     ],
     headline: "French, sliding, and folding doors.",
@@ -55,15 +63,16 @@ export const CATEGORY_PAGES: Record<ProductCategory, CategoryPageCopy> = {
     whatsappPrefill: "Hi Hi-Tech — I’d like to see the uPVC door range and request a quote.",
   },
   panels: {
-    title: "uPVC Wall Panels",
+    title: "uPVC Wall Panels in Kathmandu & Nepal",
     description:
-      "Fluted woodgrain and smooth uPVC wall panels from Hi-Tech uPVC Profile Industries. Feature walls without paint or timber upkeep.",
+      "Fluted woodgrain and smooth uPVC wall panels by Hi-Tech uPVC — feature walls without paint or timber upkeep, made in Tarakeshwar for Kathmandu and Nepal.",
     keywords: [
+      "uPVC wall panels Kathmandu",
       "uPVC wall panels Nepal",
+      "uPVC panel price Nepal",
       "fluted wall panels Kathmandu",
-      "uPVC panels Pokhara",
-      "woodgrain cladding Nepal",
-      "uPVC cladding",
+      "uPVC cladding Nepal",
+      "woodgrain wall panels Nepal",
       "Hi-Tech uPVC panels",
     ],
     headline: "Fluted walls. No paint. No timber.",

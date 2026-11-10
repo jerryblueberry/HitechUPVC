@@ -3,9 +3,19 @@
  * Keep NAP fields aligned with data/company.json and Google Business Profile.
  */
 
-import type { Company, Product, ProductCategory } from "./types";
+import type { Company, Guide, Product, ProductCategory } from "./types";
 import { CATEGORY_LABELS } from "./constants";
-import { absoluteUrl, getSiteUrl } from "./seo";
+import { absoluteUrl, BRAND_ALIASES, getSiteUrl } from "./seo";
+
+const AREA_SERVED = [
+  { "@type": "Country", name: "Nepal" },
+  { "@type": "City", name: "Kathmandu" },
+  { "@type": "City", name: "Lalitpur" },
+  { "@type": "City", name: "Bhaktapur" },
+  { "@type": "City", name: "Pokhara" },
+  { "@type": "AdministrativeArea", name: "Bagmati Province" },
+  { "@type": "AdministrativeArea", name: "Kathmandu Valley" },
+];
 
 function logoUrl(company: Company) {
   return company.logo.startsWith("http")
@@ -79,11 +89,12 @@ export function buildLocalBusinessGraph(company: Company) {
         "@id": orgId,
         name: company.companyName,
         legalName: company.companyName,
+        alternateName: [...BRAND_ALIASES],
         url: site,
         logo: logoUrl(company),
         image: logoUrl(company),
         description:
-          "Hi-Tech uPVC Profile Industries manufactures and installs made-to-measure uPVC windows, doors, and wall panels in Nepal — factory at Tarakeshwar, serving Kathmandu, Pokhara, and across the country.",
+          "Hi-Tech uPVC Profile Industries (Hitech uPVC, part of Hi-Tech Group Nepal) manufactures and installs made-to-measure uPVC windows, doors, and wall panels — factory at Tarakeshwar, serving Kathmandu, Lalitpur, Bhaktapur, Pokhara, and across Nepal.",
         slogan: company.tagline,
         telephone: company.contact.phones,
         email: company.contact.emails,
@@ -95,19 +106,34 @@ export function buildLocalBusinessGraph(company: Company) {
           longitude: company.contact.addresses[0].lng,
         },
         hasMap: company.contact.addresses[0].mapsUrl,
-        areaServed: [
-          { "@type": "Country", name: "Nepal" },
-          { "@type": "City", name: "Kathmandu" },
-          { "@type": "City", name: "Pokhara" },
-          { "@type": "AdministrativeArea", name: "Bagmati Province" },
-        ],
+        areaServed: AREA_SERVED,
         knowsAbout: [
           "uPVC windows",
           "uPVC doors",
           "uPVC wall panels",
-          "double glazing",
+          "uPVC profiles",
+          "sliding windows",
+          "casement windows",
           "tilt and turn windows",
+          "French doors",
+          "sliding doors",
+          "folding doors",
+          "double glazing",
+          "window installation",
         ],
+        makesOffer: [
+          { name: "uPVC windows", path: "/products/windows" },
+          { name: "uPVC doors", path: "/products/doors" },
+          { name: "uPVC wall panels", path: "/products/panels" },
+        ].map((item) => ({
+          "@type": "Offer",
+          itemOffered: {
+            "@type": "Service",
+            name: `${item.name} — made to measure and installed`,
+            url: absoluteUrl(item.path),
+          },
+          areaServed: AREA_SERVED,
+        })),
         contactPoint: [
           {
             "@type": "ContactPoint",
@@ -125,6 +151,7 @@ export function buildLocalBusinessGraph(company: Company) {
         "@id": websiteId,
         url: site,
         name: company.companyName,
+        alternateName: ["Hi-Tech uPVC", "Hitech uPVC"],
         description: company.tagline,
         publisher: { "@id": orgId },
         inLanguage: "en-NP",
@@ -185,8 +212,10 @@ export function buildProductJsonLd(
         image,
         brand: {
           "@type": "Brand",
-          name: "Hi-Tech uPVC Profile Industries",
+          name: "Hi-Tech uPVC",
+          alternateName: "Hitech uPVC",
         },
+        manufacturer: { "@id": `${getSiteUrl()}/#organization` },
         category: CATEGORY_LABELS[category],
         material: "uPVC",
         ...(product.warranty ? { warranty: product.warranty } : {}),
@@ -244,17 +273,80 @@ export function buildQuotePageJsonLd(_company: Company) {
         "@type": "Service",
         name: "Made-to-measure uPVC windows, doors, and panels",
         provider: { "@id": `${getSiteUrl()}/#organization` },
-        areaServed: [
-          { "@type": "Country", name: "Nepal" },
-          { "@type": "City", name: "Kathmandu" },
-          { "@type": "City", name: "Pokhara" },
-        ],
+        areaServed: AREA_SERVED,
         serviceType: "uPVC fabrication and installation",
         url: absoluteUrl("/get-quote"),
       },
       buildBreadcrumb([
         { name: "Home", path: "/" },
         { name: "Get a Quote", path: "/get-quote" },
+      ]),
+    ],
+  };
+}
+
+export function buildGuideIndexJsonLd(guides: Guide[]) {
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "CollectionPage",
+        "@id": absoluteUrl("/guides"),
+        url: absoluteUrl("/guides"),
+        name: "uPVC Guides for Kathmandu & Nepal",
+        description:
+          "Practical Hi-Tech uPVC guides on window prices, uPVC vs aluminium and wood, Kathmandu climate, lifespan, and choosing doors.",
+        inLanguage: "en-NP",
+        isPartOf: { "@id": `${getSiteUrl()}/#website` },
+        about: { "@id": `${getSiteUrl()}/#organization` },
+        hasPart: guides.map((guide) => ({
+          "@type": "Article",
+          "@id": absoluteUrl(`/guides/${guide.slug}`),
+          headline: guide.title,
+          description: guide.description,
+          url: absoluteUrl(`/guides/${guide.slug}`),
+        })),
+      },
+      buildBreadcrumb([
+        { name: "Home", path: "/" },
+        { name: "Guides", path: "/guides" },
+      ]),
+    ],
+  };
+}
+
+export function buildGuideJsonLd(guide: Guide) {
+  const path = `/guides/${guide.slug}`;
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Article",
+        "@id": absoluteUrl(path),
+        url: absoluteUrl(path),
+        headline: guide.title,
+        description: guide.description,
+        dateModified: guide.updated,
+        inLanguage: "en-NP",
+        author: { "@id": `${getSiteUrl()}/#organization` },
+        publisher: { "@id": `${getSiteUrl()}/#organization` },
+        mainEntityOfPage: absoluteUrl(path),
+        about: [
+          { "@type": "Thing", name: "uPVC windows" },
+          { "@type": "Thing", name: "uPVC doors" },
+          { "@type": "Place", name: "Kathmandu" },
+          { "@type": "Country", name: "Nepal" },
+        ],
+        isPartOf: { "@id": `${getSiteUrl()}/#website` },
+        speakable: {
+          "@type": "SpeakableSpecification",
+          cssSelector: ["h1", "h2", "article p"],
+        },
+      },
+      buildBreadcrumb([
+        { name: "Home", path: "/" },
+        { name: "Guides", path: "/guides" },
+        { name: guide.title, path },
       ]),
     ],
   };

@@ -64,18 +64,14 @@ export function ProductCategoryShowcase({ counts }: ProductCategoryShowcaseProps
                   href={CATEGORY_PATHS[category]}
                   className="group block focus-visible:outline-none"
                 >
-                  <div className="relative aspect-[3/4] overflow-hidden rounded-[1.75rem] bg-cream/40 ring-1 ring-charcoal/[0.04] transition-[box-shadow,transform] duration-700 ease-[var(--ease-premium)] group-hover:-translate-y-0.5 group-hover:shadow-[0_28px_56px_-36px_rgba(27,27,29,0.28)] group-focus-visible:ring-2 group-focus-visible:ring-gold group-focus-visible:ring-offset-4 group-focus-visible:ring-offset-surface motion-reduce:group-hover:translate-y-0">
-                    <div
-                      aria-hidden
-                      className="pointer-events-none absolute inset-0 bg-[radial-gradient(120%_80%_at_50%_18%,#ffffff_0%,var(--color-cream)_42%,var(--color-surface)_78%,var(--color-taupe)_100%)]"
-                    />
+                  <div className="relative aspect-[5/4] overflow-hidden rounded-[1.5rem] bg-[linear-gradient(180deg,var(--color-cream)_0%,#ffffff_48%,var(--color-surface)_100%)] ring-1 ring-charcoal/[0.05] transition-[box-shadow,transform] duration-700 ease-[var(--ease-premium)] group-hover:-translate-y-0.5 group-hover:shadow-[0_24px_48px_-34px_rgba(27,27,29,0.22)] group-focus-visible:ring-2 group-focus-visible:ring-gold group-focus-visible:ring-offset-4 group-focus-visible:ring-offset-surface motion-reduce:group-hover:translate-y-0">
                     {poster ? (
                       <Image
                         src={poster}
                         alt={`Hi-Tech uPVC ${label}`}
                         fill
                         sizes="(max-width: 768px) 78vw, 50vw"
-                        className="object-contain p-7 transition-[transform] duration-700 ease-[var(--ease-premium)] group-hover:scale-[1.02] motion-reduce:transition-none motion-reduce:group-hover:scale-100 sm:p-9"
+                        className="object-contain p-5 transition-[transform] duration-700 ease-[var(--ease-premium)] group-hover:scale-[1.02] motion-reduce:transition-none motion-reduce:group-hover:scale-100 sm:p-7"
                       />
                     ) : null}
                   </div>

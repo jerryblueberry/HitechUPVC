@@ -2,19 +2,20 @@ import type { Metadata } from "next";
 import { GalleryView } from "@/components/gallery/GalleryView";
 import { CTASection } from "@/components/home/CTASection";
 import { getCompany, getProjects } from "@/lib/getData";
-import { absoluteUrl, pageMetadata } from "@/lib/seo";
+import { absoluteUrl, getSiteUrl, pageMetadata } from "@/lib/seo";
 
-const TITLE = "Project Gallery";
+const TITLE = "uPVC Window & Door Projects in Kathmandu";
 const DESCRIPTION =
-  "Installations across Kathmandu, our Tarakeshwar factory floor, and studio product photography — Hi-Tech uPVC windows, doors, and panels in place.";
+  "Real Hi-Tech uPVC installations across Kathmandu, our Tarakeshwar factory floor, and finished windows, doors, and panels — see the work before you get a quote.";
 
 export const metadata: Metadata = pageMetadata(TITLE, DESCRIPTION, "/gallery", undefined, {
   keywords: [
+    "uPVC projects Kathmandu",
+    "uPVC window installation Kathmandu",
     "uPVC gallery Nepal",
-    "uPVC project photos Kathmandu",
-    "Hi-Tech uPVC installations",
+    "uPVC house Nepal",
     "uPVC factory Tarakeshwar",
-    "window door panel photography",
+    "Hi-Tech uPVC installations",
   ],
 });
 
@@ -30,11 +31,7 @@ function GalleryJsonLd() {
         url: absoluteUrl("/gallery"),
         name: TITLE,
         description: DESCRIPTION,
-        isPartOf: {
-          "@type": "WebSite",
-          name: company.companyName,
-          url: absoluteUrl("/"),
-        },
+        isPartOf: { "@id": `${getSiteUrl()}/#website` },
       },
       {
         "@type": "BreadcrumbList",

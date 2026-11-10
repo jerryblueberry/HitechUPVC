@@ -36,16 +36,22 @@ The site already loads container **`GTM-5TP729V4`** and pushes SPA `page_view` e
 
 ## 2. Target keywords (entity + local)
 
-Primary brand / product:
+Brand spellings live in `BRAND_ALIASES` (`lib/seo.ts`) and feed Organization `alternateName`. Every page's keywords pass through `mergeKeywords()`, which adds the core brand terms.
 
-- Hi-Tech uPVC / Hi-Tech uPVC Profile Industries
-- uPVC windows Nepal, uPVC doors Kathmandu, uPVC panels Nepal
+| Page | Primary search intent |
+|------|----------------------|
+| `/` | uPVC windows & doors Kathmandu, Nepal; Hi-Tech / Hitech uPVC |
+| `/products/windows` | uPVC windows Kathmandu / Nepal / price |
+| `/products/doors` | uPVC doors Kathmandu / Nepal / price |
+| `/products/panels` | uPVC wall panels Kathmandu / Nepal |
+| `/products/*/[slug]` | `<product> uPVC <type>, Kathmandu` |
+| `/service-areas/*` | uPVC windows & doors in Kathmandu / Lalitpur / Bhaktapur / Pokhara |
+| `/why-upvc` | uPVC vs wood / aluminium, best windows for Kathmandu |
+| `/guides` + `/guides/[slug]` | Long-tail Q&A: price, vs aluminium/wood, climate, lifespan, door choice |
+| `/get-quote` | uPVC window / door price Nepal |
+| `/about` | uPVC manufacturer / company Kathmandu; Hi-Tech Group Nepal |
 
-Local:
-
-- Kathmandu, Tarakeshwar, Tokha, Lambagar, Pokhara, Nepal
-
-Keep **uPVC** spelling consistent in titles, schema, and visible copy.
+Titles use the `%s | Hi-Tech uPVC` template — keep the page part under ~45 characters. Keep **uPVC** spelling consistent in titles, schema, and visible copy; misspellings (Hitech, High Tech) belong only in `alternateName`, keywords, and the footer brand line.
 
 ---
 

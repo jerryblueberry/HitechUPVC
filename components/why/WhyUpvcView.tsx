@@ -310,7 +310,14 @@ export function WhyUpvcView({
               uPVC in Kathmandu, answered.
             </h2>
             <p className="mt-4 text-base leading-relaxed text-charcoal/60">
-              Still deciding between wood and uPVC? Write to us on{" "}
+              Still deciding between wood and uPVC? Read our{" "}
+              <Link
+                href="/guides"
+                className="font-medium text-navy underline-offset-4 hover:underline"
+              >
+                uPVC guides
+              </Link>
+              , write on{" "}
               <a
                 href={whatsappHref(whatsapp)}
                 target="_blank"
@@ -318,9 +325,35 @@ export function WhyUpvcView({
                 className="text-gold underline-offset-4 hover:underline"
               >
                 WhatsApp
-              </a>{" "}
-              or visit a Hi-Tech site.
+              </a>
+              , or visit a Hi-Tech site.
             </p>
+            <ul className="mt-5 space-y-2 text-sm text-navy">
+              <li>
+                <Link
+                  href="/guides/upvc-vs-aluminium-kathmandu"
+                  className="underline-offset-4 hover:underline"
+                >
+                  uPVC vs aluminium in Kathmandu
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/guides/upvc-vs-wood-nepal"
+                  className="underline-offset-4 hover:underline"
+                >
+                  uPVC vs wood in Nepal
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/guides/upvc-window-price-nepal"
+                  className="underline-offset-4 hover:underline"
+                >
+                  uPVC window price in Nepal
+                </Link>
+              </li>
+            </ul>
           </RevealOnScroll>
           <RevealOnScroll delay={0.08}>
             <FaqList faqs={faqs} />
